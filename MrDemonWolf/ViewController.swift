@@ -1,6 +1,21 @@
 import UIKit
 import WebKit
 
+extension UIColor {
+    convenience init?(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        if hexSanitized.hasPrefix("#") {
+            hexSanitized.removeFirst()
+        }
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(rgb & 0x0000FF) / 255.0
+        self.init(red: r, green: g, blue: b, alpha: 1.0)
+    }
+}
+
 var webView: WKWebView! = nil
 
 class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteractionControllerDelegate {
@@ -33,12 +48,26 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateProgressViewColor(for: traitCollection)
         initWebView()
         initToolbarView()
         loadRootUrl()
     
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification , object: nil)
         
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateProgressViewColor(for: traitCollection)
+    }
+    
+    func updateProgressViewColor(for traitCollection: UITraitCollection) {
+        if traitCollection.userInterfaceStyle == .dark {
+            progressView.progressTintColor = UIColor(hex: "#00ACED")
+        } else {
+            progressView.progressTintColor = UIColor(hex: "#091533")
+        }
     }
 
     override func viewDidLayoutSubviews() {
