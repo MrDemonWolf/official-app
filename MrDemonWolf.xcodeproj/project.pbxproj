@@ -19,6 +19,7 @@
 		595F23AF25CEFBFE0053416C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A425CEFBFE0053416C /* WebView.swift */; };
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
 		CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */; };
+		D43AE9822EB6CE0600A49DF7 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = D43AE9812EB6CE0600A49DF7 /* AppIcon.icon */; };
 		E1E260C850014D6B34B487B0 /* Pods_MrDemonWolf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D7FFB2FBE6EEBCA807B6A /* Pods_MrDemonWolf.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		BEE8E5C625AE96C07F8AADED /* Pods-MrDemonWolf.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrDemonWolf.debug.xcconfig"; path = "Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf.debug.xcconfig"; sourceTree = "<group>"; };
 		CDC0FE262388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MrDemonWolf/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CDC0FE282388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MrDemonWolf/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D43AE9812EB6CE0600A49DF7 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				30FCACC6A7BF53CD6D9CF6C0 /* Pods */,
 				90E46E861CB86F5FAF46BED9 /* Frameworks */,
 				59333BAA25CFF706003392A4 /* MrDemonWolf.app */,
+				D43AE9812EB6CE0600A49DF7 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -159,6 +162,7 @@
 				CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */,
 				595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */,
 				25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */,
+				D43AE9822EB6CE0600A49DF7 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
