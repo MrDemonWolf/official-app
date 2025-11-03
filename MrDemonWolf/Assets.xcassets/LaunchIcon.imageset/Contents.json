@@ -17,16 +17,6 @@
       "filename" : "launch-192.png",
       "idiom" : "universal",
       "scale" : "3x"
-    },
-    {
-      "filename" : "launch-256.png",
-      "idiom" : "universal",
-      "scale" : "4x"
-    },
-    {
-      "filename" : "launch-512.png",
-      "idiom" : "universal",
-      "scale" : "8x"
     }
   ],
   "info" : {
