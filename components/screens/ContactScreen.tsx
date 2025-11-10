@@ -1,53 +1,13 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useState } from 'react';
+import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { useContactForm } from '../hooks';
 
 export function ContactScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleSubmit = async () => {
-    if (!name.trim()) {
-      Alert.alert('Error', 'Please enter your name');
-      return;
-    }
-    if (!email.trim() || !validateEmail(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
-      return;
-    }
-    if (!message.trim()) {
-      Alert.alert('Error', 'Please enter a message');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Contact form submitted:', { name, email, message });
-      Alert.alert(
-        'Success',
-        '✨ Message sent! Thank you for reaching out. I will get back to you soon.'
-      );
-      setName('');
-      setEmail('');
-      setMessage('');
-    } catch {
-      Alert.alert('Error', 'Failed to send message. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const { name, setName, email, setEmail, message, setMessage, isSubmitting, handleSubmit } =
+    useContactForm();
 
   return (
     <ScrollView className="flex-1 bg-white dark:bg-gray-900">
-      <View className="px-6 py-6">
+      <View className="px-6 py-6 pt-12">
         {/* Header */}
         <View className="mb-8">
           <Text className="text-4xl font-bold text-gray-900 dark:text-white">Get In Touch</Text>

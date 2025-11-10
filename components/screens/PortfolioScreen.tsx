@@ -1,36 +1,12 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { PORTFOLIO_PROJECTS } from '../constants';
 
 export function PortfolioScreen() {
-  const projects = [
-    {
-      id: 1,
-      title: 'E-Commerce App',
-      description:
-        'A full-featured mobile commerce platform with real-time inventory management and secure payment processing.',
-      technologies: ['React Native', 'Firebase', 'Stripe'],
-      icon: '🛍️',
-    },
-    {
-      id: 2,
-      title: 'Social Media Platform',
-      description:
-        'Connect with others through a feature-rich social platform with real-time messaging and content sharing.',
-      technologies: ['React Native', 'Node.js', 'PostgreSQL'],
-      icon: '📱',
-    },
-    {
-      id: 3,
-      title: 'Fitness Tracker',
-      description:
-        'Track your fitness journey with detailed analytics, workout history, and personalized recommendations.',
-      technologies: ['React Native', 'Expo', 'Cloud Storage'],
-      icon: '💪',
-    },
-  ];
+  const projects = PORTFOLIO_PROJECTS;
 
   return (
     <ScrollView className="flex-1 bg-white dark:bg-gray-900">
-      <View className="px-6 py-6">
+      <View className="px-6 py-6 pt-12">
         {/* Header */}
         <View className="mb-8">
           <Text className="text-4xl font-bold text-gray-900 dark:text-white">Portfolio</Text>
