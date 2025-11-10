@@ -21,7 +21,9 @@ export function ContactScreen() {
 
         <View className="mb-6 rounded-lg bg-gray-100 p-4">
           <Text className="text-xl font-semibold text-gray-800">Get in Touch</Text>
-          <Text className="mt-2 text-gray-600">I'd love to hear from you. Send me a message!</Text>
+          <Text className="mt-2 text-gray-600">
+            I&apos;d love to hear from you. Send me a message!
+          </Text>
         </View>
 
         <View className="mb-4">

@@ -21,7 +21,12 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mrdemonwolf.OfficialApp"
+      "bundleIdentifier": "com.mrdemonwolf.OfficialApp",
+      "icon": "./assets/mrdemonwolf-ios.icon",
+      "buildNumber": "2",
+      "infoPlist": {
+        "CFBundleDisplayName": "MrDemonWolf"
+      }
     },
     "android": {
       "adaptiveIcon": {
