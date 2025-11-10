@@ -1,0 +1,3 @@
+// Suppress common warnings in dependencies while keeping them strict for your own code
+GCC_WARN_INHIBIT_ALL_WARNINGS = YES
+CLANG_WARN_DOCUMENTATION_COMMENTS = NO
