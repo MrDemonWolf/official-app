@@ -120,7 +120,7 @@ export function BlogPostDetail({ post, onBack }: BlogPostDetailProps) {
           <Text className="text-2xl">←</Text>
           <Text className="ml-2 font-semibold text-blue-600 dark:text-blue-400">Back</Text>
         </TouchableOpacity>
-      </View>{' '}
+      </View>
       <ScrollView className="flex-1">
         {/* Featured Image */}
         {featuredImage && (
