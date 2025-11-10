@@ -158,7 +158,7 @@ export function BlogScreen() {
             <Text className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               Discover latest insights and stories
             </Text>
-          </View>{' '}
+          </View>
           {posts.map((post) => (
             <BlogCard
               key={post.id}
