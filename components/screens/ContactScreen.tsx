@@ -1,73 +1,144 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 
 export function ContactScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    console.log('Contact form submitted:', { name, email, message });
-    setName('');
-    setEmail('');
-    setMessage('');
-    alert('Message sent! Thank you for reaching out.');
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async () => {
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please enter your name');
+      return;
+    }
+    if (!email.trim() || !validateEmail(email)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+    if (!message.trim()) {
+      Alert.alert('Error', 'Please enter a message');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log('Contact form submitted:', { name, email, message });
+      Alert.alert(
+        'Success',
+        '✨ Message sent! Thank you for reaching out. I will get back to you soon.'
+      );
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch {
+      Alert.alert('Error', 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <ScrollView className="flex-1 bg-white pt-4">
-      <View className="px-6 py-4">
-        <Text className="mb-4 text-3xl font-bold text-gray-900">Contact</Text>
-
-        <View className="mb-6 rounded-lg bg-gray-100 p-4">
-          <Text className="text-xl font-semibold text-gray-800">Get in Touch</Text>
-          <Text className="mt-2 text-gray-600">
-            I&apos;d love to hear from you. Send me a message!
+    <ScrollView className="flex-1 bg-white dark:bg-gray-900">
+      <View className="px-6 py-6">
+        {/* Header */}
+        <View className="mb-8">
+          <Text className="text-4xl font-bold text-gray-900 dark:text-white">Get In Touch</Text>
+          <Text className="mt-2 text-base text-gray-600 dark:text-gray-300">
+            I would love to hear from you. Send me a message and I will respond as soon as possible.
           </Text>
         </View>
 
-        <View className="mb-4">
-          <Text className="mb-2 font-semibold text-gray-700">Name</Text>
-          <TextInput
-            className="rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-900"
-            placeholder="Your name"
-            value={name}
-            onChangeText={setName}
-            placeholderTextColor="#999"
-          />
+        {/* Contact Info Cards */}
+        <View className="mb-8 flex-row gap-3">
+          <View className="flex-1 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/30">
+            <Text className="text-xl">📧</Text>
+            <Text className="mt-2 text-xs font-medium text-gray-600 dark:text-gray-400">Email</Text>
+            <Text className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">hello@</Text>
+          </View>
+          <View className="flex-1 rounded-xl bg-purple-50 p-4 dark:bg-purple-950/30">
+            <Text className="text-xl">💬</Text>
+            <Text className="mt-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+              Response
+            </Text>
+            <Text className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+              24 hours
+            </Text>
+          </View>
         </View>
 
-        <View className="mb-4">
-          <Text className="mb-2 font-semibold text-gray-700">Email</Text>
-          <TextInput
-            className="rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-900"
-            placeholder="your@email.com"
-            value={email}
-            onChangeText={setEmail}
-            placeholderTextColor="#999"
-            keyboardType="email-address"
-          />
+        {/* Form Section */}
+        <View className="mb-8 rounded-2xl bg-gray-50 p-6 dark:bg-gray-800">
+          <Text className="text-lg font-bold text-gray-900 dark:text-white">Contact Form</Text>
+
+          {/* Name Input */}
+          <View className="mt-5">
+            <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300">Name</Text>
+            <TextInput
+              className="mt-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              placeholder="Your full name"
+              value={name}
+              onChangeText={setName}
+              placeholderTextColor="#999"
+              editable={!isSubmitting}
+            />
+          </View>
+
+          {/* Email Input */}
+          <View className="mt-4">
+            <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email</Text>
+            <TextInput
+              className="mt-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              placeholder="your@email.com"
+              value={email}
+              onChangeText={setEmail}
+              placeholderTextColor="#999"
+              keyboardType="email-address"
+              editable={!isSubmitting}
+            />
+          </View>
+
+          {/* Message Input */}
+          <View className="mt-4">
+            <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300">Message</Text>
+            <TextInput
+              className="mt-2 h-40 rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              placeholder="Tell me about your project or idea..."
+              value={message}
+              onChangeText={setMessage}
+              placeholderTextColor="#999"
+              multiline
+              textAlignVertical="top"
+              editable={!isSubmitting}
+            />
+          </View>
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+            className="mt-6 items-center rounded-lg bg-purple-600 py-4 active:bg-purple-700 disabled:bg-purple-400 dark:bg-purple-700 dark:active:bg-purple-600"
+            activeOpacity={0.8}>
+            <Text className="text-base font-semibold text-white">
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <View className="mb-6">
-          <Text className="mb-2 font-semibold text-gray-700">Message</Text>
-          <TextInput
-            className="h-32 rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-900"
-            placeholder="Your message here..."
-            value={message}
-            onChangeText={setMessage}
-            placeholderTextColor="#999"
-            multiline
-            textAlignVertical="top"
-          />
+        {/* Footer Note */}
+        <View className="mb-24 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/30">
+          <Text className="text-xs leading-4 text-gray-600 dark:text-gray-300">
+            💡 I typically respond to messages within 24 hours. For urgent inquiries, please call or
+            use my social media.
+          </Text>
         </View>
-
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="mb-24 items-center rounded-lg bg-purple-600 py-4 active:bg-purple-700"
-          activeOpacity={0.8}>
-          <Text className="text-lg font-semibold text-white">Send Message</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );

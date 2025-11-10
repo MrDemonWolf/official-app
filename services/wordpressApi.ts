@@ -7,6 +7,9 @@ export interface WordPressPost {
   excerpt: {
     rendered: string;
   };
+  content?: {
+    rendered: string;
+  };
   link: string;
   featured_media: number;
   _embedded?: {
@@ -14,6 +17,14 @@ export interface WordPressPost {
       source_url: string;
       alt_text?: string;
     }[];
+    'wp:author'?: {
+      id: number;
+      name: string;
+    }[];
+    'wp:term'?: {
+      id: number;
+      name: string;
+    }[][];
   };
 }
 
