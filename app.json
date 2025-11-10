@@ -12,21 +12,18 @@
     "plugins": [],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "userInterfaceStyle": "automatic",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mrdemonwolf.OfficialApp",
       "icon": "./assets/mrdemonwolf-ios.icon",
-      "buildNumber": "2",
-      "infoPlist": {
-        "CFBundleDisplayName": "MrDemonWolf"
-      }
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
