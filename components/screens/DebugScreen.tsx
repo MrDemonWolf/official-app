@@ -1,37 +1,17 @@
 import { View, Text, ScrollView, useColorScheme } from 'react-native';
+import { DEBUG_INFO } from '../constants';
 
 export function DebugScreen() {
   const colorScheme = useColorScheme();
 
-  const debugInfo = [
-    {
-      icon: '🎨',
-      label: 'Current Theme',
-      value:
-        colorScheme === 'dark'
-          ? 'Dark Mode'
-          : colorScheme === 'light'
-            ? 'Light Mode'
-            : 'System Default',
-      color: 'blue',
-    },
-    {
-      icon: '💾',
-      label: 'Color Scheme Value',
-      value: colorScheme === null ? 'null' : `"${colorScheme}"`,
-      color: 'purple',
-    },
-    {
-      icon: '✓',
-      label: 'Theme Detection',
-      value: 'Active',
-      color: 'green',
-    },
-  ];
+  const debugInfo = DEBUG_INFO.map((item) => ({
+    ...item,
+    value: item.getValue(colorScheme || null),
+  }));
 
   return (
     <ScrollView className="flex-1 bg-white dark:bg-gray-900">
-      <View className="px-6 py-6">
+      <View className="px-6 py-6 pt-12">
         {/* Header */}
         <View className="mb-8">
           <Text className="text-4xl font-bold text-gray-900 dark:text-white">Debug Info</Text>
