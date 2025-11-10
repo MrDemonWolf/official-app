@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  Animated,
+  PanResponder,
 } from 'react-native';
 import { fetchBlogPosts, WordPressPost } from '../../services/wordpressApi';
 
@@ -60,6 +62,76 @@ function BlogCard({
 function BlogPostDetail({ post, onBack }: { post: WordPressPost; onBack: () => void }) {
   const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
   const altText = post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || 'Featured image';
+  const slideAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && gestureState.dx > 0;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dx > 0) {
+          slideAnim.setValue(Math.max(0, 1 - gestureState.dx / 300));
+          fadeAnim.setValue(Math.max(0.3, 1 - gestureState.dx / 500));
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 100) {
+          // Swipe right threshold - go back
+          handleBack();
+        } else {
+          // Snap back to normal position
+          Animated.parallel([
+            Animated.timing(slideAnim, {
+              toValue: 0,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+            Animated.timing(fadeAnim, {
+              toValue: 1,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+          ]).start();
+        }
+      },
+    })
+  ).current;
+
+  useEffect(() => {
+    // Animate in when component mounts
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fadeAnim, slideAnim]);
+
+  const handleBack = () => {
+    // Animate out before going back
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onBack();
+    });
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -80,11 +152,25 @@ function BlogPostDetail({ post, onBack }: { post: WordPressPost; onBack: () => v
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-gray-900">
+    <Animated.View
+      {...panResponder.panHandlers}
+      style={{
+        flex: 1,
+        opacity: fadeAnim,
+        transform: [
+          {
+            translateY: slideAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 600],
+            }),
+          },
+        ],
+      }}
+      className="bg-white dark:bg-gray-900">
       <ScrollView className="flex-1">
         {/* Back Button */}
         <View className="border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-          <TouchableOpacity onPress={onBack} className="flex-row items-center">
+          <TouchableOpacity onPress={handleBack} className="flex-row items-center">
             <Text className="text-2xl">←</Text>
             <Text className="ml-2 font-semibold text-blue-600 dark:text-blue-400">Back</Text>
           </TouchableOpacity>
@@ -151,7 +237,7 @@ function BlogPostDetail({ post, onBack }: { post: WordPressPost; onBack: () => v
         {/* Spacer for bottom nav */}
         <View className="h-24" />
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 }
 
