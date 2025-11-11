@@ -1,13 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
-
 export default function Tab() {
-  const colorScheme = useColorScheme();
   return (
     <View style={styles.container}>
       <Text>Tab</Text>
-      <Text>{colorScheme === "dark" ? "Dark" : "Light"}</Text>
+      <Text className="text-xl font-bold text-blue-500">
+        Welcome to Nativewind!
+      </Text>
     </View>
   );
 }

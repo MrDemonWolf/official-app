@@ -1,3 +1,4 @@
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,9 +7,9 @@ import {
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { StatusBar } from "expo-status-bar";
 import { DynamicColorIOS } from "react-native";
-import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import "react-native-reanimated";
+import "../global.css";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
