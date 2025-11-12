@@ -4,31 +4,35 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { BlurView } from "expo-blur";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { StatusBar } from "expo-status-bar";
-import { DynamicColorIOS } from "react-native";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import colors from "tailwindcss/colors";
+
+import "@/global.css";
 
 import "react-native-reanimated";
-import "../global.css";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <NativeTabs
+        iconColor={{
+          default: colors.blue[400],
+          // selected: DynamicColorIOS(LABEL_COLOR),
+        }}
         labelStyle={{
-          // For the text color
-          color: DynamicColorIOS({
-            dark: "white",
-            light: "black",
-          }),
+          default: {
+            // color: DynamicColorIOS(LABEL_COLOR),
+          },
         }}
         // For the selected icon color
-        tintColor={DynamicColorIOS({
-          dark: "white",
-          light: "black",
-        })}
+        // tintColor={DynamicColorIOS(TINT_COLOR)}
       >
         <NativeTabs.Trigger name="index">
           <Label>Home</Label>
@@ -47,6 +51,21 @@ export default function RootLayout() {
           <Label>Contact</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: safeAreaInsets.top,
+        }}
+      >
+        <BlurView
+          intensity={10}
+          tint={colorScheme === "dark" ? "dark" : "light"}
+          style={{ flex: 1 }}
+        />
+      </View>
       <StatusBar style="auto" />
     </ThemeProvider>
   );

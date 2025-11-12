@@ -1,17 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
 
-export default function Tab() {
+export default function Portfolio() {
   return (
-    <View style={styles.container}>
-      <Text>Portfolio</Text>
-    </View>
+    <ScrollView className="flex-1 bg-white dark:bg-gray-950 p-4">
+      {/* Your blog content goes here */}
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

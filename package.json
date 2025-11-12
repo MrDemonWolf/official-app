@@ -16,6 +16,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "expo": "~54.0.23",
+    "expo-blur": "^15.0.7",
     "expo-constants": "~18.0.10",
     "expo-dev-client": "~6.0.17",
     "expo-font": "~14.0.9",
@@ -44,6 +45,7 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@types/react": "~19.1.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "babel-preset-expo": "^54.0.7",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "postcss": "^8.5.6",
@@ -51,10 +53,5 @@
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.2"
   },
-  "private": true,
-  "pnpm": {
-    "overrides": {
-      "lightningcss": "1.30.1"
-    }
-  }
+  "private": true
 }
