@@ -1,20 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
 
-export default function Tab() {
+export default function Home() {
+  const numberOfLines = 50; // Adjust this number to create more or fewer lines
+  const renderTextLines = () => {
+    const lines = [];
+    for (let i = 0; i < numberOfLines; i++) {
+      lines.push(
+        <Text className="text-white text-8xl" key={i}>
+          This is line {i + 1}
+        </Text>
+      );
+    }
+    return lines;
+  };
   return (
-    <View style={styles.container}>
-      <Text>Tab</Text>
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind!
-      </Text>
-    </View>
+    <ScrollView className="flex-1 bg-white dark:bg-gray-950">
+      {renderTextLines()}
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
