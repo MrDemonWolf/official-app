@@ -1,13 +1,15 @@
 import { ContactFormData, contactFormSchema } from "@/schemas/contact.schema";
-import { Button, Host, TextField } from "@expo/ui/swift-ui";
-import { useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  ScrollView,
+  Button,
+  Form,
+  Host,
+  Section,
   Text,
-  View,
-} from "react-native";
+  TextField,
+} from "@expo/ui/swift-ui";
+import { foregroundStyle } from "@expo/ui/swift-ui/modifiers";
+import { useState } from "react";
+import { Alert } from "react-native";
 import { ZodError } from "zod";
 
 export default function Tab() {
@@ -66,6 +68,16 @@ export default function Tab() {
       setErrors({});
       setIsSubmitting(true);
 
+      // Check if form is empty
+      if (!formData.name && !formData.email && !formData.message) {
+        Alert.alert(
+          "Please Check Your Form",
+          "Please check the form again before submitting.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+
       // Validate form data
       contactFormSchema.parse(formData);
 
@@ -104,6 +116,11 @@ export default function Tab() {
           }
         });
         setErrors(fieldErrors);
+        Alert.alert(
+          "Please Check Your Form",
+          "Please check the form again before submitting.",
+          [{ text: "OK" }]
+        );
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
@@ -113,124 +130,87 @@ export default function Tab() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1">
-      <ScrollView
-        className="flex-1 bg-white dark:bg-gray-950"
-        contentContainerClassName="p-6"
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="mb-8">
-          <Text className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-            Send me message
+    <Host style={{ flex: 1 }} key={formKey}>
+      <Form>
+        <Section title="Get in Touch">
+          <Text>
+            Have a project in mind or just want to chat? I&apos;d love to hear
+            from you.
           </Text>
-          <Text className="text-base text-gray-600 dark:text-gray-400 leading-6">
-            Do you have a challenging project in mind, or do you have a
-            question? Let&apos;s talk!
-          </Text>
-        </View>
+        </Section>
 
-        <View
-          className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm space-y-6"
-          key={formKey}
-        >
-          {/* Name Field */}
-          <View className="space-y-2">
-            <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Your Name
+        <Section title="Contact Information">
+          <TextField
+            onChangeText={(text) => handleFieldChange("name", text)}
+            autocorrection={false}
+            placeholder="Your Name"
+          />
+          {errors.name && touched.name && (
+            <Text
+              size={13}
+              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
+            >
+              {errors.name}
             </Text>
-            <Host matchContents>
-              <TextField
-                defaultValue={formData.name}
-                onChangeText={(text) => handleFieldChange("name", text)}
-                autocorrection={false}
-                placeholder="John Doe"
-              />
-            </Host>
-            {errors.name && touched.name && (
-              <Text className="text-sm text-red-600 dark:text-red-400">
-                {errors.name}
-              </Text>
-            )}
-          </View>
+          )}
 
-          {/* Email Field */}
-          <View className="space-y-2">
-            <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email Address
+          <TextField
+            onChangeText={(text) => handleFieldChange("email", text)}
+            keyboardType="email-address"
+            autocorrection={false}
+            placeholder="Email Address"
+          />
+          {errors.email && touched.email && (
+            <Text
+              size={13}
+              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
+            >
+              {errors.email}
             </Text>
-            <Host matchContents>
-              <TextField
-                defaultValue={formData.email}
-                onChangeText={(text) => handleFieldChange("email", text)}
-                keyboardType="email-address"
-                autocorrection={false}
-                placeholder="john@example.com"
-              />
-            </Host>
-            {errors.email && touched.email && (
-              <Text className="text-sm text-red-600 dark:text-red-400">
-                {errors.email}
-              </Text>
-            )}
-          </View>
+          )}
 
-          {/* Phone Field */}
-          <View className="space-y-2">
-            <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Phone Number{" "}
-              <Text className="text-gray-500 dark:text-gray-500 font-normal">
-                (Optional)
-              </Text>
+          <TextField
+            onChangeText={(text) => handleFieldChange("phone", text)}
+            keyboardType="phone-pad"
+            placeholder="Phone Number (Optional)"
+          />
+          {errors.phone && touched.phone && (
+            <Text
+              size={13}
+              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
+            >
+              {errors.phone}
             </Text>
-            <Host matchContents>
-              <TextField
-                defaultValue={formData.phone}
-                onChangeText={(text) => handleFieldChange("phone", text)}
-                keyboardType="phone-pad"
-                placeholder="+1 (555) 000-0000"
-              />
-            </Host>
-            {errors.phone && touched.phone && (
-              <Text className="text-sm text-red-600 dark:text-red-400">
-                {errors.phone}
-              </Text>
-            )}
-          </View>
+          )}
+        </Section>
 
-          {/* Message Field */}
-          <View className="space-y-2">
-            <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Message
+        <Section title="Your Message">
+          <TextField
+            onChangeText={(text) => handleFieldChange("message", text)}
+            multiline={true}
+            placeholder="Tell me about your project or question..."
+          />
+          {errors.message && touched.message && (
+            <Text
+              size={13}
+              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
+            >
+              {errors.message}
             </Text>
-            <Host matchContents>
-              <TextField
-                defaultValue={formData.message}
-                onChangeText={(text) => handleFieldChange("message", text)}
-                multiline
-                placeholder="Tell me about your project or question..."
-              />
-            </Host>
-            {errors.message && touched.message && (
-              <Text className="text-sm text-red-600 dark:text-red-400">
-                {errors.message}
-              </Text>
-            )}
-          </View>
+          )}
+        </Section>
 
-          {/* Submit Button */}
-          <View className="pt-4">
-            <Host matchContents>
-              <Button
-                variant="default"
-                onPress={handleSubmit}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </Button>
-            </Host>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <Section title="">
+          <Button
+            variant="glassProminent"
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </Button>
+          <Text>I typically respond within 24-48 hours</Text>
+        </Section>
+      </Form>
+    </Host>
   );
 }
