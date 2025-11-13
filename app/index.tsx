@@ -6,7 +6,7 @@ export default function Home() {
     const lines = [];
     for (let i = 0; i < numberOfLines; i++) {
       lines.push(
-        <Text className="text-white text-8xl" key={i}>
+        <Text className="text-black dark:text-white text-8xl" key={i}>
           This is line {i + 1}
         </Text>
       );

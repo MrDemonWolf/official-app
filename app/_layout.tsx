@@ -5,6 +5,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
+import * as Linking from "expo-linking";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
@@ -19,6 +20,17 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const safeAreaInsets = useSafeAreaInsets();
 
+  const url = Linking.useLinkingURL();
+
+  if (url) {
+    const { hostname, path, queryParams } = Linking.parse(url);
+
+    console.log(
+      `Linked to app with hostname: ${hostname}, path: ${path} and data: ${JSON.stringify(
+        queryParams
+      )}`
+    );
+  }
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <NativeTabs
