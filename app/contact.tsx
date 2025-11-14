@@ -84,28 +84,25 @@ export default function Tab() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Success
-      Alert.alert(
-        "Message Sent!",
-        "Thank you for reaching out! I'll get back to you soon.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // Reset form
-              setFormData({
-                name: "",
-                email: "",
-                phone: "",
-                message: "",
-              });
-              setErrors({});
-              setTouched({});
-              setFormKey((prev) => prev + 1);
-            },
-          },
-        ]
-      );
+      // Reset form first
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+      setErrors({});
+      setTouched({});
+      setFormKey((prev) => prev + 1);
+
+      // Show success alert after state update
+      setTimeout(() => {
+        Alert.alert(
+          "Message Sent!",
+          "Thank you for reaching out! I'll get back to you soon.",
+          [{ text: "OK" }]
+        );
+      }, 100);
     } catch (error: any) {
       if (error.errors) {
         // Zod validation errors
