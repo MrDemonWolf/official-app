@@ -9,10 +9,16 @@ import {
 } from "@expo/ui/swift-ui";
 import { foregroundStyle } from "@expo/ui/swift-ui/modifiers";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, useColorScheme } from "react-native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import colors from "tailwindcss/colors";
 import { ZodError } from "zod";
-
 export default function Tab() {
+  const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -127,88 +133,104 @@ export default function Tab() {
   };
 
   return (
-    <Host style={{ flex: 1 }} key={formKey}>
-      <Form>
-        <Section title="Get in Touch">
-          <Text>
-            {
-              "Have a project in mind or just want to chat? I'd love to hear from you."
-            }
-          </Text>
-        </Section>
-
-        <Section title="Contact Information">
-          <TextField
-            onChangeText={(text) => handleFieldChange("name", text)}
-            autocorrection={false}
-            placeholder="Your Name"
-          />
-          {errors.name && touched.name && (
-            <Text
-              size={13}
-              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
-            >
-              {errors.name}
+    <SafeAreaView
+      edges={["bottom", "left", "right"]}
+      style={{
+        flex: 1,
+        backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
+      }}
+    >
+      <Host style={{ flex: 1 }} key={formKey}>
+        <Form>
+          <Section title="Get in Touch">
+            <Text>
+              {
+                "Have a project in mind or just want to chat? I'd love to hear from you."
+              }
             </Text>
-          )}
+          </Section>
 
-          <TextField
-            onChangeText={(text) => handleFieldChange("email", text)}
-            keyboardType="email-address"
-            autocorrection={false}
-            placeholder="Email Address"
-          />
-          {errors.email && touched.email && (
-            <Text
-              size={13}
-              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
+          <Section title="Contact Information">
+            <TextField
+              onChangeText={(text) => handleFieldChange("name", text)}
+              autocorrection={false}
+              placeholder="Your Name"
+            />
+            {errors.name && touched.name && (
+              <Text
+                size={13}
+                modifiers={[
+                  foregroundStyle({ type: "color", color: "#FF3B30" }),
+                ]}
+              >
+                {errors.name}
+              </Text>
+            )}
+
+            <TextField
+              onChangeText={(text) => handleFieldChange("email", text)}
+              keyboardType="email-address"
+              autocorrection={false}
+              placeholder="Email Address"
+            />
+            {errors.email && touched.email && (
+              <Text
+                size={13}
+                modifiers={[
+                  foregroundStyle({ type: "color", color: "#FF3B30" }),
+                ]}
+              >
+                {errors.email}
+              </Text>
+            )}
+
+            <TextField
+              onChangeText={(text) => handleFieldChange("phone", text)}
+              keyboardType="phone-pad"
+              placeholder="Phone Number (Optional)"
+            />
+            {errors.phone && touched.phone && (
+              <Text
+                size={13}
+                modifiers={[
+                  foregroundStyle({ type: "color", color: "#FF3B30" }),
+                ]}
+              >
+                {errors.phone}
+              </Text>
+            )}
+          </Section>
+
+          <Section title="Your Message">
+            <TextField
+              onChangeText={(text) => handleFieldChange("message", text)}
+              multiline={true}
+              placeholder="Tell me about your project or question..."
+            />
+            {errors.message && touched.message && (
+              <Text
+                size={13}
+                modifiers={[
+                  foregroundStyle({ type: "color", color: "#FF3B30" }),
+                ]}
+              >
+                {errors.message}
+              </Text>
+            )}
+          </Section>
+
+          <Section title="">
+            <Button
+              variant="glassProminent"
+              onPress={handleSubmit}
+              disabled={isSubmitting}
             >
-              {errors.email}
-            </Text>
-          )}
-
-          <TextField
-            onChangeText={(text) => handleFieldChange("phone", text)}
-            keyboardType="phone-pad"
-            placeholder="Phone Number (Optional)"
-          />
-          {errors.phone && touched.phone && (
-            <Text
-              size={13}
-              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
-            >
-              {errors.phone}
-            </Text>
-          )}
-        </Section>
-
-        <Section title="Your Message">
-          <TextField
-            onChangeText={(text) => handleFieldChange("message", text)}
-            multiline={true}
-            placeholder="Tell me about your project or question..."
-          />
-          {errors.message && touched.message && (
-            <Text
-              size={13}
-              modifiers={[foregroundStyle({ type: "color", color: "#FF3B30" })]}
-            >
-              {errors.message}
-            </Text>
-          )}
-        </Section>
-
-        <Section title="">
-          <Button
-            variant="glassProminent"
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Sending..." : "Send Message"}
-          </Button>
-          <Text>I typically respond within 24-48 hours</Text>
-        </Section>
-      </Form>
-    </Host>
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </Button>
+            <Text>I typically respond within 24-48 hours</Text>
+          </Section>
+        </Form>
+      </Host>
+    </SafeAreaView>
   );
 }

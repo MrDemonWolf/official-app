@@ -14,6 +14,9 @@ import colors from "tailwindcss/colors";
 import { BlogCard, fetchPosts } from "../components/ui";
 
 export default function Blog() {
+  const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
+
   const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -21,7 +24,6 @@ export default function Blog() {
   const [refreshing, setRefreshing] = useState(false);
 
   const perPage = 10;
-  const insets = useSafeAreaInsets();
 
   const loadPage = async (p = 1, append = false) => {
     if (loading) return;
@@ -67,23 +69,20 @@ export default function Blog() {
     }
   };
 
-  const colorScheme = useColorScheme();
-
   return (
     <SafeAreaView
-      edges={["bottom"]}
+      edges={["bottom", "left", "right"]}
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
-        paddingBottom: insets.bottom + 16,
       }}
     >
       {!posts || posts.length === 0 ? (
         <View
           style={{
             flex: 1,
-            paddingTop: insets.top + 16,
-            paddingBottom: insets.bottom + 16,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
           }}
           className="items-center justify-center px-4"
         >
@@ -97,7 +96,12 @@ export default function Blog() {
         </View>
       ) : (
         <FlatList
-          style={{ paddingTop: insets.top }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            flexGrow: 1,
+          }}
           data={posts}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <BlogCard post={item} />}
@@ -108,6 +112,8 @@ export default function Blog() {
           }
           refreshing={refreshing}
           onRefresh={handleRefresh}
+          // ensure bounce/overscroll available for pull-to-refresh
+          alwaysBounceVertical={true}
         />
       )}
     </SafeAreaView>

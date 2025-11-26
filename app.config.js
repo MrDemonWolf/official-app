@@ -26,7 +26,10 @@ export default {
   name: getAppName(),
   slug: "mrdemonwolf",
   version: "1.0.0",
-  orientation: "portrait",
+  // Allow all orientations by default. Change to "portrait" or
+  // "landscape" to lock if desired. Setting to "default" lets
+  // the device choose and enables landscape where supported.
+  orientation: "default",
   icon: "./assets/images/icon.png",
   scheme: "mrdemonwolf",
   userInterfaceStyle: "automatic",
