@@ -30,36 +30,54 @@ export default function BlogCard({ post, onPress }: Props) {
 
   return (
     <TouchableOpacity onPress={() => onPress?.(post)} className="w-full">
-      <View className="bg-white rounded-lg overflow-hidden shadow mb-4">
+      <View className="bg-white dark:bg-neutral-900 rounded-lg overflow-hidden shadow mb-4 border border-transparent dark:border-neutral-800">
         {image ? (
-          <Image
-            source={{ uri: image }}
-            className="w-full h-48"
-            contentFit="cover"
-            transition={250}
-          />
-        ) : (
-          <View className="w-full h-48 bg-gray-200 items-center justify-center">
-            <Text className="text-gray-500">No image</Text>
+          <View className="relative w-full">
+            <Image
+              source={{ uri: image }}
+              className="w-full h-48"
+              style={{ width: "100%", height: 192 }}
+              contentFit="cover"
+              transition={250}
+            />
+
+            {/* subtle overlay to improve text contrast on image */}
+            <View
+              pointerEvents="none"
+              className="absolute inset-0"
+              style={{ backgroundColor: "transparent" }}
+            />
           </View>
-        )}
+        ) : null}
 
         <View className="p-4">
-          <Text className="text-lg font-bold mb-2">
+          <Text className="text-lg font-bold mb-2 text-black dark:text-white">
             {post?.title?.rendered || post?.title}
           </Text>
-          <Text className="text-sm text-gray-600 mb-3">{description}</Text>
+          <Text className="text-sm mb-3 text-gray-600 dark:text-neutral-300">
+            {description}
+          </Text>
 
           <View className="flex-row flex-wrap">
             {categories.map((c: string) => (
-              <View key={c} className="bg-blue-100 px-2 py-1 rounded mr-2 mb-2">
-                <Text className="text-blue-800 text-xs">{c}</Text>
+              <View
+                key={c}
+                className="px-2 py-1 rounded mr-2 mb-2 bg-blue-100 dark:bg-blue-800"
+              >
+                <Text className="text-blue-800 dark:text-blue-200 text-xs">
+                  {c}
+                </Text>
               </View>
             ))}
 
             {tags.map((t: string) => (
-              <View key={t} className="bg-gray-100 px-2 py-1 rounded mr-2 mb-2">
-                <Text className="text-gray-700 text-xs">{t}</Text>
+              <View
+                key={t}
+                className="px-2 py-1 rounded mr-2 mb-2 bg-gray-100 dark:bg-neutral-800"
+              >
+                <Text className="text-gray-700 dark:text-neutral-300 text-xs">
+                  {t}
+                </Text>
               </View>
             ))}
           </View>

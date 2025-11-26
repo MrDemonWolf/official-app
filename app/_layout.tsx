@@ -95,8 +95,8 @@ export default Sentry.wrap(function RootLayout() {
           tint={colorScheme === "dark" ? "dark" : "light"}
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
         />
-        <StatusBar style="auto" translucent={true} />
       </View>
+      <StatusBar style="auto" translucent={true} />
     </ThemeProvider>
   );
 });
