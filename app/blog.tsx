@@ -75,6 +75,7 @@ export default function Blog() {
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
+        paddingBottom: insets.bottom + 16,
       }}
     >
       {!posts || posts.length === 0 ? (
@@ -96,14 +97,10 @@ export default function Blog() {
         </View>
       ) : (
         <FlatList
+          style={{ paddingTop: insets.top }}
           data={posts}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <BlogCard post={item} />}
-          contentContainerStyle={{
-            paddingTop: 0,
-            paddingBottom: insets.bottom,
-            paddingHorizontal: 16,
-          }}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.5}
           ListFooterComponent={() =>
