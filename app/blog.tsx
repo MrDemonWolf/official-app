@@ -71,6 +71,7 @@ export default function Blog() {
 
   return (
     <SafeAreaView
+      edges={["bottom"]}
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
@@ -99,7 +100,7 @@ export default function Blog() {
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <BlogCard post={item} />}
           contentContainerStyle={{
-            paddingTop: insets.top,
+            paddingTop: 0,
             paddingBottom: insets.bottom,
             paddingHorizontal: 16,
           }}

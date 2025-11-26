@@ -14,8 +14,10 @@ export default function Home() {
     return lines;
   };
   return (
-    <ScrollView className="flex-1 bg-white dark:bg-black">
-      {renderTextLines()}
-    </ScrollView>
+    <>
+      <ScrollView className="flex-1 bg-white dark:bg-black">
+        {renderTextLines()}
+      </ScrollView>
+    </>
   );
 }
