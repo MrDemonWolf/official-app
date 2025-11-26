@@ -79,21 +79,24 @@ export default Sentry.wrap(function RootLayout() {
         </NativeTabs.Trigger>
       </NativeTabs>
       <View
+        pointerEvents="none"
         style={{
           position: "absolute",
           top: 0,
           left: 0,
           right: 0,
           height: safeAreaInsets.top,
+          zIndex: 1000,
+          elevation: 1000,
         }}
       >
         <BlurView
           intensity={10}
           tint={colorScheme === "dark" ? "dark" : "light"}
-          style={{ flex: 1 }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
         />
+        <StatusBar style="auto" translucent={true} />
       </View>
-      <StatusBar style="auto" />
     </ThemeProvider>
   );
 });
