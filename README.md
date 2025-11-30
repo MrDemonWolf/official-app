@@ -1,6 +1,6 @@
 # MrDemonWolf Official App 📱
 
-![App Banner](assets/images/banner.jpg)
+![App Banner](/banner.jpg)
 
 My personal mobile app — a small, honest space for notes, projects, and a simple portfolio. Built with Expo + React Native and styled with NativeWind. Nothing flashy, just the tools I use and the things I’m learning.
 
