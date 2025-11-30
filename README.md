@@ -123,11 +123,14 @@ EXPO_PUBLIC_WORDPRESS_API_URL=https://example.com/wp-json
 
 ## License
 
-This project is open source. See the repository for details.
+![GitHub license](https://img.shields.io/github/license/MrDemonWolf/fluffboost.svg?style=for-the-badge&logo=github)
 
 ## Contact
 
-- Website: https://www.mrdemonwolf.com
-- Discord: https://mrdwolf.com/discord
+If you have any questions, suggestions, or feedback, feel free to reach out to us on Discord!
 
-Thanks for checking out the app — I hope a few notes are useful on your own path.
+- Discord: [Join my server](https://mrdwolf.com/discord)
+
+Thank you for choosing FluffBoost to add motivation and positivity to your Discord server!
+
+Made with ❤️ by <a href="https://www.mrdemonwolf.com">MrDemonWolf, Inc.</a>
