@@ -5,12 +5,10 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { BlurView } from "expo-blur";
 import * as Linking from "expo-linking";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { StatusBar } from "expo-status-bar";
-import { DynamicColorIOS, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DynamicColorIOS } from "react-native";
 
 import * as Sentry from "@sentry/react-native";
 import "react-native-reanimated";
@@ -33,7 +31,6 @@ Sentry.init({
 
 export default Sentry.wrap(function RootLayout() {
   const colorScheme = useColorScheme();
-  const safeAreaInsets = useSafeAreaInsets();
 
   const url = Linking.useLinkingURL();
 
@@ -78,24 +75,6 @@ export default Sentry.wrap(function RootLayout() {
           <Label>Contact</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: safeAreaInsets.top,
-          zIndex: 1000,
-          elevation: 1000,
-        }}
-      >
-        <BlurView
-          intensity={10}
-          tint={colorScheme === "dark" ? "dark" : "light"}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-        />
-      </View>
       <StatusBar style="auto" translucent={true} />
     </ThemeProvider>
   );
