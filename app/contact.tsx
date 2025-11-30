@@ -10,15 +10,11 @@ import {
 import { foregroundStyle } from "@expo/ui/swift-ui/modifiers";
 import { useState } from "react";
 import { Alert, useColorScheme } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "tailwindcss/colors";
 import { ZodError } from "zod";
 export default function Tab() {
   const colorScheme = useColorScheme();
-  const insets = useSafeAreaInsets();
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -134,7 +130,7 @@ export default function Tab() {
 
   return (
     <SafeAreaView
-      edges={["bottom", "left", "right"]}
+      edges={["top", "bottom", "left", "right"]}
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,

@@ -71,7 +71,7 @@ export default function Blog() {
 
   return (
     <SafeAreaView
-      edges={["bottom", "left", "right"]}
+      edges={["top", "bottom", "left", "right"]}
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
@@ -81,7 +81,6 @@ export default function Blog() {
         <View
           style={{
             flex: 1,
-            paddingTop: insets.top,
             paddingBottom: insets.bottom,
           }}
           className="items-center justify-center px-4"
@@ -96,10 +95,8 @@ export default function Blog() {
         </View>
       ) : (
         <FlatList
-          style={{ flex: 1 }}
+          style={{ flex: 1, paddingBottom: insets.bottom + 16 }}
           contentContainerStyle={{
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
             flexGrow: 1,
           }}
           data={posts}
