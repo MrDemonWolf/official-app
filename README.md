@@ -1,50 +1,133 @@
-# Welcome to your Expo app 👋
+# MrDemonWolf Official App 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![App Banner](assets/images/banner.jpg)
 
-## Get started
+My personal mobile app — a small, honest space for notes, projects, and a simple portfolio. Built with Expo + React Native and styled with NativeWind. Nothing flashy, just the tools I use and the things I’m learning.
+
+## Features
+
+- **Home/About**: A personal intro with a Gravatar avatar.
+- **Blog**: Pulls posts from a WordPress JSON API.
+- **Portfolio**: A simple showcase of recent work and experiments.
+- **Contact**: Quick links to reach me.
+- **Polished UI**: NativeWind styling, dark mode, safe-area aware.
+- **Expo Router**: File-based routing for tabs and screens.
+
+## Getting Started
 
 1. Install dependencies
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
 ```bash
-npm run reset-project
+pnpm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Configure environment
 
-## Learn more
+Copy `.env.example` to `.env.local` (or set env in EAS) and update the values:
 
-To learn more about developing your project with Expo, look at the following resources:
+```dotenv
+# WordPress API base (required for Blog)
+EXPO_PUBLIC_WORDPRESS_API_URL=https://your-wordpress-site.com/wp-json
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# Preferred (privacy): precomputed MD5 of your email for Gravatar
+EXPO_PUBLIC_GRAVATAR_MD5=your_email_md5_hash_here
 
-## Join the community
+# Optional alternative if you don't use MD5 (requires expo-crypto)
+# EXPO_PUBLIC_GRAVATAR_EMAIL=you@example.com
+```
 
-Join our community of developers creating universal apps.
+3. Run the app
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+pnpm start        # Expo dev server
+pnpm ios          # iOS simulator (requires Xcode)
+pnpm android      # Android emulator (requires Android Studio)
+pnpm web          # Run in the browser
+```
+
+## Usage
+
+- Navigate via the bottom tabs: `Home`, `Blog`, `Portfolio`, `Contact`.
+- The Blog tab fetches posts from your configured WordPress API.
+- The avatar on Home uses your Gravatar MD5 (or email if configured).
+
+## Change Log
+
+### Version 1.0.0 (2025-11-29)
+
+#### New
+
+- Initial release with Home, Blog, Portfolio, and Contact tabs
+- NativeWind styling with responsive spacing and dark mode
+- Gravatar avatar support via `EXPO_PUBLIC_GRAVATAR_MD5`
+- WordPress posts via `EXPO_PUBLIC_WORDPRESS_API_URL`
+
+## Development
+
+### Prerequisites
+
+- Node.js 20.x or 22.x
+- pnpm 9.x
+- Xcode (for iOS) / Android Studio (for Android)
+
+### Scripts
+
+- `pnpm start` — Expo dev server
+- `pnpm ios` — Run on iOS simulator
+- `pnpm android` — Run on Android emulator
+- `pnpm web` — Run in browser
+- `pnpm reset-project` — Reset the example project scaffold
+- `pnpm lint` — Lint with ESLint
+
+## Configuration Notes
+
+### Avatar (Gravatar)
+
+Recommended (no dependency):
+
+1. Compute the MD5 of your email (lowercased, no spaces):
+
+```bash
+# macOS
+echo -n "you@example.com" | md5
+
+# OpenSSL (any OS)
+printf "you@example.com" | openssl md5 | awk '{print $2}'
+```
+
+2. Add it to your env:
+
+```dotenv
+EXPO_PUBLIC_GRAVATAR_MD5=your_email_md5_hash_here
+```
+
+Optional email-based setup (requires hashing at runtime):
+
+```dotenv
+EXPO_PUBLIC_GRAVATAR_EMAIL=you@example.com
+```
+
+```bash
+pnpm dlx expo install expo-crypto
+```
+
+The app first tries `EXPO_PUBLIC_GRAVATAR_MD5`. It also recognizes `EXPO_PUBLIC_GRAVATAR_HASH`, `GRAVATAR_MD5`, `GRAVATAR_HASH`, and a legacy misspelling `EXPO_PUBLIC_GRAVAR_MD5`.
+
+### WordPress API
+
+Set `EXPO_PUBLIC_WORDPRESS_API_URL` to your site’s base REST endpoint.
+
+```dotenv
+EXPO_PUBLIC_WORDPRESS_API_URL=https://example.com/wp-json
+```
+
+## License
+
+This project is open source. See the repository for details.
+
+## Contact
+
+- Website: https://www.mrdemonwolf.com
+- Discord: https://mrdwolf.com/discord
+
+Thanks for checking out the app — I hope a few notes are useful on your own path.
