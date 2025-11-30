@@ -11,7 +11,9 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import colors from "tailwindcss/colors";
-import { BlogCard, fetchPosts } from "../components/ui";
+import BlogCard from "../components/ui/blog-card";
+
+import { fetchPosts } from "../services/wordpress/wp-client";
 
 export default function Blog() {
   const colorScheme = useColorScheme();
@@ -75,13 +77,15 @@ export default function Blog() {
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+        paddingBottom: insets.bottom + 16,
       }}
     >
       {!posts || posts.length === 0 ? (
         <View
           style={{
             flex: 1,
-            paddingBottom: insets.bottom,
           }}
           className="items-center justify-center px-4"
         >

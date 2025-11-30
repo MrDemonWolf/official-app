@@ -1,4 +1,4 @@
-import { ScrollView, useColorScheme } from "react-native";
+import { ScrollView, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "tailwindcss/colors";
 
@@ -13,8 +13,12 @@ export default function Portfolio() {
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
       }}
     >
-      <ScrollView className="flex-1 p-4">
-        {/* Your blog content goes here */}
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-2xl font-bold text-center dark:text-white">
+            Coming Soon
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
