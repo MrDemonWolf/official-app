@@ -1,15 +1,11 @@
-# ---------------------------------------------------------
-# NODE & PACKAGE MANAGERS
-# ---------------------------------------------------------
+# Node / package manager
 node_modules/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 pnpm-debug.log*
 
-# ---------------------------------------------------------
-# EXPO & GENERATED FILES
-# ---------------------------------------------------------
+# Expo & generated files
 .expo/
 .expo-shared/
 dist/
@@ -18,33 +14,22 @@ expo-env.d.ts
 *.expo*
 .metro-health-check*
 
-# ---------------------------------------------------------
-# ENVIRONMENT FILES (LOCAL ONLY)
-# ---------------------------------------------------------
+# Environment
 .env
 .env*.local
 
-# ---------------------------------------------------------
-# TYPESCRIPT
-# ---------------------------------------------------------
+# TypeScript
 *.tsbuildinfo
 
-# ---------------------------------------------------------
-# LOG FILES
-# ---------------------------------------------------------
+# Logs
 *.log
 
-# ---------------------------------------------------------
-# MACOS / OS FILES
-# ---------------------------------------------------------
+# macOS / OS files
 .DS_Store
 *.pem
 *.keychain
 
-# ---------------------------------------------------------
-# ANDROID (keep native project, ignore build artifacts)
-# ---------------------------------------------------------
-# KEEP android/ committed (needed for native assets & EAS)
+# Android (keep project, ignore build artifacts / IDE files)
 android/.gradle/
 android/.idea/
 android/local.properties
@@ -52,13 +37,10 @@ android/app/build/
 android/*.iml
 android/captures/
 
-# ---------------------------------------------------------
-# iOS (keep native project, ignore build artifacts)
-# ---------------------------------------------------------
-# KEEP ios/ committed (needed for expo prebuild & EAS)
+# iOS (keep project, ignore build artifacts / user data)
+ios/Pods/
 ios/build/
 ios/DerivedData/
-ios/Pods/
 ios/*.xcworkspace
 ios/*.xcuserstate
 ios/*.xcuserdata/
@@ -69,32 +51,19 @@ ios/*.mode2v3
 ios/*_CodeSign*
 ios/.swiftpm/
 
-# ---------------------------------------------------------
-# SECRETS, CERTS, PROFILES
-# ---------------------------------------------------------
+# Secrets, certs, provisioning profiles
 *.jks
 *.keystore
 *.p8
 *.p12
-*.p7s
 *.mobileprovision
 *.der
 *.key
 
-# ---------------------------------------------------------
-# RUBY / COCOAPODS (optional)
-# ---------------------------------------------------------
+# Misc / optional
 vendor/bundle/
-.ruby-version
+ruby-version
 Gemfile.lock
-
-# ---------------------------------------------------------
-# ANDROID KOTLIN / JAVA TEMP
-# ---------------------------------------------------------
 .kotlin/
 *.orig.*
-
-# ---------------------------------------------------------
-# MISC PROJECT FILES
-# ---------------------------------------------------------
 app-example/
