@@ -16,7 +16,10 @@ export default function Portfolio() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
         <View className="flex-1 items-center justify-center">
           <Text className="text-2xl font-bold text-center dark:text-white">
-            Android Contact - Under Construction
+            Android Contact Screen
+          </Text>
+          <Text className="text-2xl font-bold text-center dark:text-white">
+            Under Construction 🚧
           </Text>
         </View>
       </ScrollView>
