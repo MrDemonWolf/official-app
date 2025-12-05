@@ -1,8 +1,0 @@
-node_modules/
-android/app/build/
-android/.gradle/
-ios/build/
-ios/DerivedData/
-ios/Pods/
-.expo/
-.expo-shared/
