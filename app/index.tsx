@@ -37,6 +37,8 @@ export default function Home() {
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? colors.black : colors.white,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
         paddingBottom: insets.bottom + 16,
       }}
     >
