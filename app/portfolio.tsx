@@ -16,7 +16,7 @@ export default function Portfolio() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
         <View className="flex-1 items-center justify-center">
           <Text className="text-2xl font-bold text-center dark:text-white">
-            Coming Soon
+            Under Construction 🚧
           </Text>
         </View>
       </ScrollView>
