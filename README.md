@@ -121,6 +121,16 @@ Set `EXPO_PUBLIC_WORDPRESS_API_URL` to your site’s base REST endpoint.
 EXPO_PUBLIC_WORDPRESS_API_URL=https://example.com/wp-json
 ```
 
+### Tab Icon References
+
+Each bottom tab uses Apple SF Symbols on iOS and Android drawables on Android. Keep both sides in sync when changing icons:
+
+- **SF Symbols (iOS):** Browse names with Apple’s official SF Symbols macOS app or https://developer.apple.com/sf-symbols/. In `_layout.tsx`, update the `sf={{ default, selected }}` values for each `NativeTabs.Trigger`.
+- **Material Icons / Drawables (Android):** Pick glyphs from https://fonts.google.com/icons or use Android Studio’s _Vector Asset_ importer. Store the resulting vector drawables in `android/app/src/main/res/drawable/` (e.g., `ic_tab_home.xml`). Reference them with the `drawable="ic_tab_home"` prop next to the SF Symbol.
+- **Current Map:** documented inline in `app/_layout.tsx` for quick lookup (`house ⇄ ic_tab_home`, `book ⇄ ic_tab_blog`, `briefcase ⇄ ic_tab_portfolio`, `envelope ⇄ ic_tab_contact`). Update that comment whenever you add or rename icons so future tweaks stay aligned.
+
+After editing drawable XMLs, rebuild the native Android project once (`pnpm expo run:android` or open in Android Studio) so the new resources are packaged into the app.
+
 ## License
 
 ![GitHub license](https://img.shields.io/github/license/MrDemonWolf/fluffboost.svg?style=for-the-badge&logo=github)
