@@ -8,7 +8,6 @@ import {
 import * as Linking from "expo-linking";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { StatusBar } from "expo-status-bar";
-import { DynamicColorIOS } from "react-native";
 
 import * as Sentry from "@sentry/react-native";
 import "react-native-reanimated";
@@ -46,32 +45,47 @@ export default Sentry.wrap(function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <NativeTabs
-        blurEffect="systemUltraThinMaterial"
+        backgroundColor={colorScheme === "dark" ? "#050505" : "#F6F6F8"}
         iconColor={{
-          default: DynamicColorIOS({
-            light: "#8E8E93",
-            dark: "#636366",
-          }),
-          selected: DynamicColorIOS({
-            light: "#007AFF",
-            dark: "#0A84FF",
-          }),
+          default: colorScheme === "dark" ? "#636366" : "#5F6368",
+          selected: colorScheme === "dark" ? "#0A84FF" : "#007AFF",
+        }}
+        labelStyle={{
+          default: {
+            fontSize: 12,
+          },
+          selected: {
+            fontSize: 12,
+            fontWeight: "600",
+          },
         }}
       >
         <NativeTabs.Trigger name="index">
-          <Icon sf="house.fill" drawable="custom_android_drawable" />
+          <Icon
+            sf={{ default: "house", selected: "house.fill" }}
+            drawable="ic_tab_home"
+          />
           <Label>Home</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="blog">
-          <Icon sf="book.fill" drawable="custom_book_drawable" />
+          <Icon
+            sf={{ default: "book", selected: "book.fill" }}
+            drawable="ic_tab_blog"
+          />
           <Label>Blog</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="portfolio">
-          <Icon sf="briefcase.fill" drawable="custom_briefcase_drawable" />
+          <Icon
+            sf={{ default: "briefcase", selected: "briefcase.fill" }}
+            drawable="ic_tab_portfolio"
+          />
           <Label>Portfolio</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="contact">
-          <Icon sf="envelope.fill" drawable="custom_envelope_drawable" />
+          <Icon
+            sf={{ default: "envelope", selected: "envelope.fill" }}
+            drawable="ic_tab_contact"
+          />
           <Label>Contact</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
