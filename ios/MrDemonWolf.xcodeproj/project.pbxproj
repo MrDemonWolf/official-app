@@ -7,31 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		113B64A370DD6BA80B5A91DB /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10422044A0A72B3098C9EDCE /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		53B25DBFCFA37389642C8E80 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A95C84F8EB8A10106427B388 /* PrivacyInfo.xcprivacy */; };
-		6EBFFC3705811DB0B6580A24 /* libPods-MrDemonWolf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D1467CADBE52B9991EFA0F3 /* libPods-MrDemonWolf.a */; };
-		990AAC0F0CF615FEF7C18467 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EC148FFFB7B8871824B48 /* ExpoModulesProvider.swift */; };
+		61DEF3A5D8D23F5F08F6316C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2AFA08246B2567A17A6024D7 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C31A104A695D4675A5049445 /* mrdemonwolf-ios.icon in Resources */ = {isa = PBXBuildFile; fileRef = 7872FF5990224E3C933AE99C /* mrdemonwolf-ios.icon */; };
+		C3DE4A109D7FB2300BB21A80 /* libPods-MrDemonWolf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041C66084C796E4849A7DDE0 /* libPods-MrDemonWolf.a */; };
+		EC821288A0E7483C9C96859E /* mrdemonwolf-ios.icon in Resources */ = {isa = PBXBuildFile; fileRef = 70CB1533F19A4D7F84B61E15 /* mrdemonwolf-ios.icon */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		041C66084C796E4849A7DDE0 /* libPods-MrDemonWolf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MrDemonWolf.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		10422044A0A72B3098C9EDCE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MrDemonWolf/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* MrDemonWolf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrDemonWolf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MrDemonWolf/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MrDemonWolf/Info.plist; sourceTree = "<group>"; };
-		13E2023F5DD67E2F13F7652F /* Pods-MrDemonWolf.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrDemonWolf.debug.xcconfig"; path = "Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf.debug.xcconfig"; sourceTree = "<group>"; };
-		4D1467CADBE52B9991EFA0F3 /* libPods-MrDemonWolf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MrDemonWolf.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7872FF5990224E3C933AE99C /* mrdemonwolf-ios.icon */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "mrdemonwolf-ios.icon"; path = "MrDemonWolf/mrdemonwolf-ios.icon"; sourceTree = "<group>"; };
-		A95C84F8EB8A10106427B388 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MrDemonWolf/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2AFA08246B2567A17A6024D7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MrDemonWolf/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		6493ED3C3EBB0CC0F987612D /* Pods-MrDemonWolf.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrDemonWolf.debug.xcconfig"; path = "Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf.debug.xcconfig"; sourceTree = "<group>"; };
+		70CB1533F19A4D7F84B61E15 /* mrdemonwolf-ios.icon */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "mrdemonwolf-ios.icon"; path = "MrDemonWolf/mrdemonwolf-ios.icon"; sourceTree = "<group>"; };
+		9DB9F20AAA7E9F908473C641 /* Pods-MrDemonWolf.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrDemonWolf.release.xcconfig"; path = "Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = MrDemonWolf/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B09E5A5AA582B61CF2EEAD2A /* Pods-MrDemonWolf.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrDemonWolf.release.xcconfig"; path = "Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MrDemonWolf/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MrDemonWolf-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MrDemonWolf-Bridging-Header.h"; path = "MrDemonWolf/MrDemonWolf-Bridging-Header.h"; sourceTree = "<group>"; };
-		F15EC148FFFB7B8871824B48 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MrDemonWolf/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,13 +39,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EBFFC3705811DB0B6580A24 /* libPods-MrDemonWolf.a in Frameworks */,
+				C3DE4A109D7FB2300BB21A80 /* libPods-MrDemonWolf.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09D3D2F48941990B8F5560DE /* MrDemonWolf */ = {
+			isa = PBXGroup;
+			children = (
+				10422044A0A72B3098C9EDCE /* ExpoModulesProvider.swift */,
+			);
+			name = MrDemonWolf;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* MrDemonWolf */ = {
 			isa = PBXGroup;
 			children = (
@@ -55,8 +63,8 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				7872FF5990224E3C933AE99C /* mrdemonwolf-ios.icon */,
-				A95C84F8EB8A10106427B388 /* PrivacyInfo.xcprivacy */,
+				70CB1533F19A4D7F84B61E15 /* mrdemonwolf-ios.icon */,
+				2AFA08246B2567A17A6024D7 /* PrivacyInfo.xcprivacy */,
 			);
 			name = MrDemonWolf;
 			sourceTree = "<group>";
@@ -65,17 +73,9 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				4D1467CADBE52B9991EFA0F3 /* libPods-MrDemonWolf.a */,
+				041C66084C796E4849A7DDE0 /* libPods-MrDemonWolf.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		51DEB1BCB774AFA387375729 /* MrDemonWolf */ = {
-			isa = PBXGroup;
-			children = (
-				F15EC148FFFB7B8871824B48 /* ExpoModulesProvider.swift */,
-			);
-			name = MrDemonWolf;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -92,8 +92,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				EDB53C2B0F5B7CB4D6F791B5 /* Pods */,
-				EA0F33A9CF7F05A663330A80 /* ExpoModulesProviders */,
+				C67BCAB508BB85AF50A28DEB /* Pods */,
+				A4A6EE393F9D44F4D0BB7560 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -108,6 +108,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A4A6EE393F9D44F4D0BB7560 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				09D3D2F48941990B8F5560DE /* MrDemonWolf */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,19 +125,11 @@
 			path = MrDemonWolf/Supporting;
 			sourceTree = "<group>";
 		};
-		EA0F33A9CF7F05A663330A80 /* ExpoModulesProviders */ = {
+		C67BCAB508BB85AF50A28DEB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				51DEB1BCB774AFA387375729 /* MrDemonWolf */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		EDB53C2B0F5B7CB4D6F791B5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				13E2023F5DD67E2F13F7652F /* Pods-MrDemonWolf.debug.xcconfig */,
-				B09E5A5AA582B61CF2EEAD2A /* Pods-MrDemonWolf.release.xcconfig */,
+				6493ED3C3EBB0CC0F987612D /* Pods-MrDemonWolf.debug.xcconfig */,
+				9DB9F20AAA7E9F908473C641 /* Pods-MrDemonWolf.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -143,14 +143,14 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MrDemonWolf" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				31FCAA1769C7C5349D8C13E1 /* [Expo] Configure project */,
+				A28B88995DD372BB82C3339C /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				7840FC5BE23C414885F98ED3 /* Upload Debug Symbols to Sentry */,
-				81AC0FD0B48F2D9FA9539784 /* [CP] Embed Pods Frameworks */,
+				FF8FDA8F160145589B9DEBEC /* Upload Debug Symbols to Sentry */,
+				572F5D3B4F13893B57E12D2F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -200,8 +200,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				C31A104A695D4675A5049445 /* mrdemonwolf-ios.icon in Resources */,
-				53B25DBFCFA37389642C8E80 /* PrivacyInfo.xcprivacy in Resources */,
+				EC821288A0E7483C9C96859E /* mrdemonwolf-ios.icon in Resources */,
+				61DEF3A5D8D23F5F08F6316C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,43 +247,27 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		31FCAA1769C7C5349D8C13E1 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env",
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/MrDemonWolf/MrDemonWolf.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-MrDemonWolf/expo-configure-project.sh",
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-MrDemonWolf/ExpoModulesProvider.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MrDemonWolf/expo-configure-project.sh\"\n";
-		};
-		7840FC5BE23C414885F98ED3 /* Upload Debug Symbols to Sentry */ = {
+		572F5D3B4F13893B57E12D2F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
-			name = "Upload Debug Symbols to Sentry";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh `${NODE_BINARY:-node} --print \"require('path').dirname(require.resolve('@sentry/react-native/package.json')) + '/scripts/sentry-xcode-debug-files.sh'\"`";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -321,27 +305,43 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		81AC0FD0B48F2D9FA9539784 /* [CP] Embed Pods Frameworks */ = {
+		A28B88995DD372BB82C3339C /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/MrDemonWolf/MrDemonWolf.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-MrDemonWolf/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-MrDemonWolf/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MrDemonWolf/expo-configure-project.sh\"\n";
+		};
+		FF8FDA8F160145589B9DEBEC /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "Upload Debug Symbols to Sentry";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MrDemonWolf/Pods-MrDemonWolf-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "/bin/sh `${NODE_BINARY:-node} --print \"require('path').dirname(require.resolve('@sentry/react-native/package.json')) + '/scripts/sentry-xcode-debug-files.sh'\"`";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -351,7 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				990AAC0F0CF615FEF7C18467 /* ExpoModulesProvider.swift in Sources */,
+				113B64A370DD6BA80B5A91DB /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,7 +360,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 13E2023F5DD67E2F13F7652F /* Pods-MrDemonWolf.debug.xcconfig */;
+			baseConfigurationReference = 6493ED3C3EBB0CC0F987612D /* Pods-MrDemonWolf.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "mrdemonwolf-ios";
 				CLANG_ENABLE_MODULES = YES;
@@ -396,7 +396,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B09E5A5AA582B61CF2EEAD2A /* Pods-MrDemonWolf.release.xcconfig */;
+			baseConfigurationReference = 9DB9F20AAA7E9F908473C641 /* Pods-MrDemonWolf.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "mrdemonwolf-ios";
 				CLANG_ENABLE_MODULES = YES;
