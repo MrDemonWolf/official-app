@@ -1,95 +1,56 @@
-import "@/global.css";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import * as Linking from "expo-linking";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { StatusBar } from "expo-status-bar";
+  Icon,
+  Label,
+  NativeTabs,
+  VectorIcon,
+} from "expo-router/unstable-native-tabs";
 
-import * as Sentry from "@sentry/react-native";
-import "react-native-reanimated";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Platform } from "react-native";
 
-Sentry.init({
-  dsn: "https://332056eee148326785189286ec6d77a2@o4508281688752128.ingest.us.sentry.io/4510419880640512",
+export const unstable_settings = {
+  anchor: "(tabs)",
+};
 
-  // Adds more context data to events (IP address, cookies, user, etc.)
-  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
-  sendDefaultPii: true,
-
-  // Enable Logs
-  enableLogs: true,
-
-  integrations: [Sentry.feedbackIntegration()],
-
-  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: __DEV__,
-});
-
-export default Sentry.wrap(function RootLayout() {
-  const colorScheme = useColorScheme();
-
-  const url = Linking.useLinkingURL();
-
-  if (url) {
-    const { hostname, path, queryParams } = Linking.parse(url);
-
-    console.log(
-      `Linked to app with hostname: ${hostname}, path: ${path} and data: ${JSON.stringify(
-        queryParams
-      )}`
-    );
-  }
+export default function TabLayout() {
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <NativeTabs
-        backgroundColor={colorScheme === "dark" ? "#050505" : "#F6F6F8"}
-        iconColor={{
-          default: colorScheme === "dark" ? "#636366" : "#5F6368",
-          selected: colorScheme === "dark" ? "#0A84FF" : "#007AFF",
-        }}
-        labelStyle={{
-          default: {
-            fontSize: 12,
-          },
-          selected: {
-            fontSize: 12,
-            fontWeight: "600",
-          },
-        }}
-      >
-        <NativeTabs.Trigger name="index">
-          <Icon
-            sf={{ default: "house", selected: "house.fill" }}
-            drawable="ic_tab_home"
-          />
-          <Label>Home</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="blog">
-          <Icon
-            sf={{ default: "book", selected: "book.fill" }}
-            drawable="ic_tab_blog"
-          />
-          <Label>Blog</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="portfolio">
-          <Icon
-            sf={{ default: "briefcase", selected: "briefcase.fill" }}
-            drawable="ic_tab_portfolio"
-          />
-          <Label>Portfolio</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="contact">
-          <Icon
-            sf={{ default: "envelope", selected: "envelope.fill" }}
-            drawable="ic_tab_contact"
-          />
-          <Label>Contact</Label>
-        </NativeTabs.Trigger>
-      </NativeTabs>
-      <StatusBar style="auto" translucent={true} />
-    </ThemeProvider>
+    <NativeTabs>
+      <NativeTabs.Trigger name="(tabs)/index">
+        <Label>Home</Label>
+        {Platform.select({
+          ios: <Icon sf="person.fill" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="person" />} />
+          ),
+        })}
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(tabs)/blog">
+        <Label>Blog</Label>
+        {Platform.select({
+          ios: <Icon sf="book.fill" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="book" />} />
+          ),
+        })}
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(tabs)/portfolio">
+        <Label>Portfolio</Label>
+        {Platform.select({
+          ios: <Icon sf="briefcase.fill" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="work" />} />
+          ),
+        })}
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(tabs)/contact">
+        <Label>Contact</Label>
+        {Platform.select({
+          ios: <Icon sf="envelope.fill" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="email" />} />
+          ),
+        })}
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
-});
+}
