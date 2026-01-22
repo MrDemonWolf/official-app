@@ -1,0 +1,43 @@
+# --- 1. START WITH EVERYTHING FROM .GITIGNORE ---
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# --- 2. NATIVE DIRECTORIES ---
+# Even if they exist locally, EAS should NEVER use your local native folders.
+# It should always run 'prebuild' fresh on the server to ensure consistency.
+/ios/
+/android/
+
+# --- 3. SECRETS & ENVIRONMENT ---
+# We ignore these locally to keep them off GitHub, 
+# and we ignore them for EAS because we use "EAS Secrets" instead.
+.env
+.env.local
+.env.*.local
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.keystore
+/secrets/
+
+# --- 4. OPTIONAL: THE "UN-IGNORE" TRICK ---
+# If you have a specific file (like a Google Services config) that you 
+# DO NOT want on GitHub but EAS ABSOLUTELY needs to build, use '!'
+# !google-services.json
+# !GoogleService-Info.plist
+
+# --- 5. LOGS & SYSTEM ---
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.tsbuildinfo
+app-example/
