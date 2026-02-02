@@ -21,20 +21,48 @@ My company mobile app — a small, honest space for notes, projects, and a simpl
 pnpm install
 ```
 
-2. Configure environment
+## Environment Configuration
 
-Copy `.env.example` to `.env.local` (or set env in EAS) and update the values:
+To set up your environment variables, copy `.env.example` to `.env.local` (or configure them directly in EAS for deployment) and update the values as described below.
 
 ```dotenv
-# WordPress API base (required for Blog)
-EXPO_PUBLIC_WORDPRESS_API_URL=https://your-wordpress-site.com/wp-json
-
-# Preferred (privacy): precomputed MD5 of your email for Gravatar
-EXPO_PUBLIC_GRAVATAR_MD5=your_email_md5_hash_here
-
-# Optional alternative if you don't use MD5 (requires expo-crypto)
-# EXPO_PUBLIC_GRAVATAR_EMAIL=you@example.com
+# .env.example
+EXPO_PUBLIC_WORDPRESS_API_URL=
+EXPO_PUBLIC_GRAVATAR_MD5=
+# EXPO_PUBLIC_GRAVATAR_EMAIL=
 ```
+
+### Required Variables
+
+- **`EXPO_PUBLIC_WORDPRESS_API_URL`**: (Required for Blog feature)
+  Set this to the base REST API endpoint of your WordPress site.
+  Example: `https://your-wordpress-site.com/wp-json`
+
+### Optional Variables
+
+- **`EXPO_PUBLIC_GRAVATAR_MD5`**: (Recommended for Avatar)
+  Provide the precomputed MD5 hash of your **lowercased and trimmed** email address for Gravatar. This is the preferred method as it avoids the need for additional dependencies.
+
+  To compute the MD5 hash:
+  - **macOS:**
+    ```bash
+    echo -n "you@example.com" | md5
+    ```
+  - **OpenSSL (any OS):**
+    ```bash
+    printf "you@example.com" | openssl md5 | awk '{print $2}'
+    ```
+
+- **`EXPO_PUBLIC_GRAVATAR_EMAIL`**: (Alternative for Avatar)
+  If you prefer to use your email directly instead of a precomputed MD5 hash, set this variable. Note that this option requires the `expo-crypto` package for runtime hashing.
+
+  To install `expo-crypto`:
+
+  ```bash
+  pnpm dlx expo install expo-crypto
+  ```
+
+  _Note: The app prioritizes `EXPO_PUBLIC_GRAVATAR_MD5`. It also recognizes older variable names like `EXPO_PUBLIC_GRAVATAR_HASH`, `GRAVATAR_MD5`, and `GRAVATAR_HASH` for backward compatibility._
 
 3. Run the app
 
@@ -68,51 +96,7 @@ pnpm web          # Run in the browser
 - `pnpm start` — Expo dev server
 - `pnpm ios` — Run on iOS simulator
 - `pnpm android` — Run on Android emulator
-- `pnpm web` — Run in browser
-- `pnpm reset-project` — Reset the example project scaffold
 - `pnpm lint` — Lint with ESLint
-
-## Configuration Notes
-
-### Avatar (Gravatar)
-
-Recommended (no dependency):
-
-1. Compute the MD5 of your email (lowercased, no spaces):
-
-```bash
-# macOS
-echo -n "you@example.com" | md5
-
-# OpenSSL (any OS)
-printf "you@example.com" | openssl md5 | awk '{print $2}'
-```
-
-2. Add it to your env:
-
-```dotenv
-EXPO_PUBLIC_GRAVATAR_MD5=your_email_md5_hash_here
-```
-
-Optional email-based setup (requires hashing at runtime):
-
-```dotenv
-EXPO_PUBLIC_GRAVATAR_EMAIL=you@example.com
-```
-
-```bash
-pnpm dlx expo install expo-crypto
-```
-
-The app first tries `EXPO_PUBLIC_GRAVATAR_MD5`. It also recognizes `EXPO_PUBLIC_GRAVATAR_HASH`, `GRAVATAR_MD5`, `GRAVATAR_HASH`.
-
-### WordPress API
-
-Set `EXPO_PUBLIC_WORDPRESS_API_URL` to your site’s base REST endpoint.
-
-```dotenv
-EXPO_PUBLIC_WORDPRESS_API_URL=https://example.com/wp-json
-```
 
 ## License
 
