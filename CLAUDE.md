@@ -27,25 +27,28 @@ pnpm prebuild:clean     # Clean and regenerate native projects
 
 This is an Expo SDK 54 app using React Native 0.81 with the New Architecture enabled.
 
+### Project Structure
+Source code lives under `src/` to keep the root clean. Expo Router auto-detects `src/app/`.
+
 ### Navigation (Expo Router with file-based routing)
-- `app/_layout.tsx` - Root layout with Stack navigator and theme provider
-- `app/(tabs)/` - Tab group with bottom tab navigation
-- `app/modal.tsx` - Modal screen presented over tabs
+- `src/app/_layout.tsx` - Root layout with Stack navigator and theme provider
+- `src/app/(tabs)/` - Tab group with bottom tab navigation
+- `src/app/modal.tsx` - Modal screen presented over tabs
 
 The app uses `unstable_settings.anchor` to anchor navigation to the tabs group.
 
 ### Theming System
 - `constants/theme.ts` - Color palette (`Colors`) and platform-specific fonts (`Fonts`)
-- `hooks/use-color-scheme.ts` - Platform-specific color scheme detection (re-exports from react-native)
-- `hooks/use-theme-color.ts` - Hook for resolving theme-aware colors
-- `components/themed-text.tsx` and `components/themed-view.tsx` - Theme-aware base components
+- `src/hooks/use-color-scheme.ts` - Platform-specific color scheme detection (re-exports from react-native)
+- `src/hooks/use-theme-color.ts` - Hook for resolving theme-aware colors
+- `src/components/themed-text.tsx` and `src/components/themed-view.tsx` - Theme-aware base components
 
 ### Component Patterns
-- **IconSymbol** (`components/ui/icon-symbol.tsx`) - Uses SF Symbols on iOS, MaterialIcons on Android/web. Add new icons to the `MAPPING` object.
+- **IconSymbol** (`src/components/ui/icon-symbol.tsx`) - Uses SF Symbols on iOS, MaterialIcons on Android/web. Add new icons to the `MAPPING` object.
 - **HapticTab** - Tab bar button with haptic feedback on iOS
 
 ### Path Aliases
-TypeScript path alias `@/*` maps to the project root (configured in `tsconfig.json`).
+TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`).
 
 ### Experimental Features
 - Typed routes enabled (`experiments.typedRoutes`)

@@ -1,26 +1,15 @@
+import { Image } from 'expo-image';
 import { forwardRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { decodeHtmlEntities } from '@/lib/decode-html';
 import { cn } from '@/lib/utils';
+import { getFeaturedImage } from '@/lib/wordpress-helpers';
 import type { WPPost } from '@/types/wordpress';
 
 interface BlogPostCardProps {
   post: WPPost;
   onPress?: () => void;
-}
-
-function decodeHtmlEntities(text: string): string {
-  return text
-    .replace(/&#8217;/g, "'")
-    .replace(/&#8216;/g, "'")
-    .replace(/&#8220;/g, '"')
-    .replace(/&#8221;/g, '"')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#8211;/g, '–')
-    .replace(/&#8212;/g, '—');
 }
 
 function stripHtml(html: string): string {
@@ -35,13 +24,14 @@ export const BlogPostCard = forwardRef<View, BlogPostCardProps>(({ post, onPress
     month: 'short',
     day: 'numeric',
   });
+  const featuredImage = getFeaturedImage(post);
 
   return (
     <Pressable
       ref={ref}
       onPress={onPress}
       className={cn(
-        'rounded-xl bg-white p-4 dark:bg-zinc-900',
+        'overflow-hidden rounded-xl bg-white dark:bg-zinc-900',
         'active:opacity-80'
       )}
       style={{
@@ -49,7 +39,15 @@ export const BlogPostCard = forwardRef<View, BlogPostCardProps>(({ post, onPress
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}
     >
-      <View className="gap-2">
+      {featuredImage && (
+        <Image
+          source={{ uri: featuredImage.url }}
+          style={{ width: '100%', aspectRatio: 16 / 9 }}
+          contentFit="cover"
+          alt={featuredImage.alt}
+        />
+      )}
+      <View className={cn('gap-2 p-4', featuredImage && 'pt-3')}>
         <Text
           className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
           numberOfLines={2}

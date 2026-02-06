@@ -29,7 +29,7 @@ export async function getPosts(page: number = 1, perPage: number = 10): Promise<
 }
 
 export async function getPost(id: string): Promise<WPPost> {
-  const response = await fetch(`${API_BASE_URL}/posts/${id}`);
+  const response = await fetch(`${API_BASE_URL}/posts/${id}?_embed`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch post: ${response.statusText}`);

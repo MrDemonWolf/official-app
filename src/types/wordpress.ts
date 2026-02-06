@@ -20,6 +20,7 @@ export interface WPPost {
   featured_media: number;
   categories: number[];
   tags: number[];
+  _embedded?: WPEmbedded;
 }
 
 export interface WPPage {
@@ -68,6 +69,29 @@ export interface WPMedia {
       }
     >;
   };
+}
+
+export interface WPMediaSize {
+  file: string;
+  width: number;
+  height: number;
+  mime_type: string;
+  source_url: string;
+}
+
+export interface WPEmbeddedFeaturedMedia {
+  id: number;
+  source_url: string;
+  alt_text: string;
+  media_details: {
+    width: number;
+    height: number;
+    sizes: Record<string, WPMediaSize>;
+  };
+}
+
+export interface WPEmbedded {
+  'wp:featuredmedia'?: WPEmbeddedFeaturedMedia[];
 }
 
 export interface WPPostsResponse {
