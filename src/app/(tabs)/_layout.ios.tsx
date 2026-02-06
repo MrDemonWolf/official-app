@@ -19,6 +19,10 @@ export default function TabLayout() {
         <Icon sf={{ default: 'envelope', selected: 'envelope.fill' }} />
         <Label>Contact</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(settings)">
+        <Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
+        <Label>Settings</Label>
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
