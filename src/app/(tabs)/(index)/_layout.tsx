@@ -12,12 +12,12 @@ export default function HomeStack() {
           headerLargeStyle: { backgroundColor: 'transparent' },
           headerShadowVisible: false,
           headerLargeTitleShadowVisible: false,
-          headerBlurEffect: 'none',
+          headerBlurEffect: 'systemUltraThinMaterial',
         }),
         headerBackButtonDisplayMode: 'minimal',
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Home' }} />
+      <Stack.Screen name="index" options={{ title: 'About' }} />
     </Stack>
   );
 }
