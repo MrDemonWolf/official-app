@@ -11,14 +11,28 @@ export async function submitContactForm(data: ContactFormData): Promise<GFSubmis
     payload[inputId] = data[key as keyof ContactFormData];
   }
 
-  const response = await fetch(`${GF_API_URL}/forms/${FORM_ID}/submissions`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${GF_API_URL}/forms/${FORM_ID}/submissions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    throw new Error(
+      'Unable to reach the server. Please check your internet connection and try again.',
+    );
+  }
 
   if (!response.ok) {
-    throw new Error(`Failed to submit contact form: ${response.statusText}`);
+    let detail = response.statusText;
+    try {
+      const body = await response.json();
+      detail = body?.message || body?.detail || JSON.stringify(body);
+    } catch {
+      // body wasn't JSON — fall back to statusText
+    }
+    throw new Error(`Submission failed: ${detail}`);
   }
 
   return response.json();

@@ -4,7 +4,7 @@ const API_BASE_URL =
   process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://mrdemonwolf.com/wp-json/wp/v2';
 
 export async function getAboutPage(): Promise<WPPage | null> {
-  const response = await fetch(`${API_BASE_URL}/pages?slug=about`);
+  const response = await fetch(`${API_BASE_URL}/pages?slug=about&_embed`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch about page: ${response.statusText}`);
