@@ -1,7 +1,11 @@
 import { Link } from 'expo-router';
+import { useCallback, useEffect, useMemo } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, Text, View } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BlogPostCard } from '@/components/blog-post-card';
+import { queryKeys } from '@/hooks/query-keys';
+import { useHaptics } from '@/hooks/use-haptics';
 import { usePosts } from '@/hooks/use-posts';
 
 export default function BlogScreen() {
@@ -15,8 +19,22 @@ export default function BlogScreen() {
     refetch,
     isRefetching,
   } = usePosts();
+  const haptics = useHaptics();
+  const queryClient = useQueryClient();
 
-  const posts = data?.pages.flatMap((page) => page.posts) ?? [];
+  const posts = useMemo(() => data?.pages.flatMap((page) => page.posts) ?? [], [data?.pages]);
+
+  // Pre-populate individual post caches so detail screens render instantly
+  useEffect(() => {
+    for (const post of posts) {
+      queryClient.setQueryData(queryKeys.post(post.id.toString()), post);
+    }
+  }, [posts, queryClient]);
+
+  const handleRefresh = useCallback(async () => {
+    await refetch();
+    haptics.notification();
+  }, [refetch, haptics]);
 
   if (isLoading && posts.length === 0) {
     return (
@@ -55,7 +73,7 @@ export default function BlogScreen() {
       }}
       onEndReachedThreshold={0.5}
       refreshControl={
-        <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+        <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
       }
       ListFooterComponent={
         isFetchingNextPage ? (
