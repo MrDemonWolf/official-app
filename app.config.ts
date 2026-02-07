@@ -48,6 +48,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: getBundleId(),
+    infoPlist: {
+      NSMotionUsageDescription:
+        "This app uses haptic feedback to enhance your experience.",
+    },
   },
   android: {
     package: getBundleId(),
