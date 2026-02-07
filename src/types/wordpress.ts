@@ -40,6 +40,7 @@ export interface WPPage {
   featured_media: number;
   parent: number;
   menu_order: number;
+  _embedded?: WPEmbedded;
 }
 
 export interface WPMedia {
@@ -90,8 +91,24 @@ export interface WPEmbeddedFeaturedMedia {
   };
 }
 
+export interface WPEmbeddedAuthor {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  avatar_urls?: Record<string, string>;
+}
+
+export interface WPEmbeddedTerm {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export interface WPEmbedded {
   'wp:featuredmedia'?: WPEmbeddedFeaturedMedia[];
+  author?: WPEmbeddedAuthor[];
+  'wp:term'?: WPEmbeddedTerm[][];
 }
 
 export interface WPPostsResponse {
