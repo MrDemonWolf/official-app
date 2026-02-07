@@ -1,7 +1,41 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Tabs } from 'expo-router';
+import { router, Tabs, useSegments } from 'expo-router';
+import { useEffect, useRef } from 'react';
+
+import { useSettings } from '@/contexts/settings-context';
+import type { TabName } from '@/types/settings';
+
+const TAB_NAMES = new Set<string>([
+  '(index)',
+  '(blog)',
+  '(portfolio)',
+  '(contact)',
+  '(settings)',
+]);
 
 export default function TabLayout() {
+  const segments = useSegments();
+  const { settings, setLastTab, isLoading } = useSettings();
+  const hasRestored = useRef(false);
+
+  // Restore last tab on cold launch
+  useEffect(() => {
+    if (!isLoading && !hasRestored.current) {
+      hasRestored.current = true;
+      if (settings.lastTab && settings.lastTab !== '(index)') {
+        router.replace(`/(tabs)/${settings.lastTab}` as never);
+      }
+    }
+  }, [isLoading, settings.lastTab]);
+
+  // Save current tab when it changes
+  useEffect(() => {
+    const tabSegment = segments.find((s) => TAB_NAMES.has(s)) as TabName | undefined;
+    if (tabSegment && tabSegment !== settings.lastTab) {
+      setLastTab(tabSegment);
+    }
+  }, [segments, setLastTab, settings.lastTab]);
+
   return (
     <Tabs
       screenOptions={{
@@ -12,9 +46,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(index)"
         options={{
-          title: 'Home',
+          title: 'About',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="home" size={size} color={color} />
+            <MaterialIcons name="person" size={size} color={color} />
           ),
         }}
       />

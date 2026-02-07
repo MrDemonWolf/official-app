@@ -39,7 +39,13 @@ function RootInner() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack
+        screenOptions={{
+          contentStyle: {
+            backgroundColor: colorScheme === 'dark' ? '#09090b' : '#fafafa',
+          },
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="blog/[id]" options={{ headerLargeTitle: false }} />
       </Stack>
