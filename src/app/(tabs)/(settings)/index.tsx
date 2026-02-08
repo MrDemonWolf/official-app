@@ -12,6 +12,11 @@ import type { FontSize, ThemePreference } from '@/types/settings';
 
 const isIOS = process.env.EXPO_OS === 'ios';
 const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
+const BUILD_NUMBER =
+  (isIOS
+    ? Constants.expoConfig?.ios?.buildNumber
+    : Constants.expoConfig?.android?.versionCode?.toString()) ?? '1';
+const COPYRIGHT_YEAR = new Date().getFullYear();
 
 const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -271,6 +276,34 @@ export default function SettingsScreen() {
             {APP_VERSION}
           </Text>
         </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>Build</Text>
+          <Text style={{ fontSize: 16, color: isDark ? '#71717a' : '#a1a1aa' }} selectable>
+            {BUILD_NUMBER}
+          </Text>
+        </View>
+        <View
+          style={{
+            height: 1,
+            backgroundColor: isDark ? '#27272a' : '#e4e4e7',
+            marginVertical: 4,
+          }}
+        />
+        <Text
+          style={{
+            fontSize: 13,
+            color: isDark ? '#71717a' : '#a1a1aa',
+            textAlign: 'center',
+          }}
+        >
+          {'\u00A9'} {COPYRIGHT_YEAR} MrDemonWolf. All rights reserved.
+        </Text>
       </View>
     </ScrollView>
   );
