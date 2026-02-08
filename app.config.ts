@@ -13,26 +13,10 @@ const getBundleId = () => {
 
 const getIcon = () => {
   return "./src/assets/images/icon.png";
-  // switch (APP_VARIANT) {
-  //   case "production":
-  //     return "./src/assets/images/icon.png";
-  //   case "preview":
-  //     return "./src/assets/images/icon-preview.png";
-  //   default:
-  //     return "./src/assets/images/icon-dev.png";
-  // }
 };
 
 const getAndroidForegroundIcon = () => {
   return "./src/assets/images/android-icon-foreground.png";
-  // switch (APP_VARIANT) {
-  //   case "production":
-  //     return "./src/assets/images/android-icon-foreground.png";
-  //   case "preview":
-  //     return "./src/assets/images/android-icon-foreground-preview.png";
-  //   default:
-  //     return "./src/assets/images/android-icon-foreground-dev.png";
-  // }
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
@@ -48,6 +32,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: getBundleId(),
+    buildNumber: "1",
+    config: {
+      usesNonExemptEncryption: false,
+    },
     infoPlist: {
       NSMotionUsageDescription:
         "This app uses haptic feedback to enhance your experience.",
@@ -55,6 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: getBundleId(),
+    versionCode: 1,
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
       foregroundImage: getAndroidForegroundIcon(),
