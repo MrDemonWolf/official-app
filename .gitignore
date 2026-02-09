@@ -35,6 +35,10 @@ yarn-error.*
 .env.*
 !.env.example
 
+# EAS credentials
+credentials.json
+credentials/
+
 # typescript
 *.tsbuildinfo
 
@@ -43,3 +47,8 @@ app-example
 # generated native folders
 /ios
 /android
+
+# build artifacts
+*.apk
+*.aab
+*.ipa
