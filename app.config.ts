@@ -1,14 +1,12 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
 
 const APP_VARIANT = process.env.APP_VARIANT || "development";
+const IS_PRODUCTION = APP_VARIANT === "production";
 
 const getBundleId = () => {
-  switch (APP_VARIANT) {
-    case "production":
-      return "com.mrdemonwolf.OfficialApp";
-    default:
-      return "com.mrdemonwolf.OfficialApp.dev";
-  }
+  return IS_PRODUCTION
+    ? "com.mrdemonwolf.OfficialApp"
+    : "com.mrdemonwolf.OfficialApp.dev";
 };
 
 const getIcon = () => {
@@ -21,7 +19,8 @@ const getAndroidForegroundIcon = () => {
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "MrDemonWolf",
+  owner: "mrdemonwolf-org",
+  name: IS_PRODUCTION ? "MrDemonWolf" : "MDW (Dev)",
   slug: "official-app",
   version: "1.0.0",
   orientation: "portrait",
@@ -71,6 +70,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   ],
+  extra: {
+    eas: {
+      projectId: "4a220b17-d746-48f1-9f46-d83a0a933b40",
+    },
+  },
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
