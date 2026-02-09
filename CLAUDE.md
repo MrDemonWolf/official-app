@@ -21,35 +21,110 @@ pnpm type-check         # Run TypeScript type checking
 # Build
 pnpm prebuild           # Generate native projects
 pnpm prebuild:clean     # Clean and regenerate native projects
+
+# EAS (run via zsh -l for PATH)
+eas build --platform ios        # Build for iOS
+eas build --platform android    # Build for Android
+eas submit --platform ios       # Submit to App Store
+eas submit --platform android   # Submit to Play Store
+eas credentials                 # Manage signing credentials
 ```
 
 ## Architecture
 
-This is an Expo SDK 54 app using React Native 0.81 with the New Architecture enabled.
+This is an Expo SDK 54 app using React Native 0.81 with the New Architecture enabled. It's a personal portfolio/blog app pulling content from a WordPress backend.
 
 ### Project Structure
+
 Source code lives under `src/` to keep the root clean. Expo Router auto-detects `src/app/`.
 
+```
+src/
+├── app/                    # Expo Router file-based routing
+├── assets/images/          # App icons, splash, favicons
+├── components/             # Reusable React components
+├── contexts/               # React Context providers (settings)
+├── hooks/                  # Custom React hooks (queries, haptics, form state)
+├── lib/                    # Utilities (HTML parsing, font scale, WP helpers)
+├── services/               # API layers (WordPress REST, Gravity Forms)
+├── types/                  # TypeScript type definitions
+└── global.css              # Tailwind/NativeWind imports
+```
+
 ### Navigation (Expo Router with file-based routing)
-- `src/app/_layout.tsx` - Root layout with Stack navigator and theme provider
-- `src/app/(tabs)/` - Tab group with bottom tab navigation
-- `src/app/modal.tsx` - Modal screen presented over tabs
 
-The app uses `unstable_settings.anchor` to anchor navigation to the tabs group.
+- `src/app/_layout.tsx` — Root layout with Stack, QueryClientProvider, SettingsProvider, and theme
+- `src/app/(tabs)/` — Tab group with 5 tabs: About, Blog, Portfolio, Contact, Settings
 
-### Theming System
-- `constants/theme.ts` - Color palette (`Colors`) and platform-specific fonts (`Fonts`)
-- `src/hooks/use-color-scheme.ts` - Platform-specific color scheme detection (re-exports from react-native)
-- `src/hooks/use-theme-color.ts` - Hook for resolving theme-aware colors
-- `src/components/themed-text.tsx` and `src/components/themed-view.tsx` - Theme-aware base components
+Tab layouts are platform-specific:
+- `_layout.tsx` — iOS uses `NativeTabs` with SF Symbols, tab persistence via `useSegments()`
+- `_layout.android.tsx` — Android uses `Tabs` with MaterialIcons, same persistence logic
 
-### Component Patterns
-- **IconSymbol** (`src/components/ui/icon-symbol.tsx`) - Uses SF Symbols on iOS, MaterialIcons on Android/web. Add new icons to the `MAPPING` object.
-- **HapticTab** - Tab bar button with haptic feedback on iOS
+Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
+
+#### Routes
+
+| Tab | Route | Status |
+|-----|-------|--------|
+| About | `(index)/index.tsx` | Full-width parallax hero with WP author data |
+| Blog | `(blog)/index.tsx` | Infinite scroll blog list with cache pre-population |
+| Blog Post | `blog/[id].tsx` | Detail screen with HTML content rendering |
+| Portfolio | `(portfolio)/index.tsx` | Coming soon placeholder |
+| Contact | `(contact)/index.tsx` | Coming soon placeholder (form being finalized) |
+| Settings | `(settings)/index.tsx` | Theme, font size, haptics, cache, app info |
+
+### Platform-Specific Files
+
+- `.tsx` files are the default (iOS on native, all platforms on web)
+- `.android.tsx` overrides for Android-specific implementations
+- Use `process.env.EXPO_OS` instead of `Platform.OS`
+
+### Data Fetching
+
+- **React Query** (`@tanstack/react-query`) for all server state
+- `src/hooks/query-keys.ts` — Centralized query key factory
+- `src/services/wordpress.ts` — WordPress REST API (posts, pages, media)
+- `src/services/gravity-forms.ts` — Gravity Forms submission
+- Blog list pre-populates individual post caches for instant detail screen rendering
+
+### Settings & Persistence
+
+- `src/contexts/settings-context.tsx` — Global settings via Context + AsyncStorage
+- Manages: theme preference, font size, haptics toggle (iOS), last active tab
+- Tab persistence restores the last visited tab on cold launch
+
+### Theming
+
+- Light/dark mode with user preference override (light, dark, auto)
+- `src/hooks/use-color-scheme.ts` combines system scheme with user preference
+- Uses NativeWind/Tailwind classes (`dark:`) and inline styles
+
+### Haptics
+
+- `src/hooks/use-haptics.ts` wraps `expo-haptics` with settings awareness
+- Provides `impact()`, `selection()`, `notification()` — all gated by `settings.hapticsEnabled`
+- iOS only (`process.env.EXPO_OS === 'ios'`)
+
+### Components
+
+- `blog-post-card.tsx` — Blog card with featured image, metadata, haptic feedback
+- `coming-soon.tsx` — Placeholder for incomplete sections
+- `html-content.tsx` — WordPress HTML renderer (headings, lists, quotes, code, images, links)
 
 ### Path Aliases
+
 TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`).
 
+### EAS & Store Configuration
+
+- **Owner:** `mrdemonwolf-org`
+- **EAS Project ID:** `4a220b17-d746-48f1-9f46-d83a0a933b40`
+- **iOS:** Distribution cert + provisioning profile configured
+- **Android:** JKS keystore + Google Service Account for Play Store submissions
+- **Bundle IDs:** `com.mrdemonwolf.OfficialApp` (prod) / `com.mrdemonwolf.OfficialApp.dev` (dev)
+- Build profiles in `eas.json` with `appVersionSource: "remote"` and auto-increment
+
 ### Experimental Features
+
 - Typed routes enabled (`experiments.typedRoutes`)
 - React Compiler enabled (`experiments.reactCompiler`)
