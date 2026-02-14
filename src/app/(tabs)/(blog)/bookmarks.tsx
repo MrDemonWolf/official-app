@@ -1,10 +1,19 @@
+import { SymbolView } from 'expo-symbols';
 import { Link } from 'expo-router';
 import { useCallback } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native';
 import { Image } from 'expo-image';
-import { ImpactFeedbackStyle } from 'expo-haptics';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 
-import { useBookmarks } from '@/hooks/use-bookmarks';
+import { useBookmarks, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
 import type { BookmarkedPost } from '@/types/bookmark';
@@ -13,14 +22,33 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
   const haptics = useHaptics();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { removeBookmark } = useToggleBookmark();
 
   const handlePress = useCallback(() => {
     haptics.impact(ImpactFeedbackStyle.Light);
   }, [haptics]);
 
+  const handleRemove = useCallback(() => {
+    haptics.notification(NotificationFeedbackType.Warning);
+    Alert.alert('Remove Bookmark', `Remove "${item.title}" from bookmarks?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: () => removeBookmark.mutate(item.post_id),
+      },
+    ]);
+  }, [haptics, item, removeBookmark]);
+
   const href = item.post_type === 'portfolio'
     ? `/portfolio/${item.post_id}`
     : `/blog/${item.post_id}`;
+
+  const date = new Date(item.date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 
   return (
     <Link href={href as any} asChild>
@@ -34,17 +62,36 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
           backgroundColor: isDark ? '#18181b' : '#ffffff',
           opacity: pressed ? 0.8 : 1,
           borderCurve: 'continuous',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+          alignItems: 'center',
         })}
       >
-        {item.featured_image_url && (
+        {item.featured_image_url ? (
           <Image
             source={{ uri: item.featured_image_url }}
-            style={{ width: 80, height: 60, borderRadius: 8 }}
+            style={{ width: 72, height: 72, borderRadius: 10 }}
             contentFit="cover"
           />
+        ) : (
+          <View
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 10,
+              backgroundColor: isDark ? '#27272a' : '#f4f4f5',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <SymbolView
+              name="doc.text"
+              size={24}
+              tintColor={isDark ? '#52525b' : '#a1a1aa'}
+              resizeMode="scaleAspectFit"
+            />
+          </View>
         )}
-        <View style={{ flex: 1, justifyContent: 'center', gap: 4 }}>
+        <View style={{ flex: 1, gap: 4 }}>
           <Text
             style={{
               fontSize: 16,
@@ -55,16 +102,42 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
           >
             {item.title}
           </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              color: isDark ? '#71717a' : '#a1a1aa',
-              textTransform: 'capitalize',
-            }}
-          >
-            {item.post_type}
-          </Text>
+          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isDark ? '#52525b' : '#a1a1aa',
+                textTransform: 'capitalize',
+              }}
+            >
+              {item.post_type}
+            </Text>
+            <Text style={{ fontSize: 12, color: isDark ? '#3f3f46' : '#d4d4d8' }}>
+              {'|'}
+            </Text>
+            <Text style={{ fontSize: 12, color: isDark ? '#52525b' : '#a1a1aa' }}>
+              {date}
+            </Text>
+          </View>
         </View>
+        <Pressable
+          onPress={handleRemove}
+          hitSlop={8}
+          style={({ pressed }) => ({
+            width: 32,
+            height: 32,
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: pressed ? 0.4 : 1,
+          })}
+        >
+          <SymbolView
+            name="bookmark.fill"
+            size={18}
+            tintColor="#3b82f6"
+            resizeMode="scaleAspectFit"
+          />
+        </Pressable>
       </Pressable>
     </Link>
   );
@@ -73,6 +146,8 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
 export default function BookmarksScreen() {
   const { data: bookmarks, isLoading, refetch, isRefetching } = useBookmarks();
   const haptics = useHaptics();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const handleRefresh = useCallback(async () => {
     await refetch();
@@ -92,19 +167,39 @@ export default function BookmarksScreen() {
       data={bookmarks}
       keyExtractor={(item) => item.post_id.toString()}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ padding: 16, gap: 12 }}
+      contentContainerStyle={{ padding: 16, gap: 10 }}
       className="bg-zinc-50 dark:bg-zinc-950"
       renderItem={({ item }) => <BookmarkItem item={item} />}
       refreshControl={
         <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
       }
       ListEmptyComponent={
-        <View className="flex-1 items-center justify-center p-8" style={{ paddingTop: 60 }}>
+        <View style={{ alignItems: 'center', paddingTop: 80, paddingHorizontal: 32, gap: 12 }}>
+          <SymbolView
+            name="bookmark"
+            size={48}
+            tintColor={isDark ? '#3f3f46' : '#d4d4d8'}
+            resizeMode="scaleAspectFit"
+          />
           <Text
-            className="text-center text-base text-zinc-500"
-            style={{ lineHeight: 24 }}
+            style={{
+              fontSize: 18,
+              fontWeight: '600',
+              color: isDark ? '#71717a' : '#a1a1aa',
+              textAlign: 'center',
+            }}
           >
-            No bookmarks yet. Tap the bookmark icon on any post to save it for later.
+            No Bookmarks
+          </Text>
+          <Text
+            style={{
+              fontSize: 15,
+              color: isDark ? '#52525b' : '#a1a1aa',
+              textAlign: 'center',
+              lineHeight: 22,
+            }}
+          >
+            Tap the bookmark icon on any post or portfolio item to save it for later reading.
           </Text>
         </View>
       }

@@ -18,6 +18,7 @@ interface BookmarkButtonProps {
   date: string;
   link: string;
   tintColor?: string;
+  size?: number;
 }
 
 export function BookmarkButton({
@@ -31,6 +32,7 @@ export function BookmarkButton({
   date,
   link,
   tintColor = '#3b82f6',
+  size = 22,
 }: BookmarkButtonProps) {
   const { data: bookmarked } = useIsBookmarked(postId);
   const { addBookmark, removeBookmark } = useToggleBookmark();
@@ -61,11 +63,17 @@ export function BookmarkButton({
     <Pressable
       onPress={handlePress}
       hitSlop={8}
-      style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+      style={({ pressed }) => ({
+        width: 28,
+        height: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: pressed ? 0.5 : 1,
+      })}
     >
       <SymbolView
         name={bookmarked ? 'bookmark.fill' : 'bookmark'}
-        size={22}
+        size={size}
         tintColor={tintColor}
         resizeMode="scaleAspectFit"
       />

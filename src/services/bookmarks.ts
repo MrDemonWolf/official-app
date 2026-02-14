@@ -45,6 +45,11 @@ export async function getBookmarks(type?: string): Promise<BookmarkedPost[]> {
   );
 }
 
+export async function clearAllBookmarks(): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync('DELETE FROM bookmarks');
+}
+
 export async function getBookmarkedContent(postId: number): Promise<BookmarkedPost | null> {
   const db = await getDatabase();
   const result = await db.getFirstAsync<BookmarkedPost>(

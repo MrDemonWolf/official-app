@@ -120,15 +120,22 @@ export default function BlogPostScreen() {
         options={{
           title,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
               <Pressable
                 onPress={handleShare}
-                hitSlop={8}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                hitSlop={4}
+                style={({ pressed }) => ({
+                  width: 36,
+                  height: 36,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 18,
+                  opacity: pressed ? 0.5 : 1,
+                })}
               >
                 <SymbolView
                   name="square.and.arrow.up"
-                  size={22}
+                  size={20}
                   tintColor="#3b82f6"
                   resizeMode="scaleAspectFit"
                 />

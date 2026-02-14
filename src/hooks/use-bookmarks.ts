@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/hooks/query-keys';
 import {
   addBookmark,
+  clearAllBookmarks,
   getBookmarks,
   isBookmarked as checkIsBookmarked,
   removeBookmark,
@@ -44,4 +45,16 @@ export function useToggleBookmark() {
   });
 
   return { addBookmark: addMutation, removeBookmark: removeMutation };
+}
+
+export function useClearBookmarks() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: clearAllBookmarks,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['is-bookmarked'] });
+    },
+  });
 }

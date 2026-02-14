@@ -5,6 +5,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useSettings } from '@/contexts/settings-context';
+import { useClearBookmarks } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { FONT_SCALES } from '@/lib/font-scale';
@@ -141,6 +142,7 @@ export default function SettingsScreen() {
   const scale = FONT_SCALES[settings.fontSize];
   const queryClient = useQueryClient();
   const haptics = useHaptics();
+  const clearBookmarks = useClearBookmarks();
 
   const handleClearCache = useCallback(() => {
     Alert.alert(
@@ -159,6 +161,24 @@ export default function SettingsScreen() {
       ]
     );
   }, [queryClient, haptics]);
+
+  const handleClearBookmarks = useCallback(() => {
+    Alert.alert(
+      'Clear Bookmarks',
+      'This will remove all your saved bookmarks. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: () => {
+            clearBookmarks.mutate();
+            haptics.notification();
+          },
+        },
+      ]
+    );
+  }, [clearBookmarks, haptics]);
 
   const sectionHeaderStyle = {
     fontSize: 13,
@@ -280,6 +300,17 @@ export default function SettingsScreen() {
           })}
         >
           <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Cache</Text>
+        </Pressable>
+        <Pressable
+          onPress={handleClearBookmarks}
+          style={({ pressed }) => ({
+            padding: 12,
+            borderRadius: 10,
+            backgroundColor: isDark ? '#18181b' : '#f4f4f5',
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Bookmarks</Text>
         </Pressable>
       </View>
 
