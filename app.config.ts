@@ -31,7 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: getBundleId(),
-    buildNumber: "1",
+    buildNumber: "2",
     config: {
       usesNonExemptEncryption: false,
     },
@@ -43,7 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: getBundleId(),
-    versionCode: 1,
+    versionCode: 2,
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
       foregroundImage: getAndroidForegroundIcon(),
