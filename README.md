@@ -10,7 +10,8 @@ Built with modern native technologies for a smooth, native-feeling experience on
 - **Blog** — Infinite scroll blog feed with featured images, author metadata, categories, and full post reading with rich HTML rendering.
 - **Portfolio** — Coming soon.
 - **Contact** — Coming soon (Gravity Forms integration).
-- **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), and cache management.
+- **Push Notifications** — Subscribe to new blog post notifications via TailSignal, with automatic device registration and deep linking to posts.
+- **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), notifications toggle, and cache management.
 - **Tab Persistence** — Remembers your last visited tab across app launches.
 - **Platform Optimized** — Native tabs with SF Symbols on iOS, Material Design on Android.
 
@@ -54,7 +55,7 @@ Built with modern native technologies for a smooth, native-feeling experience on
    cp .env.example .env
    ```
 
-4. Configure your environment variables in `.env`
+4. Configure your environment variables in `.env` (see [Environment Variables](#environment-variables) below)
 
 5. Start the development server:
    ```bash
@@ -71,6 +72,18 @@ Built with modern native technologies for a smooth, native-feeling experience on
 - `pnpm type-check` — Run TypeScript type checking
 - `pnpm prebuild` — Generate native projects
 - `pnpm prebuild:clean` — Clean and regenerate native projects
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure the values for your WordPress site:
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://yoursite.com/wp-json/wp/v2`) |
+| `EXPO_PUBLIC_APP_VARIANT` | App variant — `development` or `production` |
+| `EXPO_PUBLIC_GF_API_URL` | Gravity Forms REST API base URL for the contact form |
+| `EXPO_PUBLIC_GF_CONTACT_FORM_ID` | Gravity Forms form ID for the contact form |
+| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal REST API base URL for push notification device registration (requires the [TailSignal](https://tailsignal.com) WordPress plugin) |
 
 ### Code Quality
 
