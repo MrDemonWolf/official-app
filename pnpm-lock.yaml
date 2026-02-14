@@ -35,6 +35,9 @@ importers:
       expo-constants:
         specifier: ~55.0.4
         version: 55.0.4(expo@55.0.0-preview.10)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))
+      expo-device:
+        specifier: ^8.0.10
+        version: 8.0.10(expo@55.0.0-preview.10)
       expo-font:
         specifier: ~55.0.3
         version: 55.0.3(expo@55.0.0-preview.10)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -2376,6 +2379,11 @@ packages:
       expo: '*'
       react-native: '*'
 
+  expo-device@8.0.10:
+    resolution: {integrity: sha512-jd5BxjaF7382JkDMaC+P04aXXknB2UhWaVx5WiQKA05ugm/8GH5uaz9P9ckWdMKZGQVVEOC8MHaUADoT26KmFA==}
+    peerDependencies:
+      expo: '*'
+
   expo-file-system@55.0.5:
     resolution: {integrity: sha512-ZD9uJS4tmmyPBHcW7j90+CUsdvfavXdSHSQWG22g7Zm1x02E5elHKOAhsv9gFDGsMDc1nvgR+IvrWlokjkXVSQ==}
     peerDependencies:
@@ -4140,6 +4148,10 @@ packages:
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
+    hasBin: true
+
+  ua-parser-js@0.7.41:
+    resolution: {integrity: sha512-O3oYyCMPYgNNHuO7Jjk3uacJWZF8loBgwrfd/5LE/HyZ3lUIOdniQ7DNXJcIgZbwioZxk0fLfI4EVnetdiX5jg==}
     hasBin: true
 
   ua-parser-js@1.0.41:
@@ -7166,6 +7178,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-device@8.0.10(expo@55.0.0-preview.10):
+    dependencies:
+      expo: 55.0.0-preview.10(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.5)(expo-router@55.0.0-preview.7)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      ua-parser-js: 0.7.41
+
   expo-file-system@55.0.5(expo@55.0.0-preview.10)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)):
     dependencies:
       expo: 55.0.0-preview.10(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.5)(expo-router@55.0.0-preview.7)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -9171,6 +9188,8 @@ snapshots:
       reflect.getprototypeof: 1.0.10
 
   typescript@5.9.3: {}
+
+  ua-parser-js@0.7.41: {}
 
   ua-parser-js@1.0.41: {}
 

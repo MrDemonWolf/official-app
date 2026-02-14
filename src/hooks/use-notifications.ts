@@ -3,18 +3,31 @@ import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 
 import { useSettings } from '@/contexts/settings-context';
-import { registerForPushNotifications, sendPushTokenToServer } from '@/services/notifications';
+import {
+  registerDevice,
+  registerForPushNotifications,
+  unregisterDevice,
+} from '@/services/notifications';
 
 export function useNotifications() {
   const { settings } = useSettings();
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!settings.notificationsEnabled) return;
+    if (!settings.notificationsEnabled) {
+      // If notifications were just disabled and we have a stored token, unregister
+      if (tokenRef.current) {
+        unregisterDevice(tokenRef.current);
+        tokenRef.current = null;
+      }
+      return;
+    }
 
     registerForPushNotifications().then((token) => {
       if (token) {
-        sendPushTokenToServer(token);
+        tokenRef.current = token;
+        registerDevice(token);
       }
     });
 

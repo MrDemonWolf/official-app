@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "expo": "55.0.0-preview.10",
     "expo-constants": "~55.0.4",
+    "expo-device": "^8.0.10",
     "expo-font": "~55.0.3",
     "expo-haptics": "~55.0.5",
     "expo-image": "~55.0.3",
