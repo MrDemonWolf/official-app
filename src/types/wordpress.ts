@@ -116,3 +116,13 @@ export interface WPPostsResponse {
   totalPages: number;
   total: number;
 }
+
+export interface WPCategory {
+  id: number;
+  count: number;
+  description: string;
+  link: string;
+  name: string;
+  slug: string;
+  parent: number;
+}
