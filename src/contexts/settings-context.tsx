@@ -13,6 +13,7 @@ interface SettingsContextValue {
   setThemePreference: (pref: ThemePreference) => void;
   setHapticsEnabled: (enabled: boolean) => void;
   setLastTab: (tab: TabName) => void;
+  setNotificationsEnabled: (enabled: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue>({
@@ -22,6 +23,7 @@ const SettingsContext = createContext<SettingsContextValue>({
   setThemePreference: () => {},
   setHapticsEnabled: () => {},
   setLastTab: () => {},
+  setNotificationsEnabled: () => {},
 });
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
@@ -66,9 +68,22 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     [settings, persist]
   );
 
+  const setNotificationsEnabled = useCallback(
+    (notificationsEnabled: boolean) => persist({ ...settings, notificationsEnabled }),
+    [settings, persist]
+  );
+
   return (
     <SettingsContext.Provider
-      value={{ settings, isLoading, setFontSize, setThemePreference, setHapticsEnabled, setLastTab }}
+      value={{
+        settings,
+        isLoading,
+        setFontSize,
+        setThemePreference,
+        setHapticsEnabled,
+        setLastTab,
+        setNotificationsEnabled,
+      }}
     >
       {children}
     </SettingsContext.Provider>
