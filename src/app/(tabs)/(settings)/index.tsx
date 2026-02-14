@@ -18,8 +18,8 @@ const BUILD_NUMBER =
     : Constants.expoConfig?.android?.versionCode?.toString()) ?? '1';
 const COPYRIGHT_YEAR = new Date().getFullYear();
 
-const THEME_LABELS = ['Light', 'Dark', 'Auto'];
-const THEME_VALUES: ThemePreference[] = ['light', 'dark', 'auto'];
+const THEME_LABELS = ['Light', 'Auto', 'Dark'];
+const THEME_VALUES: ThemePreference[] = ['light', 'auto', 'dark'];
 
 const FONT_LABELS = ['Small', 'Medium', 'Large'];
 const FONT_VALUES: FontSize[] = ['small', 'medium', 'large'];

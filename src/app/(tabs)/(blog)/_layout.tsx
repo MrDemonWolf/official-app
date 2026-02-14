@@ -12,7 +12,7 @@ export default function BlogStack() {
           headerLargeStyle: { backgroundColor: 'transparent' },
           headerShadowVisible: false,
           headerLargeTitleShadowVisible: false,
-          headerBlurEffect: 'systemUltraThinMaterial',
+          scrollEdgeEffects: { top: 'automatic' },
         }),
         headerBackButtonDisplayMode: 'minimal',
       }}
