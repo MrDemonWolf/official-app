@@ -9,6 +9,7 @@ export interface Settings {
   themePreference: ThemePreference;
   hapticsEnabled: boolean;
   lastTab: TabName;
+  notificationsEnabled: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -16,4 +17,5 @@ export const DEFAULT_SETTINGS: Settings = {
   themePreference: 'auto',
   hapticsEnabled: true,
   lastTab: '(index)',
+  notificationsEnabled: false,
 };

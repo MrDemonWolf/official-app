@@ -135,7 +135,7 @@ function SegmentedControl<T extends string>({
 }
 
 export default function SettingsScreen() {
-  const { settings, setThemePreference, setFontSize, setHapticsEnabled } = useSettings();
+  const { settings, setThemePreference, setFontSize, setHapticsEnabled, setNotificationsEnabled } = useSettings();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const scale = FONT_SCALES[settings.fontSize];
@@ -244,6 +244,28 @@ export default function SettingsScreen() {
           </View>
         </View>
       )}
+
+      {/* Notifications */}
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
+        <Text style={sectionHeaderStyle}>Notifications</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>
+              Push Notifications
+            </Text>
+            <Text style={{ fontSize: 13, color: isDark ? '#71717a' : '#a1a1aa', marginTop: 2 }}>
+              Get notified about new posts
+            </Text>
+          </View>
+          <Switch value={settings.notificationsEnabled} onValueChange={setNotificationsEnabled} />
+        </View>
+      </View>
 
       {/* Data */}
       <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>

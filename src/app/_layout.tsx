@@ -10,6 +10,7 @@ import 'react-native-reanimated';
 
 import { SettingsProvider, useSettings } from '@/contexts/settings-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useNotifications } from '@/hooks/use-notifications';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ export const unstable_settings = {
 function RootInner() {
   const colorScheme = useColorScheme();
   const { settings } = useSettings();
+  useNotifications();
 
   useEffect(() => {
     if (settings.themePreference === 'auto') {
@@ -48,6 +50,7 @@ function RootInner() {
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="blog/[id]" options={{ headerLargeTitle: false }} />
+        <Stack.Screen name="portfolio/[id]" options={{ headerLargeTitle: false }} />
       </Stack>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
