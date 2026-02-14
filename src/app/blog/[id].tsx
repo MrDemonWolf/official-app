@@ -1,19 +1,19 @@
 import { Image } from 'expo-image';
-import { SymbolView } from 'expo-symbols';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   Text,
   View,
   useWindowDimensions,
 } from 'react-native';
 
-import { BookmarkButton } from '@/components/bookmark-button';
 import { HtmlContent } from '@/components/html-content';
+import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useHaptics } from '@/hooks/use-haptics';
 import { usePost } from '@/hooks/use-post';
 import { useShare } from '@/hooks/use-share';
 import { decodeHtmlEntities } from '@/lib/decode-html';
@@ -23,11 +23,17 @@ import type { BookmarkedPost } from '@/types/bookmark';
 
 export default function BlogPostScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const postId = id ? parseInt(id, 10) : undefined;
   const { data: post, isLoading, error } = usePost(id);
   const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { shareContent } = useShare();
+  const haptics = useHaptics();
+
+  // Bookmark hooks — always called before any returns
+  const { data: bookmarked } = useIsBookmarked(postId);
+  const { addBookmark, removeBookmark } = useToggleBookmark();
 
   // Offline fallback
   const [offlinePost, setOfflinePost] = useState<BookmarkedPost | null>(null);
@@ -81,6 +87,27 @@ export default function BlogPostScreen() {
     }
   }, [shareContent, resolved]);
 
+  const handleBookmark = useCallback(() => {
+    if (!resolved) return;
+    if (bookmarked) {
+      haptics.impact(ImpactFeedbackStyle.Light);
+      removeBookmark.mutate(resolved.postId);
+    } else {
+      haptics.notification(NotificationFeedbackType.Success);
+      addBookmark.mutate({
+        post_id: resolved.postId,
+        post_type: 'post',
+        title: resolved.title,
+        excerpt: resolved.excerpt,
+        featured_image_url: resolved.featuredImage?.url || resolved.offlineFeaturedUrl || null,
+        content_html: resolved.contentHtml,
+        author_name: resolved.authorName,
+        date: resolved.dateStr,
+        link: resolved.postLink,
+      });
+    }
+  }, [resolved, bookmarked, haptics, addBookmark, removeBookmark]);
+
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
@@ -103,7 +130,6 @@ export default function BlogPostScreen() {
 
   const {
     title, dateStr, contentHtml, featuredImage, offlineFeaturedUrl,
-    postLink, authorName, excerpt, postId,
   } = resolved;
   const date = new Date(dateStr).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -112,85 +138,60 @@ export default function BlogPostScreen() {
   });
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      className="bg-zinc-50 dark:bg-zinc-950"
-    >
-      <Stack.Screen
-        options={{
-          title,
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 20, alignItems: 'center' }}>
-              <Pressable
-                onPress={handleShare}
-                hitSlop={8}
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,
-                })}
-              >
-                <SymbolView
-                  name="square.and.arrow.up"
-                  tintColor="#3b82f6"
-                  resizeMode="scaleAspectFit"
-                  style={{ width: 22, height: 22 }}
-                />
-              </Pressable>
-              <BookmarkButton
-                postId={postId}
-                postType="post"
-                title={title}
-                excerpt={excerpt}
-                featuredImageUrl={featuredImage?.url || offlineFeaturedUrl || null}
-                contentHtml={contentHtml}
-                authorName={authorName}
-                date={dateStr}
-                link={postLink}
-              />
-            </View>
-          ),
-        }}
-      />
+    <>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        className="bg-zinc-50 dark:bg-zinc-950"
+      >
+        {/* Offline banner */}
+        {isOffline && (
+          <View
+            style={{
+              padding: 10,
+              backgroundColor: isDark ? '#422006' : '#fef3c7',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 13, color: isDark ? '#fbbf24' : '#92400e' }}>
+              Viewing saved copy — you appear to be offline
+            </Text>
+          </View>
+        )}
 
-      {/* Offline banner */}
-      {isOffline && (
-        <View
-          style={{
-            padding: 10,
-            backgroundColor: isDark ? '#422006' : '#fef3c7',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 13, color: isDark ? '#fbbf24' : '#92400e' }}>
-            Viewing saved copy — you appear to be offline
-          </Text>
+        {featuredImage && (
+          <Image
+            source={{ uri: featuredImage.url }}
+            style={{
+              width,
+              aspectRatio:
+                featuredImage.width && featuredImage.height
+                  ? featuredImage.width / featuredImage.height
+                  : 16 / 9,
+            }}
+            contentFit="cover"
+            alt={featuredImage.alt}
+          />
+        )}
+        {!featuredImage && offlineFeaturedUrl && (
+          <Image
+            source={{ uri: offlineFeaturedUrl }}
+            style={{ width, aspectRatio: 16 / 9 }}
+            contentFit="cover"
+          />
+        )}
+        <View style={{ padding: 16, gap: 16, maxWidth: 680, alignSelf: 'center', width: '100%' }}>
+          <Text className="text-sm text-zinc-500 dark:text-zinc-400">{date}</Text>
+          <HtmlContent html={contentHtml} />
         </View>
-      )}
-
-      {featuredImage && (
-        <Image
-          source={{ uri: featuredImage.url }}
-          style={{
-            width,
-            aspectRatio:
-              featuredImage.width && featuredImage.height
-                ? featuredImage.width / featuredImage.height
-                : 16 / 9,
-          }}
-          contentFit="cover"
-          alt={featuredImage.alt}
+      </ScrollView>
+      <Stack.Screen options={{ title }} />
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
+        <Stack.Toolbar.Button
+          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
+          onPress={handleBookmark}
         />
-      )}
-      {!featuredImage && offlineFeaturedUrl && (
-        <Image
-          source={{ uri: offlineFeaturedUrl }}
-          style={{ width, aspectRatio: 16 / 9 }}
-          contentFit="cover"
-        />
-      )}
-      <View style={{ padding: 16, gap: 16, maxWidth: 680, alignSelf: 'center', width: '100%' }}>
-        <Text className="text-sm text-zinc-500 dark:text-zinc-400">{date}</Text>
-        <HtmlContent html={contentHtml} />
-      </View>
-    </ScrollView>
+      </Stack.Toolbar>
+    </>
   );
 }

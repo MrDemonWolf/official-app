@@ -1,5 +1,5 @@
 import { router, useSegments } from 'expo-router';
-import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useEffect, useRef } from 'react';
 
 import { useSettings } from '@/contexts/settings-context';
@@ -39,24 +39,24 @@ export default function TabLayout() {
   return (
     <NativeTabs minimizeBehavior="onScrollDown">
       <NativeTabs.Trigger name="(index)">
-        <Icon sf={{ default: 'person.crop.circle', selected: 'person.crop.circle.fill' }} />
-        <Label>About</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'person.crop.circle', selected: 'person.crop.circle.fill' }} />
+        <NativeTabs.Trigger.Label>About</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(blog)">
-        <Icon sf={{ default: 'doc.text', selected: 'doc.text.fill' }} />
-        <Label>Blog</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'doc.text', selected: 'doc.text.fill' }} />
+        <NativeTabs.Trigger.Label>Blog</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(portfolio)">
-        <Icon sf={{ default: 'folder', selected: 'folder.fill' }} />
-        <Label>Portfolio</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'folder', selected: 'folder.fill' }} />
+        <NativeTabs.Trigger.Label>Portfolio</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(contact)">
-        <Icon sf={{ default: 'envelope', selected: 'envelope.fill' }} />
-        <Label>Contact</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'envelope', selected: 'envelope.fill' }} />
+        <NativeTabs.Trigger.Label>Contact</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(settings)">
-        <Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
-        <Label>Settings</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
