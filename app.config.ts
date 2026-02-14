@@ -38,6 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       NSMotionUsageDescription:
         "This app uses haptic feedback to enhance your experience.",
+      UIBackgroundModes: [],
     },
   },
   android: {
@@ -67,6 +68,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         dark: {
           backgroundColor: "#000000",
         },
+      },
+    ],
+    [
+      "expo-notifications",
+      {
+        icon: "./src/assets/images/icon.png",
+        color: "#3b82f6",
       },
     ],
   ],
