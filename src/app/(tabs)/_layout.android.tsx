@@ -1,5 +1,5 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { router, Tabs, useSegments } from 'expo-router';
+import { router, useSegments } from 'expo-router';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useEffect, useRef } from 'react';
 
 import { useSettings } from '@/contexts/settings-context';
@@ -37,57 +37,27 @@ export default function TabLayout() {
   }, [segments, setLastTab, settings.lastTab]);
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: '#0a7ea4',
-      }}
-    >
-      <Tabs.Screen
-        name="(index)"
-        options={{
-          title: 'About',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="person" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="(blog)"
-        options={{
-          title: 'Blog',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="article" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="(portfolio)"
-        options={{
-          title: 'Portfolio',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="folder" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="(contact)"
-        options={{
-          title: 'Contact',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="email" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="(settings)"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="settings" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <NativeTabs>
+      <NativeTabs.Trigger name="(index)">
+        <NativeTabs.Trigger.Icon sf="person.crop.circle" md="person" />
+        <NativeTabs.Trigger.Label>About</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(blog)">
+        <NativeTabs.Trigger.Icon sf="doc.text" md="article" />
+        <NativeTabs.Trigger.Label>Blog</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(portfolio)">
+        <NativeTabs.Trigger.Icon sf="folder" md="folder" />
+        <NativeTabs.Trigger.Label>Portfolio</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(contact)">
+        <NativeTabs.Trigger.Icon sf="envelope" md="email" />
+        <NativeTabs.Trigger.Label>Contact</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(settings)">
+        <NativeTabs.Trigger.Icon sf="gearshape" md="settings" />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }

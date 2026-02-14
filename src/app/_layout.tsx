@@ -33,7 +33,7 @@ function RootInner() {
 
   useEffect(() => {
     if (settings.themePreference === 'auto') {
-      Appearance.setColorScheme(null);
+      Appearance.setColorScheme('unspecified');
     } else {
       Appearance.setColorScheme(settings.themePreference);
     }

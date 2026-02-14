@@ -27,7 +27,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: getIcon(),
   scheme: "mrdemonwolf",
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: getBundleId(),
@@ -50,7 +49,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundImage: "./src/assets/images/android-icon-background.png",
       monochromeImage: "./src/assets/images/android-icon-monochrome.png",
     },
-    edgeToEdgeEnabled: true,
   },
   web: {
     output: "static",
@@ -58,6 +56,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-router",
+    "expo-font",
+    "expo-sqlite",
+    "expo-web-browser",
     [
       "expo-splash-screen",
       {
