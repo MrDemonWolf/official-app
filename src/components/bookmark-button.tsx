@@ -64,18 +64,14 @@ export function BookmarkButton({
       onPress={handlePress}
       hitSlop={8}
       style={({ pressed }) => ({
-        width: 28,
-        height: 28,
-        alignItems: 'center',
-        justifyContent: 'center',
         opacity: pressed ? 0.5 : 1,
       })}
     >
       <SymbolView
         name={bookmarked ? 'bookmark.fill' : 'bookmark'}
-        size={size}
         tintColor={tintColor}
         resizeMode="scaleAspectFit"
+        style={{ width: size, height: size }}
       />
     </Pressable>
   );

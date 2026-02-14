@@ -85,18 +85,14 @@ export default function BlogScreen() {
         onPress={() => router.push('/bookmarks' as any)}
         hitSlop={8}
         style={({ pressed }) => ({
-          width: 28,
-          height: 28,
-          alignItems: 'center' as const,
-          justifyContent: 'center' as const,
           opacity: pressed ? 0.5 : 1,
         })}
       >
         <SymbolView
           name="bookmark"
-          size={20}
           tintColor="#3b82f6"
           resizeMode="scaleAspectFit"
+          style={{ width: 22, height: 22 }}
         />
       </Pressable>
     ),

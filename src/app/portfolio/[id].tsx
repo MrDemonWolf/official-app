@@ -145,24 +145,19 @@ export default function PortfolioDetailScreen() {
         options={{
           title,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', gap: 20, alignItems: 'center' }}>
               <Pressable
                 onPress={handleShare}
-                hitSlop={4}
+                hitSlop={8}
                 style={({ pressed }) => ({
-                  width: 36,
-                  height: 36,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 18,
                   opacity: pressed ? 0.5 : 1,
                 })}
               >
                 <SymbolView
                   name="square.and.arrow.up"
-                  size={20}
                   tintColor="#3b82f6"
                   resizeMode="scaleAspectFit"
+                  style={{ width: 22, height: 22 }}
                 />
               </Pressable>
               <BookmarkButton
