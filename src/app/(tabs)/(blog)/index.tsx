@@ -1,14 +1,51 @@
-import { Link } from 'expo-router';
-import { useCallback, useEffect, useMemo } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from 'react-native';
+import { SymbolView } from 'expo-symbols';
+import { Link, router, Stack } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  TextInput,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BlogPostCard } from '@/components/blog-post-card';
+import { CategoryFilter } from '@/components/category-filter';
+import { useCategories } from '@/hooks/use-categories';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { queryKeys } from '@/hooks/query-keys';
 import { useHaptics } from '@/hooks/use-haptics';
 import { usePosts } from '@/hooks/use-posts';
+import { useSearchPosts } from '@/hooks/use-search-posts';
+
+const isIOS = process.env.EXPO_OS === 'ios';
 
 export default function BlogScreen() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const { width } = useWindowDimensions();
+  const isWideScreen = width > 768;
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const isSearching = debouncedQuery.length > 0;
+
+  const postsQuery = usePosts();
+  const searchResults = useSearchPosts(debouncedQuery);
+  const { data: categories } = useCategories();
+
+  const activeQuery = isSearching ? searchResults : postsQuery;
   const {
     data,
     isLoading,
@@ -18,27 +55,95 @@ export default function BlogScreen() {
     isFetchingNextPage,
     refetch,
     isRefetching,
-  } = usePosts();
+  } = activeQuery;
+
   const haptics = useHaptics();
   const queryClient = useQueryClient();
 
-  const posts = useMemo(() => data?.pages.flatMap((page) => page.posts) ?? [], [data?.pages]);
+  const allPosts = useMemo(() => data?.pages.flatMap((page) => page.posts) ?? [], [data?.pages]);
 
-  // Pre-populate individual post caches so detail screens render instantly
+  // Filter by category if selected
+  const posts = useMemo(() => {
+    if (!selectedCategory) return allPosts;
+    return allPosts.filter((p) => p.categories?.includes(selectedCategory));
+  }, [allPosts, selectedCategory]);
+
   useEffect(() => {
-    for (const post of posts) {
+    for (const post of allPosts) {
       queryClient.setQueryData(queryKeys.post(post.id.toString()), post);
     }
-  }, [posts, queryClient]);
+  }, [allPosts, queryClient]);
 
   const handleRefresh = useCallback(async () => {
     await refetch();
     haptics.notification();
   }, [refetch, haptics]);
 
+  const headerRight = useCallback(
+    () => (
+      <Pressable
+        onPress={() => router.push('/bookmarks' as any)}
+        hitSlop={8}
+        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+      >
+        <SymbolView
+          name="bookmark"
+          size={22}
+          tintColor="#3b82f6"
+          resizeMode="scaleAspectFit"
+        />
+      </Pressable>
+    ),
+    []
+  );
+
+  const ListHeader = useMemo(() => {
+    return (
+      <View style={{ gap: 12 }}>
+        {/* Android search bar */}
+        {!isIOS && (
+          <TextInput
+            placeholder="Search posts..."
+            placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={{
+              fontSize: 16,
+              padding: 12,
+              borderRadius: 10,
+              backgroundColor: isDark ? '#18181b' : '#ffffff',
+              color: isDark ? '#f4f4f5' : '#18181b',
+            }}
+          />
+        )}
+
+        {/* Category filter */}
+        {categories && categories.length > 0 && !isSearching && (
+          <CategoryFilter
+            categories={categories}
+            selectedId={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
+        )}
+      </View>
+    );
+  }, [isDark, searchQuery, categories, selectedCategory, isSearching]);
+
   if (isLoading && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
+        <Stack.Screen
+          options={{
+            headerRight,
+            ...(isIOS && {
+              headerSearchBarOptions: {
+                placeholder: 'Search posts...',
+                onChangeText: (e) => setSearchQuery(e.nativeEvent.text),
+                onCancelButtonPress: () => setSearchQuery(''),
+              },
+            }),
+          }}
+        />
         <ActivityIndicator size="large" />
       </View>
     );
@@ -47,6 +152,7 @@ export default function BlogScreen() {
   if (error && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white p-5 dark:bg-zinc-950">
+        <Stack.Screen options={{ headerRight }} />
         <Text className="text-center text-base text-zinc-900 dark:text-zinc-100" selectable>
           Failed to load posts. Please try again later.
         </Text>
@@ -61,11 +167,17 @@ export default function BlogScreen() {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{ padding: 16, gap: 16 }}
       className="bg-zinc-50 dark:bg-zinc-950"
+      key={isWideScreen ? 'grid' : 'list'}
+      numColumns={isWideScreen ? 2 : 1}
+      columnWrapperStyle={isWideScreen ? { gap: 16 } : undefined}
       renderItem={({ item }) => (
-        <Link href={`/blog/${item.id}`} asChild>
-          <BlogPostCard post={item} />
-        </Link>
+        <View style={isWideScreen ? { flex: 1 } : undefined}>
+          <Link href={`/blog/${item.id}`} asChild>
+            <BlogPostCard post={item} />
+          </Link>
+        </View>
       )}
+      ListHeaderComponent={ListHeader}
       onEndReached={() => {
         if (hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
@@ -84,7 +196,9 @@ export default function BlogScreen() {
       }
       ListEmptyComponent={
         <View className="items-center p-5">
-          <Text className="text-base text-zinc-500">No posts found.</Text>
+          <Text className="text-base text-zinc-500">
+            {isSearching ? 'No results found.' : 'No posts found.'}
+          </Text>
         </View>
       }
     />
