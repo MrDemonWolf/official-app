@@ -2,36 +2,49 @@
 
 Always prefer NativeTabs from 'expo-router/unstable-native-tabs' for the best iOS experience.
 
-**Requires SDK 54+**
+**Requires SDK 55+**
 
 ## Basic Usage
 
 ```tsx
-import {
-  NativeTabs,
-  Icon,
-  Label,
-  Badge,
-} from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function TabLayout() {
   return (
     <NativeTabs minimizeBehavior="onScrollDown">
       <NativeTabs.Trigger name="index">
-        <Label>Home</Label>
-        <Icon sf="house.fill" />
-        <Badge>9+</Badge>
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="house.fill" />
+        <NativeTabs.Trigger.Badge>9+</NativeTabs.Trigger.Badge>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
-        <Icon sf="gear" />
-        <Label>Settings</Label>
+        <NativeTabs.Trigger.Icon sf="gear" />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(search)" role="search">
-        <Label>Search</Label>
+        <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
+```
+
+## SDK 55 Import Changes
+
+In SDK 55, `Icon`, `Label`, and `Badge` are no longer separate exports. They are accessed as sub-components of `NativeTabs.Trigger`:
+
+```tsx
+// SDK 54 (old)
+import { NativeTabs, Icon, Label, Badge } from "expo-router/unstable-native-tabs";
+<Icon sf="house.fill" />
+<Label>Home</Label>
+<Badge>3</Badge>
+
+// SDK 55+ (new)
+import { NativeTabs } from "expo-router/unstable-native-tabs";
+<NativeTabs.Trigger.Icon sf="house.fill" />
+<NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+<NativeTabs.Trigger.Badge>3</NativeTabs.Trigger.Badge>
 ```
 
 ## Rules
@@ -53,36 +66,36 @@ Native Tabs use platform-specific tab bar implementations:
 
 ```tsx
 // SF Symbol only (iOS)
-<Icon sf="house.fill" />
+<NativeTabs.Trigger.Icon sf="house.fill" />
 
-// With Android drawable
-<Icon sf="house.fill" drawable="ic_home" />
+// With Material icon for Android
+<NativeTabs.Trigger.Icon sf="house.fill" md="home" />
 
 // Custom image source
-<Icon src={require('./icon.png')} />
+<NativeTabs.Trigger.Icon src={require('./icon.png')} />
 
 // State variants (default/selected)
-<Icon sf={{ default: "house", selected: "house.fill" }} />
+<NativeTabs.Trigger.Icon sf={{ default: "house", selected: "house.fill" }} />
 ```
 
 ## Label Component
 
 ```tsx
 // Basic label
-<Label>Home</Label>
+<NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
 
 // Hidden label (icon only)
-<Label hidden>Home</Label>
+<NativeTabs.Trigger.Label hidden>Home</NativeTabs.Trigger.Label>
 ```
 
 ## Badge Component
 
 ```tsx
 // Numeric badge
-<Badge>9+</Badge>
+<NativeTabs.Trigger.Badge>9+</NativeTabs.Trigger.Badge>
 
 // Dot indicator (empty badge)
-<Badge />
+<NativeTabs.Trigger.Badge />
 ```
 
 ## iOS 26 Features
@@ -103,7 +116,7 @@ Add a dedicated search tab that integrates with the tab bar search field:
 
 ```tsx
 <NativeTabs.Trigger name="(search)" role="search">
-  <Label>Search</Label>
+  <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
 </NativeTabs.Trigger>
 ```
 
@@ -150,8 +163,8 @@ Hide tabs conditionally:
 
 ```tsx
 <NativeTabs.Trigger name="admin" hidden={!isAdmin}>
-  <Label>Admin</Label>
-  <Icon sf="shield.fill" />
+  <NativeTabs.Trigger.Label>Admin</NativeTabs.Trigger.Label>
+  <NativeTabs.Trigger.Icon sf="shield.fill" />
 </NativeTabs.Trigger>
 ```
 
@@ -165,36 +178,20 @@ Hide tabs conditionally:
 >
 ```
 
-## Using Vector Icons
-
-If you must use @expo/vector-icons instead of SF Symbols:
-
-```tsx
-import { VectorIcon } from "expo-router/unstable-native-tabs";
-import Ionicons from "@expo/vector-icons/Ionicons";
-
-<NativeTabs.Trigger name="home">
-  <VectorIcon vector={Ionicons} name="home" />
-  <Label>Home</Label>
-</NativeTabs.Trigger>;
-```
-
-**Prefer SF Symbols over vector icons for native feel on Apple platforms.**
-
 ## Structure with Stacks
 
 Native tabs don't render headers. Nest Stacks inside each tab for navigation headers:
 
 ```tsx
 // app/(tabs)/_layout.tsx
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function TabLayout() {
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="(home)">
-        <Label>Home</Label>
-        <Icon sf="house.fill" />
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="house.fill" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );
@@ -247,21 +244,21 @@ export default function TabLayout() {
 }
 ```
 
-### After (Native Tabs)
+### After (Native Tabs — SDK 55+)
 
 ```tsx
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function TabLayout() {
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="index">
-        <Label>Home</Label>
-        <Icon sf="house.fill" />
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="house.fill" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
-        <Label>Settings</Label>
-        <Icon sf="gear" />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="gear" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );
@@ -270,13 +267,13 @@ export default function TabLayout() {
 
 ### Key Differences
 
-| JS Tabs                    | Native Tabs               |
-| -------------------------- | ------------------------- |
-| `<Tabs.Screen>`            | `<NativeTabs.Trigger>`    |
-| `options={{ title }}`      | `<Label>Title</Label>`    |
-| `options={{ tabBarIcon }}` | `<Icon sf="symbol" />`    |
-| Props-based API            | React component-based API |
-| `tabBarBadge` option       | `<Badge>` component       |
+| JS Tabs                    | Native Tabs                            |
+| -------------------------- | -------------------------------------- |
+| `<Tabs.Screen>`            | `<NativeTabs.Trigger>`                 |
+| `options={{ title }}`      | `<NativeTabs.Trigger.Label>`           |
+| `options={{ tabBarIcon }}` | `<NativeTabs.Trigger.Icon sf="..." />` |
+| Props-based API            | React component-based API              |
+| `tabBarBadge` option       | `<NativeTabs.Trigger.Badge>`           |
 
 ### Migration Steps
 
@@ -287,12 +284,7 @@ export default function TabLayout() {
    import { Tabs } from "expo-router";
 
    // Add
-   import {
-     NativeTabs,
-     Icon,
-     Label,
-     Badge,
-   } from "expo-router/unstable-native-tabs";
+   import { NativeTabs } from "expo-router/unstable-native-tabs";
    ```
 
 2. **Replace Tabs with NativeTabs**
@@ -320,9 +312,9 @@ export default function TabLayout() {
 
    // After
    <NativeTabs.Trigger name="home">
-     <Label>Home</Label>
-     <Icon sf="house.fill" />
-     <Badge>3</Badge>
+     <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+     <NativeTabs.Trigger.Icon sf="house.fill" />
+     <NativeTabs.Trigger.Badge>3</NativeTabs.Trigger.Badge>
    </NativeTabs.Trigger>
    ```
 
@@ -362,7 +354,7 @@ Configure in app.json:
 
 ## Common Issues
 
-1. **Icons not showing on Android**: Add `drawable` prop or use `VectorIcon`
+1. **Icons not showing on Android**: Use `md` prop for Material icons (e.g. `<NativeTabs.Trigger.Icon sf="house.fill" md="home" />`)
 2. **Headers missing**: Nest a Stack inside each tab group
 3. **Trigger name mismatch**: Ensure `name` matches exact route name including parentheses
 4. **Badge not visible**: Badge must be a child of Trigger, not a prop

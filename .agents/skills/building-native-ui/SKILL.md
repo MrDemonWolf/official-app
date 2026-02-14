@@ -102,7 +102,7 @@ See `./references/route-structure.md` for detailed route conventions.
 - Use expo-haptics conditionally on iOS to make more delightful experiences
 - Use views with built-in haptics like `<Switch />` from React Native and `@react-native-community/datetimepicker`
 - When a route belongs to a Stack, its first child should almost always be a ScrollView with `contentInsetAdjustmentBehavior="automatic"` set
-- Prefer `headerSearchBarOptions` in Stack.Screen options to add a search bar
+- Prefer `<Stack.SearchBar />` component (SDK 55+) over `headerSearchBarOptions` for search bars
 - Use the `<Text selectable />` prop on text containing data that could be copied
 - Consider formatting large numbers like 1.4M or 38k
 - Never use intrinsic elements like 'img' or 'div' unless in a webview or Expo DOM component
@@ -270,7 +270,7 @@ app/
 
 ```tsx
 // app/_layout.tsx
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { Theme } from "../components/theme";
 
 export default function Layout() {
@@ -278,8 +278,8 @@ export default function Layout() {
     <Theme>
       <NativeTabs>
         <NativeTabs.Trigger name="(index)">
-          <Icon sf="list.dash" />
-          <Label>Items</Label>
+          <NativeTabs.Trigger.Icon sf="list.dash" />
+          <NativeTabs.Trigger.Label>Items</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="(search)" role="search" />
       </NativeTabs>
@@ -308,7 +308,6 @@ export default function Layout({ segment }) {
         headerLargeStyle: { backgroundColor: "transparent" },
         headerTitleStyle: { color: PlatformColor("label") },
         headerLargeTitle: true,
-        headerBlurEffect: "none",
         headerBackButtonDisplayMode: "minimal",
       }}
     >
