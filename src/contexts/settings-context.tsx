@@ -1,5 +1,5 @@
 import 'expo-sqlite/localStorage/install';
-import { createContext, use, useCallback, useEffect, useState } from 'react';
+import { createContext, use, useCallback, useState } from 'react';
 
 import type { FontSize, Settings, TabName, ThemePreference } from '@/types/settings';
 import { DEFAULT_SETTINGS } from '@/types/settings';
@@ -8,7 +8,6 @@ const STORAGE_KEY = 'app_settings';
 
 interface SettingsContextValue {
   settings: Settings;
-  isLoading: boolean;
   setFontSize: (size: FontSize) => void;
   setThemePreference: (pref: ThemePreference) => void;
   setHapticsEnabled: (enabled: boolean) => void;
@@ -18,7 +17,6 @@ interface SettingsContextValue {
 
 const SettingsContext = createContext<SettingsContextValue>({
   settings: DEFAULT_SETTINGS,
-  isLoading: true,
   setFontSize: () => {},
   setThemePreference: () => {},
   setHapticsEnabled: () => {},
@@ -27,56 +25,36 @@ const SettingsContext = createContext<SettingsContextValue>({
 });
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
+  const [settings, setSettings] = useState<Settings>(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
-        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) });
+        return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
       } catch {
         // ignore bad data
       }
     }
-    setIsLoading(false);
+    return DEFAULT_SETTINGS;
+  });
+
+  const update = useCallback((patch: Partial<Settings>) => {
+    setSettings((prev) => {
+      const next = { ...prev, ...patch };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
-  const persist = useCallback((next: Settings) => {
-    setSettings(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }, []);
-
-  const setFontSize = useCallback(
-    (fontSize: FontSize) => persist({ ...settings, fontSize }),
-    [settings, persist]
-  );
-
-  const setThemePreference = useCallback(
-    (themePreference: ThemePreference) => persist({ ...settings, themePreference }),
-    [settings, persist]
-  );
-
-  const setHapticsEnabled = useCallback(
-    (hapticsEnabled: boolean) => persist({ ...settings, hapticsEnabled }),
-    [settings, persist]
-  );
-
-  const setLastTab = useCallback(
-    (lastTab: TabName) => persist({ ...settings, lastTab }),
-    [settings, persist]
-  );
-
-  const setNotificationsEnabled = useCallback(
-    (notificationsEnabled: boolean) => persist({ ...settings, notificationsEnabled }),
-    [settings, persist]
-  );
+  const setFontSize = useCallback((fontSize: FontSize) => update({ fontSize }), [update]);
+  const setThemePreference = useCallback((themePreference: ThemePreference) => update({ themePreference }), [update]);
+  const setHapticsEnabled = useCallback((hapticsEnabled: boolean) => update({ hapticsEnabled }), [update]);
+  const setLastTab = useCallback((lastTab: TabName) => update({ lastTab }), [update]);
+  const setNotificationsEnabled = useCallback((notificationsEnabled: boolean) => update({ notificationsEnabled }), [update]);
 
   return (
     <SettingsContext
       value={{
         settings,
-        isLoading,
         setFontSize,
         setThemePreference,
         setHapticsEnabled,
