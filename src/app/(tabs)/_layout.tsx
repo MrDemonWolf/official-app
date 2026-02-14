@@ -15,18 +15,18 @@ const TAB_NAMES = new Set<string>([
 
 export default function TabLayout() {
   const segments = useSegments();
-  const { settings, setLastTab, isLoading } = useSettings();
+  const { settings, setLastTab } = useSettings();
   const hasRestored = useRef(false);
 
   // Restore last tab on cold launch
   useEffect(() => {
-    if (!isLoading && !hasRestored.current) {
+    if (!hasRestored.current) {
       hasRestored.current = true;
       if (settings.lastTab && settings.lastTab !== '(index)') {
         router.replace(`/(tabs)/${settings.lastTab}` as never);
       }
     }
-  }, [isLoading, settings.lastTab]);
+  }, [settings.lastTab]);
 
   // Save current tab when it changes
   useEffect(() => {
