@@ -18,6 +18,7 @@ export default function BlogStack() {
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Blog' }} />
+      <Stack.Screen name="bookmarks" options={{ title: 'Bookmarks', headerLargeTitle: false }} />
     </Stack>
   );
 }
