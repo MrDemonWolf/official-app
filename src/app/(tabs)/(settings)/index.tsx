@@ -1,12 +1,11 @@
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import Constants from 'expo-constants';
-import { useCallback, useEffect, useState } from 'react';
-import { Alert, type LayoutChangeEvent, Pressable, ScrollView, Switch, Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useCallback } from 'react';
+import { Alert, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useSettings } from '@/contexts/settings-context';
 import { useClearBookmarks } from '@/hooks/use-bookmarks';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { FONT_SCALES } from '@/lib/font-scale';
 import type { FontSize, ThemePreference } from '@/types/settings';
@@ -19,126 +18,14 @@ const BUILD_NUMBER =
     : Constants.expoConfig?.android?.versionCode?.toString()) ?? '1';
 const COPYRIGHT_YEAR = new Date().getFullYear();
 
-const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'auto', label: 'Auto' },
-];
+const THEME_LABELS = ['Light', 'Dark', 'Auto'];
+const THEME_VALUES: ThemePreference[] = ['light', 'dark', 'auto'];
 
-const FONT_OPTIONS: { value: FontSize; label: string }[] = [
-  { value: 'small', label: 'Small' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'large', label: 'Large' },
-];
-
-function SegmentedControl<T extends string>({
-  options,
-  value,
-  onChange,
-  isDark,
-}: {
-  options: { value: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
-  isDark: boolean;
-}) {
-  const haptics = useHaptics();
-  const selectedIndex = options.findIndex((o) => o.value === value);
-  const [segmentWidth, setSegmentWidth] = useState(0);
-  const indicatorX = useSharedValue(0);
-
-  const handleLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      const width = e.nativeEvent.layout.width / options.length;
-      setSegmentWidth(width);
-      indicatorX.value = selectedIndex * width;
-    },
-    [options.length, selectedIndex, indicatorX]
-  );
-
-  useEffect(() => {
-    if (segmentWidth > 0) {
-      indicatorX.value = withSpring(selectedIndex * segmentWidth, {
-        damping: 20,
-        stiffness: 300,
-        mass: 0.8,
-      });
-    }
-  }, [selectedIndex, segmentWidth, indicatorX]);
-
-  const indicatorStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: indicatorX.value }],
-  }));
-
-  return (
-    <View
-      style={{
-        borderRadius: 10,
-        backgroundColor: isDark ? '#27272a' : '#f4f4f5',
-        padding: 3,
-      }}
-    >
-      <View onLayout={handleLayout} style={{ position: 'relative' }}>
-        {segmentWidth > 0 && (
-          <Animated.View
-            style={[
-              {
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                width: segmentWidth,
-                borderRadius: 8,
-                backgroundColor: isDark ? '#3f3f46' : '#ffffff',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-              },
-              indicatorStyle,
-            ]}
-          />
-        )}
-        <View style={{ flexDirection: 'row' }}>
-          {options.map((opt) => {
-            const selected = opt.value === value;
-            return (
-              <Pressable
-                key={opt.value}
-                onPress={() => {
-                  haptics.selection();
-                  onChange(opt.value);
-                }}
-                style={{
-                  flex: 1,
-                  paddingVertical: 8,
-                  alignItems: 'center',
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: selected ? '600' : '400',
-                    color: selected
-                      ? isDark
-                        ? '#f4f4f5'
-                        : '#18181b'
-                      : isDark
-                        ? '#a1a1aa'
-                        : '#71717a',
-                  }}
-                >
-                  {opt.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-    </View>
-  );
-}
+const FONT_LABELS = ['Small', 'Medium', 'Large'];
+const FONT_VALUES: FontSize[] = ['small', 'medium', 'large'];
 
 export default function SettingsScreen() {
   const { settings, setThemePreference, setFontSize, setHapticsEnabled, setNotificationsEnabled } = useSettings();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
   const scale = FONT_SCALES[settings.fontSize];
   const queryClient = useQueryClient();
   const haptics = useHaptics();
@@ -180,20 +67,6 @@ export default function SettingsScreen() {
     );
   }, [clearBookmarks, haptics]);
 
-  const sectionHeaderStyle = {
-    fontSize: 13,
-    fontWeight: '600' as const,
-    textTransform: 'uppercase' as const,
-    letterSpacing: 0.5,
-    color: isDark ? '#a1a1aa' : '#71717a',
-  };
-
-  const cardStyle = {
-    padding: 16,
-    gap: 12,
-    borderCurve: 'continuous' as const,
-  };
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -201,38 +74,33 @@ export default function SettingsScreen() {
       className="bg-zinc-50 dark:bg-zinc-950"
     >
       {/* Appearance */}
-      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-        <Text style={sectionHeaderStyle}>Appearance</Text>
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+        <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Appearance
+        </Text>
         <SegmentedControl
-          options={THEME_OPTIONS}
-          value={settings.themePreference}
-          onChange={setThemePreference}
-          isDark={isDark}
+          values={THEME_LABELS}
+          selectedIndex={THEME_VALUES.indexOf(settings.themePreference)}
+          onChange={({ nativeEvent }) => setThemePreference(THEME_VALUES[nativeEvent.selectedSegmentIndex])}
         />
       </View>
 
       {/* Reading */}
-      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-        <Text style={sectionHeaderStyle}>Reading</Text>
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+        <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Reading
+        </Text>
         <SegmentedControl
-          options={FONT_OPTIONS}
-          value={settings.fontSize}
-          onChange={setFontSize}
-          isDark={isDark}
+          values={FONT_LABELS}
+          selectedIndex={FONT_VALUES.indexOf(settings.fontSize)}
+          onChange={({ nativeEvent }) => setFontSize(FONT_VALUES[nativeEvent.selectedSegmentIndex])}
         />
-        <View
-          style={{
-            marginTop: 8,
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: isDark ? '#18181b' : '#f4f4f5',
-          }}
-        >
+        <View className="mt-2 rounded-lg bg-zinc-100 dark:bg-zinc-950" style={{ padding: 12 }}>
           <Text
+            className="text-zinc-700 dark:text-zinc-300"
             style={{
               fontSize: scale.body,
               lineHeight: scale.body * scale.lineHeight,
-              color: isDark ? '#d4d4d8' : '#3f3f46',
             }}
           >
             The quick brown fox jumps over the lazy dog. This is a preview of how blog content will
@@ -243,20 +111,16 @@ export default function SettingsScreen() {
 
       {/* Haptics - iOS only */}
       {isIOS && (
-        <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-          <Text style={sectionHeaderStyle}>Haptics</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
+        <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+          <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Haptics
+          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>
+              <Text className="text-base text-zinc-900 dark:text-zinc-100">
                 Haptic Feedback
               </Text>
-              <Text style={{ fontSize: 13, color: isDark ? '#71717a' : '#a1a1aa', marginTop: 2 }}>
+              <Text className="mt-0.5 text-[13px] text-zinc-400 dark:text-zinc-500">
                 Vibration on taps and interactions
               </Text>
             </View>
@@ -266,20 +130,16 @@ export default function SettingsScreen() {
       )}
 
       {/* Notifications */}
-      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-        <Text style={sectionHeaderStyle}>Notifications</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+        <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Notifications
+        </Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>
+            <Text className="text-base text-zinc-900 dark:text-zinc-100">
               Push Notifications
             </Text>
-            <Text style={{ fontSize: 13, color: isDark ? '#71717a' : '#a1a1aa', marginTop: 2 }}>
+            <Text className="mt-0.5 text-[13px] text-zinc-400 dark:text-zinc-500">
               Get notified about new posts
             </Text>
           </View>
@@ -288,73 +148,45 @@ export default function SettingsScreen() {
       </View>
 
       {/* Data */}
-      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-        <Text style={sectionHeaderStyle}>Data</Text>
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+        <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Data
+        </Text>
         <Pressable
           onPress={handleClearCache}
-          style={({ pressed }) => ({
-            padding: 12,
-            borderRadius: 10,
-            backgroundColor: isDark ? '#18181b' : '#f4f4f5',
-            opacity: pressed ? 0.7 : 1,
-          })}
+          className="rounded-[10px] bg-zinc-100 dark:bg-zinc-950"
+          style={({ pressed }) => ({ padding: 12, opacity: pressed ? 0.7 : 1 })}
         >
-          <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Cache</Text>
+          <Text className="text-base text-red-500">Clear Cache</Text>
         </Pressable>
         <Pressable
           onPress={handleClearBookmarks}
-          style={({ pressed }) => ({
-            padding: 12,
-            borderRadius: 10,
-            backgroundColor: isDark ? '#18181b' : '#f4f4f5',
-            opacity: pressed ? 0.7 : 1,
-          })}
+          className="rounded-[10px] bg-zinc-100 dark:bg-zinc-950"
+          style={({ pressed }) => ({ padding: 12, opacity: pressed ? 0.7 : 1 })}
         >
-          <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Bookmarks</Text>
+          <Text className="text-base text-red-500">Clear Bookmarks</Text>
         </Pressable>
       </View>
 
       {/* About */}
-      <View className="rounded-xl bg-white dark:bg-zinc-900" style={cardStyle}>
-        <Text style={sectionHeaderStyle}>About</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>Version</Text>
-          <Text style={{ fontSize: 16, color: isDark ? '#71717a' : '#a1a1aa' }} selectable>
+      <View className="rounded-xl bg-white dark:bg-zinc-900" style={{ padding: 16, gap: 12, borderCurve: 'continuous' }}>
+        <Text className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          About
+        </Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text className="text-base text-zinc-900 dark:text-zinc-100">Version</Text>
+          <Text className="text-base text-zinc-400 dark:text-zinc-500" selectable>
             {APP_VERSION}
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 16, color: isDark ? '#f4f4f5' : '#18181b' }}>Build</Text>
-          <Text style={{ fontSize: 16, color: isDark ? '#71717a' : '#a1a1aa' }} selectable>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text className="text-base text-zinc-900 dark:text-zinc-100">Build</Text>
+          <Text className="text-base text-zinc-400 dark:text-zinc-500" selectable>
             {BUILD_NUMBER}
           </Text>
         </View>
-        <View
-          style={{
-            height: 1,
-            backgroundColor: isDark ? '#27272a' : '#e4e4e7',
-            marginVertical: 4,
-          }}
-        />
-        <Text
-          style={{
-            fontSize: 13,
-            color: isDark ? '#71717a' : '#a1a1aa',
-            textAlign: 'center',
-          }}
-        >
+        <View className="my-1 h-px bg-zinc-200 dark:bg-zinc-800" />
+        <Text className="text-center text-[13px] text-zinc-400 dark:text-zinc-500">
           {'\u00A9'} {COPYRIGHT_YEAR} MrDemonWolf. All rights reserved.
         </Text>
       </View>
