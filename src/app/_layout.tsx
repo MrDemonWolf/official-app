@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { Appearance } from 'react-native';
+import { colorScheme as nativewindColorScheme } from 'react-native-css';
 import 'react-native-reanimated';
 
 import { SettingsProvider, useSettings } from '@/contexts/settings-context';
@@ -33,9 +33,9 @@ function RootInner() {
 
   useEffect(() => {
     if (settings.themePreference === 'auto') {
-      Appearance.setColorScheme('unspecified');
+      nativewindColorScheme.set('unspecified');
     } else {
-      Appearance.setColorScheme(settings.themePreference);
+      nativewindColorScheme.set(settings.themePreference);
     }
   }, [settings.themePreference]);
 
