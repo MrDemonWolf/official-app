@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import 'expo-sqlite/localStorage/install';
+import { createContext, use, useCallback, useEffect, useState } from 'react';
 
 import type { FontSize, Settings, TabName, ThemePreference } from '@/types/settings';
 import { DEFAULT_SETTINGS } from '@/types/settings';
@@ -31,21 +31,20 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
-      if (raw) {
-        try {
-          setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) });
-        } catch {
-          // ignore bad data
-        }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      try {
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) });
+      } catch {
+        // ignore bad data
       }
-      setIsLoading(false);
-    });
+    }
+    setIsLoading(false);
   }, []);
 
   const persist = useCallback((next: Settings) => {
     setSettings(next);
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   }, []);
 
   const setFontSize = useCallback(
@@ -74,7 +73,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <SettingsContext.Provider
+    <SettingsContext
       value={{
         settings,
         isLoading,
@@ -86,10 +85,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </SettingsContext.Provider>
+    </SettingsContext>
   );
 }
 
 export function useSettings() {
-  return useContext(SettingsContext);
+  return use(SettingsContext);
 }

@@ -1,5 +1,4 @@
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,7 +23,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     return null;
   }
 
-  if (Platform.OS === 'android') {
+  if (process.env.EXPO_OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'Default',
       importance: Notifications.AndroidImportance.DEFAULT,
@@ -46,7 +45,7 @@ export async function sendPushTokenToServer(token: string): Promise<void> {
     await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, platform: Platform.OS }),
+      body: JSON.stringify({ token, platform: process.env.EXPO_OS }),
     });
   } catch {
     // Silently fail — token registration is best-effort
