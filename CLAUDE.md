@@ -66,7 +66,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 
 | Tab | Route | Status |
 |-----|-------|--------|
-| About | `(index)/index.tsx` | Full-width parallax hero with WP author data |
+| About | `(index)/index.tsx` | Profile screen with avatar, role, social links, bio from WP user |
 | Blog | `(blog)/index.tsx` | Infinite scroll blog list with cache pre-population |
 | Blog Post | `blog/[id].tsx` | Detail screen with HTML content rendering |
 | Portfolio | `(portfolio)/index.tsx` | Coming soon placeholder |
@@ -83,7 +83,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 
 - **React Query** (`@tanstack/react-query`) for all server state
 - `src/hooks/query-keys.ts` — Centralized query key factory
-- `src/services/wordpress.ts` — WordPress REST API (posts, pages, media)
+- `src/services/wordpress.ts` — WordPress REST API (users, posts, pages, media)
 - `src/services/gravity-forms.ts` — Gravity Forms submission
 - Blog list pre-populates individual post caches for instant detail screen rendering
 

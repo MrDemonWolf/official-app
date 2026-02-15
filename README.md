@@ -6,7 +6,7 @@ Built with modern native technologies for a smooth, native-feeling experience on
 
 ## Features
 
-- **About** — Full-width parallax hero with bio and author info pulled directly from WordPress.
+- **About** — Profile screen with circular avatar, role tagline, social links, and bio pulled directly from a WordPress user.
 - **Blog** — Infinite scroll blog feed with featured images, author metadata, categories, and full post reading with rich HTML rendering.
 - **Portfolio** — Coming soon.
 - **Contact** — Coming soon (Gravity Forms integration).
@@ -80,10 +80,34 @@ Copy `.env.example` to `.env` and configure the values for your WordPress site:
 | Variable | Description |
 |----------|-------------|
 | `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://yoursite.com/wp-json/wp/v2`) |
+| `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
 | `EXPO_PUBLIC_APP_VARIANT` | App variant — `development` or `production` |
 | `EXPO_PUBLIC_GF_API_URL` | Gravity Forms REST API base URL for the contact form |
 | `EXPO_PUBLIC_GF_CONTACT_FORM_ID` | Gravity Forms form ID for the contact form |
 | `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal REST API base URL for push notification device registration (requires the [TailSignal](https://tailsignal.com) WordPress plugin) |
+
+### WordPress ACF Setup
+
+The About screen pulls social links and a role/tagline from [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) user fields. Install the ACF plugin on your WordPress site, then create a field group:
+
+1. Go to **ACF > Field Groups** and create a new group (e.g. "User Profile")
+2. Add the following fields:
+
+   | Field Label | Field Name | Field Type |
+   |---|---|---|
+   | Role / Title | `role_title` | Text |
+   | GitHub URL | `github_url` | URL |
+   | Discord URL | `discord_url` | URL |
+   | Twitter / X URL | `twitter_url` | URL |
+   | Twitch URL | `twitch_url` | URL |
+   | YouTube URL | `youtube_url` | URL |
+   | Website URL | `website_url` | URL |
+
+3. Set the **Location** rule to: **User Role** is equal to **All**
+4. Under **Settings**, enable **Show in REST API**
+5. Fill in the fields on your WordPress user profile
+
+Only fields with values will show as icons on the About screen. If no ACF fields are configured, the social links row simply won't appear.
 
 ### Code Quality
 
