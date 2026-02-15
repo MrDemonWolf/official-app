@@ -13,6 +13,10 @@ import { SettingsProvider, useSettings } from '@/contexts/settings-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNotifications } from '@/hooks/use-notifications';
 
+// Set initial NativeWind color scheme before first render to avoid
+// className 'undefined' variable warnings from react-native-css
+nativewindColorScheme.set(Appearance.getColorScheme() ?? 'light');
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
