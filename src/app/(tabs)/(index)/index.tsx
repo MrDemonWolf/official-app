@@ -1,35 +1,23 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
-import { ActivityIndicator, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
+import * as Linking from 'expo-linking';
+import { useCallback, useState } from 'react';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 
-import { HtmlContent } from '@/components/html-content';
 import { useAbout } from '@/hooks/use-about';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-const HEADER_HEIGHT = 300;
+import { useHaptics } from '@/hooks/use-haptics';
+import type { WPAuthorAcf } from '@/types/wordpress';
 
 const FALLBACK_AVATAR =
   'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=800';
 
-function getHighResAvatar(url: string): string {
-  return url.replace(/([?&])s=\d+/, '$1s=800');
-}
-
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').trim();
-}
-
-function hasUsableContent(html: string | undefined): boolean {
-  if (!html) return false;
-  if (html.includes('et_pb_')) return false;
-  const text = stripHtml(html);
-  return text.length > 20;
+function getBestAvatar(avatarUrls: Record<string, string>): string {
+  const sizes = Object.keys(avatarUrls)
+    .map(Number)
+    .filter((n) => !isNaN(n))
+    .sort((a, b) => b - a);
+  return sizes.length > 0 ? avatarUrls[String(sizes[0])] : FALLBACK_AVATAR;
 }
 
 const FALLBACK_BIO = [
@@ -39,54 +27,66 @@ const FALLBACK_BIO = [
   'Join me for some fun and engaging content that blends both business and pleasure.',
 ];
 
+interface SocialLink {
+  key: string;
+  url: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+}
+
+function getSocialLinks(acf: WPAuthorAcf | undefined, authorUrl: string | undefined): SocialLink[] {
+  if (!acf) return [];
+
+  const links: SocialLink[] = [];
+
+  if (acf.github_url) links.push({ key: 'github', url: acf.github_url, icon: 'logo-github' });
+  if (acf.discord_url) links.push({ key: 'discord', url: acf.discord_url, icon: 'logo-discord' });
+  if (acf.twitter_url) links.push({ key: 'twitter', url: acf.twitter_url, icon: 'logo-twitter' });
+  if (acf.twitch_url) links.push({ key: 'twitch', url: acf.twitch_url, icon: 'logo-twitch' });
+  if (acf.youtube_url) links.push({ key: 'youtube', url: acf.youtube_url, icon: 'logo-youtube' });
+
+  const websiteUrl = acf.website_url || authorUrl;
+  if (websiteUrl) links.push({ key: 'website', url: websiteUrl, icon: 'globe-outline' });
+
+  return links;
+}
+
 export default function AboutScreen() {
-  const { data: page, isLoading } = useAbout();
+  const { data: user, isLoading, refetch } = useAbout();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { width } = useWindowDimensions();
-  const scrollY = useSharedValue(0);
+  const { impact } = useHaptics();
+  const [refreshing, setRefreshing] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState(0);
 
-  const author = page?._embedded?.author?.[0];
-  const authorName = author?.name ?? 'MrDemonWolf';
-  const authorBio = author?.description;
-  const avatarUrl = author?.avatar_urls?.['96']
-    ? getHighResAvatar(author.avatar_urls['96'])
+  const authorName = user?.name ?? 'MrDemonWolf';
+  const authorBio = user?.description;
+  const roleTitle = user?.acf?.role_title;
+  const baseAvatarUrl = user?.avatar_urls
+    ? getBestAvatar(user.avatar_urls)
     : FALLBACK_AVATAR;
-  const wpContentUsable = hasUsableContent(page?.content?.rendered);
+  const avatarUrl = cacheBuster > 0
+    ? `${baseAvatarUrl}${baseAvatarUrl.includes('?') ? '&' : '?'}_t=${cacheBuster}`
+    : baseAvatarUrl;
+  const socialLinks = getSocialLinks(user?.acf, user?.url);
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
-    },
-  });
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    setCacheBuster(Date.now());
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
-  const headerStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      scrollY.value,
-      [-HEADER_HEIGHT, 0],
-      [2, 1],
-      { extrapolateRight: Extrapolation.CLAMP }
-    );
-    const translateY = interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT],
-      [0, -HEADER_HEIGHT * 0.5],
-      Extrapolation.CLAMP
-    );
-    return {
-      transform: [{ translateY }, { scale }],
-    };
-  });
-
-  const overlayStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT * 0.4],
-      [1, 0],
-      Extrapolation.CLAMP
-    );
-    return { opacity };
-  });
+  const handleSocialPress = async (url: string) => {
+    impact();
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      }
+    } catch (e) {
+      console.warn('Failed to open URL:', url, e);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -97,75 +97,95 @@ export default function AboutScreen() {
   }
 
   return (
-    <Animated.ScrollView
-      onScroll={scrollHandler}
-      scrollEventThrottle={16}
+    <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{ paddingBottom: 40 }}
       className="bg-zinc-50 dark:bg-zinc-950"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
-      {/* Parallax Hero */}
-      <Animated.View
-        style={[{ height: HEADER_HEIGHT, width, overflow: 'hidden' }, headerStyle]}
+      {/* Header area */}
+      <View
+        className="bg-zinc-100 dark:bg-zinc-900"
+        style={{ paddingTop: 32, paddingBottom: 24, alignItems: 'center' }}
       >
-        <Image
-          source={{ uri: avatarUrl }}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-        />
-
-        {/* Dark overlay for readability */}
+        {/* Circular avatar */}
         <View
           style={{
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: 'rgba(0, 0, 0, 0.25)',
+            width: 120,
+            height: 120,
+            borderRadius: 60,
+            borderWidth: 3,
+            borderColor: isDark ? '#3f3f46' : '#e4e4e7',
+            overflow: 'hidden',
           }}
-        />
-
-        {/* Bottom gradient + name */}
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              paddingHorizontal: 20,
-              paddingBottom: 16,
-              paddingTop: 60,
-              experimental_backgroundImage:
-                'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
-            },
-            overlayStyle,
-          ]}
         >
+          <Image
+            source={{ uri: avatarUrl }}
+            style={{ width: '100%', height: '100%' }}
+            contentFit="cover"
+          />
+        </View>
+
+        {/* Name */}
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: '800',
+            color: isDark ? '#fafafa' : '#18181b',
+            marginTop: 16,
+            letterSpacing: -0.5,
+          }}
+        >
+          {authorName}
+        </Text>
+
+        {/* Role / tagline */}
+        {roleTitle ? (
           <Text
             style={{
-              fontSize: 28,
-              fontWeight: '800',
-              color: '#ffffff',
-              letterSpacing: -0.5,
+              fontSize: 15,
+              color: isDark ? '#a1a1aa' : '#71717a',
+              marginTop: 4,
             }}
           >
-            {authorName}
+            {roleTitle}
           </Text>
-        </Animated.View>
-      </Animated.View>
+        ) : null}
 
-      {/* Content */}
-      <View style={{ padding: 16, gap: 16 }}>
-        {wpContentUsable ? (
-          <View
-            className="rounded-2xl bg-white dark:bg-zinc-900"
-            style={{
-              padding: 16,
-              borderCurve: 'continuous',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <HtmlContent html={page!.content.rendered} />
+        {/* Social links row */}
+        {socialLinks.length > 0 ? (
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
+            {socialLinks.map((link) => (
+              <Pressable
+                key={link.key}
+                onPress={() => handleSocialPress(link.url)}
+                style={({ pressed }) => ({
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: isDark
+                    ? pressed ? '#3f3f46' : '#27272a'
+                    : pressed ? '#d4d4d8' : '#e4e4e7',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                })}
+              >
+                <Ionicons
+                  name={link.icon}
+                  size={22}
+                  color={isDark ? '#fafafa' : '#18181b'}
+                />
+              </Pressable>
+            ))}
           </View>
-        ) : authorBio ? (
+        ) : null}
+      </View>
+
+      {/* Bio card */}
+      <View style={{ padding: 16, gap: 16 }}>
+        {authorBio ? (
           <View
             className="rounded-2xl bg-white dark:bg-zinc-900"
             style={{
@@ -211,6 +231,6 @@ export default function AboutScreen() {
           </View>
         )}
       </View>
-    </Animated.ScrollView>
+    </ScrollView>
   );
 }

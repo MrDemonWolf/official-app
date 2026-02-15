@@ -6,21 +6,25 @@ Built with modern native technologies for a smooth, native-feeling experience on
 
 ## Features
 
-- **About** — Full-width parallax hero with bio and author info pulled directly from WordPress.
+- **About** — Profile screen with circular avatar, role tagline, social links, and bio pulled directly from a WordPress user.
 - **Blog** — Infinite scroll blog feed with featured images, author metadata, categories, and full post reading with rich HTML rendering.
-- **Portfolio** — Coming soon.
+- **Bookmarks** — Save blog and portfolio posts locally with SQLite-backed offline bookmarks.
+- **Portfolio** — Portfolio showcase with detail screens.
 - **Contact** — Coming soon (Gravity Forms integration).
-- **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), and cache management.
+- **Push Notifications** — Subscribe to new blog post notifications via TailSignal, with automatic device registration and deep linking to posts.
+- **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), notifications toggle, and cache management.
 - **Tab Persistence** — Remembers your last visited tab across app launches.
 - **Platform Optimized** — Native tabs with SF Symbols on iOS, Material Design on Android.
 
 ## Tech Stack
 
-- **Framework:** Expo SDK 54 with React Native 0.81 (New Architecture)
+- **Framework:** Expo SDK 55 with React Native 0.83 (New Architecture)
 - **Navigation:** Expo Router with native tabs and file-based routing
 - **Data Fetching:** React Query with WordPress REST API
 - **Styling:** NativeWind (Tailwind CSS) with light/dark mode support
-- **Animations:** React Native Reanimated for parallax effects and animated controls
+- **Icons:** expo-symbols (SF Symbols on iOS), Ionicons via @expo/vector-icons
+- **Local Storage:** expo-sqlite for bookmarks, AsyncStorage for settings
+- **Notifications:** expo-notifications with TailSignal backend
 - **State:** React Context with AsyncStorage persistence
 - **Platforms:** iOS, Android, and web
 
@@ -54,7 +58,7 @@ Built with modern native technologies for a smooth, native-feeling experience on
    cp .env.example .env
    ```
 
-4. Configure your environment variables in `.env`
+4. Configure your environment variables in `.env` (see [Environment Variables](#environment-variables) below)
 
 5. Start the development server:
    ```bash
@@ -71,6 +75,42 @@ Built with modern native technologies for a smooth, native-feeling experience on
 - `pnpm type-check` — Run TypeScript type checking
 - `pnpm prebuild` — Generate native projects
 - `pnpm prebuild:clean` — Clean and regenerate native projects
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure the values for your WordPress site:
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://yoursite.com/wp-json/wp/v2`) |
+| `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
+| `EXPO_PUBLIC_APP_VARIANT` | App variant — `development` or `production` |
+| `EXPO_PUBLIC_GF_API_URL` | Gravity Forms REST API base URL for the contact form |
+| `EXPO_PUBLIC_GF_CONTACT_FORM_ID` | Gravity Forms form ID for the contact form |
+| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal REST API base URL for push notification device registration (requires the [TailSignal](https://tailsignal.com) WordPress plugin) |
+
+### WordPress ACF Setup
+
+The About screen pulls social links and a role/tagline from [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) user fields. Install the ACF plugin on your WordPress site, then create a field group:
+
+1. Go to **ACF > Field Groups** and create a new group (e.g. "User Profile")
+2. Add the following fields:
+
+   | Field Label | Field Name | Field Type |
+   |---|---|---|
+   | Role / Title | `role_title` | Text |
+   | GitHub URL | `github_url` | URL |
+   | Discord URL | `discord_url` | URL |
+   | Twitter / X URL | `twitter_url` | URL |
+   | Twitch URL | `twitch_url` | URL |
+   | YouTube URL | `youtube_url` | URL |
+   | Website URL | `website_url` | URL |
+
+3. Set the **Location** rule to: **User Role** is equal to **All**
+4. Under **Settings**, enable **Show in REST API**
+5. Fill in the fields on your WordPress user profile
+
+Only fields with values will show as icons on the About screen. If no ACF fields are configured, the social links row simply won't appear.
 
 ### Code Quality
 
@@ -98,6 +138,13 @@ eas submit --platform ios
 # Submit to Play Store
 eas submit --platform android
 ```
+
+### EAS Build Profiles
+
+| Profile | Distribution | Channel | Description |
+|---------|-------------|---------|-------------|
+| `development` | Internal | `development` | Development client for testing |
+| `production` | Store | `production` | Production build with auto-increment versioning |
 
 ## License
 

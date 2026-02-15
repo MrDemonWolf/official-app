@@ -3,20 +3,37 @@ import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 
 import { useSettings } from '@/contexts/settings-context';
-import { registerForPushNotifications, sendPushTokenToServer } from '@/services/notifications';
+import {
+  registerDevice,
+  registerForPushNotifications,
+  unregisterDevice,
+} from '@/services/notifications';
 
 export function useNotifications() {
   const { settings } = useSettings();
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!settings.notificationsEnabled) return;
-
-    registerForPushNotifications().then((token) => {
-      if (token) {
-        sendPushTokenToServer(token);
+    if (!settings.notificationsEnabled) {
+      // If notifications were just disabled and we have a stored token, unregister
+      if (tokenRef.current) {
+        unregisterDevice(tokenRef.current);
+        tokenRef.current = null;
       }
-    });
+      return;
+    }
+
+    registerForPushNotifications()
+      .then((token) => {
+        if (token) {
+          tokenRef.current = token;
+          registerDevice(token);
+        }
+      })
+      .catch((e) => {
+        console.warn('Failed to register for push notifications:', e);
+      });
 
     // Handle notification taps — navigate to the relevant post
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
