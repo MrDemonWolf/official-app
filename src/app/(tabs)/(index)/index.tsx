@@ -65,7 +65,7 @@ export default function AboutScreen() {
     ? getBestAvatar(user.avatar_urls)
     : FALLBACK_AVATAR;
   const avatarUrl = cacheBuster > 0
-    ? `${baseAvatarUrl}&_t=${cacheBuster}`
+    ? `${baseAvatarUrl}${baseAvatarUrl.includes('?') ? '&' : '?'}_t=${cacheBuster}`
     : baseAvatarUrl;
   const socialLinks = getSocialLinks(user?.acf, user?.url);
 
@@ -76,9 +76,16 @@ export default function AboutScreen() {
     setRefreshing(false);
   }, [refetch]);
 
-  const handleSocialPress = (url: string) => {
+  const handleSocialPress = async (url: string) => {
     impact();
-    Linking.openURL(url);
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      }
+    } catch (e) {
+      console.warn('Failed to open URL:', url, e);
+    }
   };
 
   if (isLoading) {
