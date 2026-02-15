@@ -48,7 +48,7 @@ The app must provide **meaningful interactive functionality** that goes beyond w
 
 1. **Complete the Contact form** — Enable the Gravity Forms integration so users can submit messages natively (the backend hooks and React Query mutation are already built)
 2. **Complete the Portfolio section** — Display actual portfolio projects with filtering, categories, or detail views
-3. **Add push notifications** — Allow users to subscribe to new blog post notifications (requires `expo-notifications`, a push server, and user opt-in)
+3. ~~**Add push notifications**~~ **DONE** — TailSignal push notifications integrated with device registration, unregistration, and deep linking to posts
 4. **Add bookmarks/favorites** — Let users save blog posts locally for offline reading
 5. **Add sharing** — Native share sheet for blog posts and portfolio items
 6. **Add search** — Full-text search across blog posts
@@ -76,7 +76,7 @@ The app fetches content from a WordPress REST API and displays it in a scrollabl
 
 The app must offer functionality that is **not possible or practical** via the website. Examples:
 
-- **Push notifications** for new content (not available on mobile web)
+- ~~**Push notifications** for new content (not available on mobile web)~~ **DONE** — TailSignal integration implemented
 - **Offline reading** with local storage (expo-sqlite is already a dependency)
 - **Native sharing** via the iOS share sheet
 - **Widgets** (iOS 17+ WidgetKit) showing latest blog post
@@ -277,7 +277,8 @@ Apple and Google both require a privacy policy URL for all published apps.
 | `expo-sqlite` dependency | Unused | Listed in `package.json` but not imported anywhere. Remove it or use it for offline caching/bookmarks. |
 | Contact form backend | Ready but disabled | `useContactForm()` hook and `gravity-forms.ts` service are fully implemented. Only the UI screen shows "Coming Soon". |
 | `expo-symbols` (SF Symbols) | iOS only | The `ComingSoon` component uses `SymbolView` which only renders on iOS. Android has a platform-specific contact screen file but portfolio does not. Verify Android renders correctly for all screens. |
-| Deep linking scheme | Configured but unused | `scheme: "mrdemonwolf"` is set in config but no deep link handling is implemented. |
+| Deep linking scheme | Partially used | `scheme: "mrdemonwolf"` is set in config. Push notification taps deep link to blog/portfolio posts via Expo Router. |
+| Push notifications | Implemented | TailSignal device registration via `expo-notifications` and `expo-device`. Toggle in Settings registers/unregisters the device. |
 
 ---
 
@@ -302,7 +303,7 @@ Apple and Google both require a privacy policy URL for all published apps.
 | P1 | Add blog post bookmarks/favorites with local storage | Guideline 4.2 |
 | P1 | Add offline reading capability (leverage `expo-sqlite`) | Guideline 4.2 |
 | P1 | Add blog search functionality | Guideline 4.2 |
-| P1 | Add push notifications for new blog posts (`expo-notifications`) | Guideline 4.2 |
+| ~~P1~~ | ~~Add push notifications for new blog posts (`expo-notifications`)~~ **DONE** — TailSignal integration with device registration/unregistration | Guideline 4.2 |
 
 ### Phase 3 — Store Metadata (Must Do Before Submission)
 

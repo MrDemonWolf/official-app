@@ -1,8 +1,11 @@
+import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+
+const TAILSIGNAL_API_URL = process.env.EXPO_PUBLIC_TAILSIGNAL_API_URL;
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,
@@ -37,17 +40,35 @@ export async function registerForPushNotifications(): Promise<string | null> {
   return tokenData.data;
 }
 
-export async function sendPushTokenToServer(token: string): Promise<void> {
-  const API_URL = process.env.EXPO_PUBLIC_PUSH_TOKEN_API_URL;
-  if (!API_URL) return;
+export async function registerDevice(token: string): Promise<void> {
+  if (!TAILSIGNAL_API_URL) return;
 
   try {
-    await fetch(API_URL, {
+    await fetch(`${TAILSIGNAL_API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, platform: process.env.EXPO_OS }),
+      body: JSON.stringify({
+        expo_token: token,
+        device_type: process.env.EXPO_OS ?? 'unknown',
+        device_model: Device.modelName ?? 'Unknown',
+        os_version: Device.osVersion ?? 'Unknown',
+        app_version: Constants.expoConfig?.version ?? 'Unknown',
+      }),
     });
   } catch {
-    // Silently fail — token registration is best-effort
+    // Silently fail — device registration is best-effort
+  }
+}
+
+export async function unregisterDevice(token: string): Promise<void> {
+  if (!TAILSIGNAL_API_URL) return;
+
+  try {
+    await fetch(
+      `${TAILSIGNAL_API_URL}/register?expo_token=${encodeURIComponent(token)}`,
+      { method: 'DELETE' }
+    );
+  } catch {
+    // Silently fail — device unregistration is best-effort
   }
 }

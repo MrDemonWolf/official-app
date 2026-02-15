@@ -91,12 +91,34 @@ export interface WPEmbeddedFeaturedMedia {
   };
 }
 
+export interface WPAuthorAcf {
+  role_title?: string;
+  github_url?: string;
+  discord_url?: string;
+  twitter_url?: string;
+  twitch_url?: string;
+  youtube_url?: string;
+  website_url?: string;
+}
+
+export interface WPUser {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  url?: string;
+  avatar_urls?: Record<string, string>;
+  acf?: WPAuthorAcf;
+}
+
 export interface WPEmbeddedAuthor {
   id: number;
   name: string;
   slug: string;
   description?: string;
+  url?: string;
   avatar_urls?: Record<string, string>;
+  acf?: WPAuthorAcf;
 }
 
 export interface WPEmbeddedTerm {

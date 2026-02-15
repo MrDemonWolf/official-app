@@ -1,17 +1,24 @@
-import type { WPCategory, WPMedia, WPPage, WPPost, WPPostsResponse } from '@/types/wordpress';
+import type {
+  WPCategory,
+  WPMedia,
+  WPPost,
+  WPPostsResponse,
+  WPUser,
+} from '@/types/wordpress';
 
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://mrdemonwolf.com/wp-json/wp/v2';
 
-export async function getAboutPage(): Promise<WPPage | null> {
-  const response = await fetch(`${API_BASE_URL}/pages?slug=about&_embed`);
+const WORDPRESS_USER_ID = process.env.EXPO_PUBLIC_WORDPRESS_USER_ID || '1';
+
+export async function getUser(): Promise<WPUser> {
+  const response = await fetch(`${API_BASE_URL}/users/${WORDPRESS_USER_ID}`);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch about page: ${response.statusText}`);
+    throw new Error(`Failed to fetch user: ${response.statusText}`);
   }
 
-  const pages: WPPage[] = await response.json();
-  return pages.length > 0 ? pages[0] : null;
+  return response.json();
 }
 
 export async function getPosts(page: number = 1, perPage: number = 10): Promise<WPPostsResponse> {
