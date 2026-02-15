@@ -150,7 +150,7 @@ export default function ContactScreen() {
               borderColor: isDark ? '#7f1d1d' : '#fecaca',
             }}
           >
-            <Text style={{ fontSize: 14, color: '#ef4444' }}>
+            <Text style={{ fontSize: 14, color: isDark ? '#fca5a5' : '#ef4444' }}>
               {mutation.error?.message || 'Something went wrong. Please try again.'}
             </Text>
           </View>
@@ -177,7 +177,7 @@ export default function ContactScreen() {
               onSubmitEditing={() => lastNameRef.current?.focus()}
             />
             {form.errors.firstName && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}>
                 {form.errors.firstName}
               </Text>
             )}
@@ -198,7 +198,7 @@ export default function ContactScreen() {
               onSubmitEditing={() => emailRef.current?.focus()}
             />
             {form.errors.lastName && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}>
                 {form.errors.lastName}
               </Text>
             )}
@@ -220,7 +220,7 @@ export default function ContactScreen() {
               onSubmitEditing={() => phoneRef.current?.focus()}
             />
             {form.errors.email && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}>
                 {form.errors.email}
               </Text>
             )}
@@ -255,7 +255,7 @@ export default function ContactScreen() {
               numberOfLines={5}
             />
             {form.errors.message && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}>
                 {form.errors.message}
               </Text>
             )}
@@ -268,7 +268,7 @@ export default function ContactScreen() {
             style={({ pressed }) => ({
               paddingVertical: 14,
               borderRadius: 12,
-              backgroundColor: mutation.isPending ? (isDark ? '#1e3a5f' : '#93c5fd') : '#3b82f6',
+              backgroundColor: mutation.isPending ? (isDark ? '#1e40af' : '#93c5fd') : '#3b82f6',
               alignItems: 'center',
               opacity: pressed ? 0.8 : 1,
             })}

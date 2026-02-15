@@ -112,7 +112,7 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
             >
               {item.post_type}
             </Text>
-            <Text style={{ fontSize: 12, color: isDark ? '#3f3f46' : '#d4d4d8' }}>
+            <Text style={{ fontSize: 12, color: isDark ? '#52525b' : '#d4d4d8' }}>
               {'|'}
             </Text>
             <Text style={{ fontSize: 12, color: isDark ? '#52525b' : '#a1a1aa' }}>
