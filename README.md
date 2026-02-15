@@ -8,7 +8,8 @@ Built with modern native technologies for a smooth, native-feeling experience on
 
 - **About** — Profile screen with circular avatar, role tagline, social links, and bio pulled directly from a WordPress user.
 - **Blog** — Infinite scroll blog feed with featured images, author metadata, categories, and full post reading with rich HTML rendering.
-- **Portfolio** — Coming soon.
+- **Bookmarks** — Save blog and portfolio posts locally with SQLite-backed offline bookmarks.
+- **Portfolio** — Portfolio showcase with detail screens.
 - **Contact** — Coming soon (Gravity Forms integration).
 - **Push Notifications** — Subscribe to new blog post notifications via TailSignal, with automatic device registration and deep linking to posts.
 - **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), notifications toggle, and cache management.
@@ -17,11 +18,13 @@ Built with modern native technologies for a smooth, native-feeling experience on
 
 ## Tech Stack
 
-- **Framework:** Expo SDK 54 with React Native 0.81 (New Architecture)
+- **Framework:** Expo SDK 55 with React Native 0.83 (New Architecture)
 - **Navigation:** Expo Router with native tabs and file-based routing
 - **Data Fetching:** React Query with WordPress REST API
 - **Styling:** NativeWind (Tailwind CSS) with light/dark mode support
-- **Animations:** React Native Reanimated for parallax effects and animated controls
+- **Icons:** expo-symbols (SF Symbols on iOS), Ionicons via @expo/vector-icons
+- **Local Storage:** expo-sqlite for bookmarks, AsyncStorage for settings
+- **Notifications:** expo-notifications with TailSignal backend
 - **State:** React Context with AsyncStorage persistence
 - **Platforms:** iOS, Android, and web
 
@@ -135,6 +138,13 @@ eas submit --platform ios
 # Submit to Play Store
 eas submit --platform android
 ```
+
+### EAS Build Profiles
+
+| Profile | Distribution | Channel | Description |
+|---------|-------------|---------|-------------|
+| `development` | Internal | `development` | Development client for testing |
+| `production` | Store | `production` | Production build with auto-increment versioning |
 
 ## License
 

@@ -6,7 +6,6 @@ const TAILSIGNAL_API_URL = process.env.EXPO_PUBLIC_TAILSIGNAL_API_URL;
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,
