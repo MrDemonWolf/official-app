@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { ContactFormData } from '@/types/gravity-forms';
+import type { ContactFormData } from '@/types/contact';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

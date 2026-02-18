@@ -9,11 +9,11 @@ export function useShare() {
   const shareContent = useCallback(
     async (title: string, url: string) => {
       try {
-        await Share.share({
-          title,
-          message: url,
-          url, // iOS uses url, Android uses message
-        });
+        await Share.share(
+          process.env.EXPO_OS === 'ios'
+            ? { title, url }
+            : { title, message: url }
+        );
         haptics.selection();
       } catch {
         // User cancelled or share failed silently

@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -45,6 +46,8 @@ function getFeaturedImage(item: { _embedded?: any }) {
   }
   return null;
 }
+
+const isIOS = process.env.EXPO_OS === 'ios';
 
 export default function PortfolioDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -217,7 +220,7 @@ export default function PortfolioDetailScreen() {
               )}
               {technologies && (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                  {technologies.split(',').map((tech) => (
+                  {technologies.split(',').map((tech: string) => (
                     <View
                       key={tech.trim()}
                       style={{
@@ -240,7 +243,13 @@ export default function PortfolioDetailScreen() {
           {/* Project URL */}
           {projectUrl && (
             <Pressable
-              onPress={() => Linking.openURL(projectUrl)}
+              onPress={() => {
+                haptics.impact(ImpactFeedbackStyle.Light);
+                Linking.openURL(projectUrl);
+              }}
+              accessibilityRole="link"
+              accessibilityLabel="View Project"
+              accessibilityHint="Opens the project in your browser"
               style={({ pressed }) => ({
                 paddingVertical: 12,
                 paddingHorizontal: 16,
@@ -259,14 +268,46 @@ export default function PortfolioDetailScreen() {
           <HtmlContent html={contentHtml} />
         </View>
       </ScrollView>
-      <Stack.Screen options={{ title }} />
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
-        <Stack.Toolbar.Button
-          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
-          onPress={handleBookmark}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen
+        options={{
+          title,
+          ...(!isIOS && {
+            headerRight: () => (
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <Pressable
+                  onPress={handleShare}
+                  accessibilityRole="button"
+                  accessibilityLabel="Share"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+                >
+                  <MaterialIcons name="share" size={24} color={isDark ? '#f4f4f5' : '#18181b'} />
+                </Pressable>
+                <Pressable
+                  onPress={handleBookmark}
+                  accessibilityRole="button"
+                  accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+                >
+                  <MaterialIcons
+                    name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+                    size={24}
+                    color={isDark ? '#f4f4f5' : '#18181b'}
+                  />
+                </Pressable>
+              </View>
+            ),
+          }),
+        }}
+      />
+      {isIOS && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
+          <Stack.Toolbar.Button
+            icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
+            onPress={handleBookmark}
+          />
+        </Stack.Toolbar>
+      )}
     </>
   );
 }

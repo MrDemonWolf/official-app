@@ -46,7 +46,7 @@ src/
 ├── contexts/               # React Context providers (settings)
 ├── hooks/                  # Custom React hooks (queries, haptics, form state)
 ├── lib/                    # Utilities (HTML parsing, font scale, WP helpers)
-├── services/               # API layers (WordPress REST, Gravity Forms, notifications, bookmarks)
+├── services/               # API layers (WordPress REST, PackRelay/WPForms, Firebase App Check, notifications, bookmarks)
 ├── types/                  # TypeScript type definitions
 └── global.css              # Tailwind/NativeWind imports
 ```
@@ -72,7 +72,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 | Bookmarks | `(blog)/bookmarks.tsx` | Saved posts list (SQLite-backed) |
 | Portfolio | `(portfolio)/index.tsx` | Portfolio showcase |
 | Portfolio Item | `portfolio/[id].tsx` | Portfolio detail screen |
-| Contact | `(contact)/index.tsx` | Coming soon placeholder (form being finalized) |
+| Contact | `(contact)/index.tsx` | Contact form with Firebase App Check via PackRelay/WPForms |
 | Settings | `(settings)/index.tsx` | Theme, font size, haptics, notifications, cache, app info |
 
 ### Platform-Specific Files
@@ -86,7 +86,8 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - **React Query** (`@tanstack/react-query`) for all server state
 - `src/hooks/query-keys.ts` — Centralized query key factory
 - `src/services/wordpress.ts` — WordPress REST API (users, posts, media)
-- `src/services/gravity-forms.ts` — Gravity Forms submission
+- `src/services/contact.ts` — Contact form submission via PackRelay/WPForms
+- `src/services/app-check.ts` — Firebase App Check initialization and token management
 - `src/services/notifications.ts` — TailSignal push notification registration
 - `src/services/bookmarks.ts` — SQLite-backed local bookmarks
 - Blog list pre-populates individual post caches for instant detail screen rendering
@@ -100,7 +101,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - `use-portfolio.ts` — Portfolio item queries
 - `use-bookmarks.ts` — Bookmark CRUD (useBookmarks, useIsBookmarked, useToggleBookmark, useClearBookmarks)
 - `use-notifications.ts` — Push notification registration and response handling
-- `use-contact-form.ts` / `use-contact-form-state.ts` — Contact form submission
+- `use-contact-form.ts` / `use-contact-form-state.ts` — Contact form submission with App Check verification
 - `use-color-scheme.ts` — Theme resolution (system + user preference)
 - `use-haptics.ts` — Haptic feedback gated by settings (iOS only)
 - `use-share.ts` — Native share sheet
