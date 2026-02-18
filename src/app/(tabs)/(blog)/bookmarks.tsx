@@ -1,4 +1,3 @@
-import { SymbolView } from 'expo-symbols';
 import { Link } from 'expo-router';
 import { useCallback } from 'react';
 import {
@@ -13,6 +12,7 @@ import {
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 
+import { PlatformIcon } from '@/components/platform-icon';
 import { useBookmarks, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -54,6 +54,8 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
     <Link href={href as any} asChild>
       <Pressable
         onPress={handlePress}
+        accessibilityRole="button"
+        accessibilityLabel={`${item.title}, ${item.post_type}, ${date}`}
         style={({ pressed }) => ({
           flexDirection: 'row',
           gap: 12,
@@ -83,11 +85,12 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
               justifyContent: 'center',
             }}
           >
-            <SymbolView
+            <PlatformIcon
               name="doc.text"
               size={24}
               tintColor={isDark ? '#52525b' : '#a1a1aa'}
-              resizeMode="scaleAspectFit"
+              accessibilityElementsHidden={true}
+              importantForAccessibility="no-hide-descendants"
             />
           </View>
         )}
@@ -122,20 +125,22 @@ function BookmarkItem({ item }: { item: BookmarkedPost }) {
         </View>
         <Pressable
           onPress={handleRemove}
-          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={`Remove bookmark for ${item.title}`}
           style={({ pressed }) => ({
-            width: 32,
-            height: 32,
+            minWidth: 44,
+            minHeight: 44,
             alignItems: 'center',
             justifyContent: 'center',
             opacity: pressed ? 0.4 : 1,
           })}
         >
-          <SymbolView
+          <PlatformIcon
             name="bookmark.fill"
             size={18}
             tintColor="#3b82f6"
-            resizeMode="scaleAspectFit"
+            accessibilityElementsHidden={true}
+            importantForAccessibility="no-hide-descendants"
           />
         </Pressable>
       </Pressable>
@@ -175,11 +180,12 @@ export default function BookmarksScreen() {
       }
       ListEmptyComponent={
         <View style={{ alignItems: 'center', paddingTop: 80, paddingHorizontal: 32, gap: 12 }}>
-          <SymbolView
+          <PlatformIcon
             name="bookmark"
             size={48}
             tintColor={isDark ? '#3f3f46' : '#d4d4d8'}
-            resizeMode="scaleAspectFit"
+            accessibilityElementsHidden={true}
+            importantForAccessibility="no-hide-descendants"
           />
           <Text
             style={{

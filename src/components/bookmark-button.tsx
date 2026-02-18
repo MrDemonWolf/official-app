@@ -1,7 +1,8 @@
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
-import { SymbolView } from 'expo-symbols';
 import { useCallback } from 'react';
 import { Pressable } from 'react-native';
+
+import { PlatformIcon } from '@/components/platform-icon';
 
 import { useHaptics } from '@/hooks/use-haptics';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
@@ -62,16 +63,22 @@ export function BookmarkButton({
   return (
     <Pressable
       onPress={handlePress}
-      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
       style={({ pressed }) => ({
         opacity: pressed ? 0.5 : 1,
+        minWidth: 44,
+        minHeight: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
       })}
     >
-      <SymbolView
+      <PlatformIcon
         name={bookmarked ? 'bookmark.fill' : 'bookmark'}
         tintColor={tintColor}
-        resizeMode="scaleAspectFit"
-        style={{ width: size, height: size }}
+        size={size}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
       />
     </Pressable>
   );
