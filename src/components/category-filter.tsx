@@ -37,6 +37,9 @@ export function CategoryFilter({ categories, selectedId, onSelect }: CategoryFil
       >
         <Pressable
           onPress={() => handlePress(null)}
+          accessibilityRole="button"
+          accessibilityLabel="All categories"
+          accessibilityState={{ selected: selectedId === null }}
           style={{
             paddingHorizontal: 14,
             paddingVertical: 7,
@@ -70,6 +73,9 @@ export function CategoryFilter({ categories, selectedId, onSelect }: CategoryFil
             <Pressable
               key={category.id}
               onPress={() => handlePress(category.id)}
+              accessibilityRole="button"
+              accessibilityLabel={category.name}
+              accessibilityState={{ selected: isSelected }}
               style={{
                 paddingHorizontal: 14,
                 paddingVertical: 7,

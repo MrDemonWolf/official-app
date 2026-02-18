@@ -50,10 +50,16 @@ export const PortfolioCard = forwardRef<View, PortfolioCardProps>(({ item, onPre
     onPress?.();
   }, [onPress, haptics]);
 
+  const accessibilityLabel = technologies
+    ? `${title}, ${technologies}`
+    : title;
+
   return (
     <Pressable
       ref={ref}
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       className={cn(
         'overflow-hidden rounded-xl bg-white dark:bg-zinc-900',
         'active:opacity-80'

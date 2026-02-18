@@ -44,6 +44,8 @@ export const BlogPostCard = forwardRef<View, BlogPostCardProps>(({ post, onPress
     <Pressable
       ref={ref}
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={title}
       className={cn(
         'overflow-hidden rounded-xl bg-white dark:bg-zinc-900',
         'active:opacity-80'
