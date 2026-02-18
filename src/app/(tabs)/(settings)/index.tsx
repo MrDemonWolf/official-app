@@ -1,5 +1,6 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import Constants from 'expo-constants';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useCallback } from 'react';
 import { Alert, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
@@ -84,7 +85,10 @@ export default function SettingsScreen() {
         <SegmentedControl
           values={THEME_LABELS}
           selectedIndex={THEME_VALUES.indexOf(settings.themePreference)}
-          onChange={({ nativeEvent }) => setThemePreference(THEME_VALUES[nativeEvent.selectedSegmentIndex])}
+          onChange={({ nativeEvent }) => {
+            haptics.selection();
+            setThemePreference(THEME_VALUES[nativeEvent.selectedSegmentIndex]);
+          }}
         />
       </View>
 
@@ -96,7 +100,10 @@ export default function SettingsScreen() {
         <SegmentedControl
           values={FONT_LABELS}
           selectedIndex={FONT_VALUES.indexOf(settings.fontSize)}
-          onChange={({ nativeEvent }) => setFontSize(FONT_VALUES[nativeEvent.selectedSegmentIndex])}
+          onChange={({ nativeEvent }) => {
+            haptics.selection();
+            setFontSize(FONT_VALUES[nativeEvent.selectedSegmentIndex]);
+          }}
         />
         <View
           style={{
@@ -134,7 +141,15 @@ export default function SettingsScreen() {
                 Vibration on taps and interactions
               </Text>
             </View>
-            <Switch value={settings.hapticsEnabled} onValueChange={setHapticsEnabled} />
+            <Switch
+              value={settings.hapticsEnabled}
+              onValueChange={(value) => {
+                haptics.impact(ImpactFeedbackStyle.Light);
+                setHapticsEnabled(value);
+              }}
+              accessibilityLabel="Haptic Feedback"
+              accessibilityHint="Toggles vibration on taps and interactions"
+            />
           </View>
         </View>
       )}
@@ -153,7 +168,15 @@ export default function SettingsScreen() {
               Get notified about new posts
             </Text>
           </View>
-          <Switch value={settings.notificationsEnabled} onValueChange={setNotificationsEnabled} />
+          <Switch
+            value={settings.notificationsEnabled}
+            onValueChange={(value) => {
+              haptics.selection();
+              setNotificationsEnabled(value);
+            }}
+            accessibilityLabel="Push Notifications"
+            accessibilityHint="Toggles notifications about new posts"
+          />
         </View>
       </View>
 
@@ -164,6 +187,8 @@ export default function SettingsScreen() {
         </Text>
         <Pressable
           onPress={handleClearCache}
+          accessibilityRole="button"
+          accessibilityLabel="Clear Cache"
           style={({ pressed }) => ({
             padding: 12,
             borderRadius: 10,
@@ -175,6 +200,8 @@ export default function SettingsScreen() {
         </Pressable>
         <Pressable
           onPress={handleClearBookmarks}
+          accessibilityRole="button"
+          accessibilityLabel="Clear Bookmarks"
           style={({ pressed }) => ({
             padding: 12,
             borderRadius: 10,
