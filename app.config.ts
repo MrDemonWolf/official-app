@@ -27,10 +27,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: getIcon(),
   scheme: "mrdemonwolf",
   userInterfaceStyle: "automatic",
+  updates: {
+    url: "https://u.expo.dev/4a220b17-d746-48f1-9f46-d83a0a933b40",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: getBundleId(),
     buildNumber: "2",
+    googleServicesFile: "./GoogleService-Info.plist",
     config: {
       usesNonExemptEncryption: false,
     },
@@ -43,6 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: getBundleId(),
     versionCode: 2,
+    googleServicesFile: "./google-services.json",
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
       foregroundImage: getAndroidForegroundIcon(),
@@ -78,6 +86,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         color: "#3b82f6",
       },
     ],
+    "@react-native-firebase/app",
+    "@react-native-firebase/app-check",
   ],
   extra: {
     eas: {

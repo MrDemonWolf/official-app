@@ -12,10 +12,14 @@ import 'react-native-reanimated';
 import { SettingsProvider, useSettings } from '@/contexts/settings-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNotifications } from '@/hooks/use-notifications';
+import { initializeAppCheck } from '@/services/app-check';
 
 // Set initial NativeWind color scheme before first render to avoid
 // className 'undefined' variable warnings from react-native-css
 nativewindColorScheme.set(Appearance.getColorScheme() ?? 'light');
+
+// Initialize Firebase App Check with native device attestation
+initializeAppCheck();
 
 const queryClient = new QueryClient({
   defaultOptions: {
