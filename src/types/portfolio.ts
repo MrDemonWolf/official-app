@@ -15,6 +15,8 @@ export interface WPPortfolioItem {
   excerpt: WPRendered;
   author: number;
   featured_media: number;
+  project_category?: number[];
+  project_tag?: number[];
   _embedded?: WPEmbedded;
   acf?: {
     project_url?: string;
