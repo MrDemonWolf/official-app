@@ -39,6 +39,9 @@ yarn-error.*
 credentials.json
 credentials/
 
+# Firebase
+google-services.json
+
 # typescript
 *.tsbuildinfo
 
