@@ -3,6 +3,7 @@ import { ImpactFeedbackStyle } from 'expo-haptics';
 import { forwardRef, useCallback } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { decodeHtmlEntities } from '@/lib/decode-html';
 import { cn } from '@/lib/utils';
@@ -41,16 +42,24 @@ export const PortfolioCard = forwardRef<View, PortfolioCardProps>(({ item, onPre
   const featuredImage = getFeaturedImage(item);
   const technologies = item.acf?.technologies;
   const haptics = useHaptics();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const handlePress = useCallback(() => {
     haptics.impact(ImpactFeedbackStyle.Light);
     onPress?.();
   }, [onPress, haptics]);
 
+  const accessibilityLabel = technologies
+    ? `${title}, ${technologies}`
+    : title;
+
   return (
     <Pressable
       ref={ref}
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       className={cn(
         'overflow-hidden rounded-xl bg-white dark:bg-zinc-900',
         'active:opacity-80'
@@ -84,10 +93,10 @@ export const PortfolioCard = forwardRef<View, PortfolioCardProps>(({ item, onPre
                   paddingHorizontal: 8,
                   paddingVertical: 3,
                   borderRadius: 6,
-                  backgroundColor: '#3b82f620',
+                  backgroundColor: isDark ? '#3b82f640' : '#3b82f620',
                 }}
               >
-                <Text style={{ fontSize: 12, color: '#3b82f6', fontWeight: '500' }}>
+                <Text style={{ fontSize: 12, color: isDark ? '#60a5fa' : '#3b82f6', fontWeight: '500' }}>
                   {tech.trim()}
                 </Text>
               </View>

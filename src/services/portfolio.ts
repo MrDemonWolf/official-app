@@ -8,7 +8,7 @@ export async function getPortfolioItems(
   perPage: number = 10
 ): Promise<WPPortfolioResponse> {
   const response = await fetch(
-    `${API_BASE_URL}/portfolio?page=${page}&per_page=${perPage}&_embed`
+    `${API_BASE_URL}/project?page=${page}&per_page=${perPage}&_embed`
   );
 
   if (!response.ok) {
@@ -23,7 +23,7 @@ export async function getPortfolioItems(
 }
 
 export async function getPortfolioItem(id: string): Promise<WPPortfolioItem> {
-  const response = await fetch(`${API_BASE_URL}/portfolio/${id}?_embed`);
+  const response = await fetch(`${API_BASE_URL}/project/${id}?_embed`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch portfolio item: ${response.statusText}`);

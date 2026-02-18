@@ -1,9 +1,11 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -20,6 +22,8 @@ import { decodeHtmlEntities } from '@/lib/decode-html';
 import { getFeaturedImage } from '@/lib/wordpress-helpers';
 import { getBookmarkedContent } from '@/services/bookmarks';
 import type { BookmarkedPost } from '@/types/bookmark';
+
+const isIOS = process.env.EXPO_OS === 'ios';
 
 export default function BlogPostScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -184,14 +188,46 @@ export default function BlogPostScreen() {
           <HtmlContent html={contentHtml} />
         </View>
       </ScrollView>
-      <Stack.Screen options={{ title }} />
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
-        <Stack.Toolbar.Button
-          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
-          onPress={handleBookmark}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen
+        options={{
+          title,
+          ...(!isIOS && {
+            headerRight: () => (
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <Pressable
+                  onPress={handleShare}
+                  accessibilityRole="button"
+                  accessibilityLabel="Share"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+                >
+                  <MaterialIcons name="share" size={24} color={isDark ? '#f4f4f5' : '#18181b'} />
+                </Pressable>
+                <Pressable
+                  onPress={handleBookmark}
+                  accessibilityRole="button"
+                  accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+                >
+                  <MaterialIcons
+                    name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+                    size={24}
+                    color={isDark ? '#f4f4f5' : '#18181b'}
+                  />
+                </Pressable>
+              </View>
+            ),
+          }),
+        }}
+      />
+      {isIOS && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
+          <Stack.Toolbar.Button
+            icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
+            onPress={handleBookmark}
+          />
+        </Stack.Toolbar>
+      )}
     </>
   );
 }

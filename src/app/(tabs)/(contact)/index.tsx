@@ -1,4 +1,4 @@
-import { NotificationFeedbackType } from 'expo-haptics';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -14,7 +14,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useContactForm } from '@/hooks/use-contact-form';
 import { useContactFormState } from '@/hooks/use-contact-form-state';
 import { useHaptics } from '@/hooks/use-haptics';
-import { decodeHtmlEntities } from '@/lib/decode-html';
+import { getAppCheckToken } from '@/services/app-check';
 
 const isIOS = process.env.EXPO_OS === 'ios';
 
@@ -26,6 +26,10 @@ export default function ContactScreen() {
   const form = useContactFormState();
   const [submitted, setSubmitted] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+
+  const isLoading = isVerifying || mutation.isPending;
 
   const lastNameRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
@@ -33,22 +37,41 @@ export default function ContactScreen() {
   const messageRef = useRef<TextInput>(null);
 
   const handleSubmit = useCallback(() => {
-    const didSubmit = form.handleSubmit((data) => {
-      mutation.mutate(data, {
-        onSuccess: (response) => {
-          haptics.notification(NotificationFeedbackType.Success);
-          setConfirmationMessage(
-            response.confirmation_message
-              ? decodeHtmlEntities(response.confirmation_message.replace(/<[^>]*>/g, ''))
-              : 'Your message has been sent successfully!'
-          );
-          setSubmitted(true);
-          form.resetForm();
+    setVerifyError(null);
+
+    const didSubmit = form.handleSubmit(async (data) => {
+      setIsVerifying(true);
+
+      let appCheckToken: string;
+      try {
+        appCheckToken = await getAppCheckToken();
+      } catch (error) {
+        setIsVerifying(false);
+        setVerifyError(
+          error instanceof Error ? error.message : 'Device verification failed.',
+        );
+        haptics.notification(NotificationFeedbackType.Error);
+        return;
+      }
+
+      setIsVerifying(false);
+
+      mutation.mutate(
+        { data, appCheckToken },
+        {
+          onSuccess: (response) => {
+            haptics.notification(NotificationFeedbackType.Success);
+            setConfirmationMessage(
+              response.message || 'Your message has been sent successfully!',
+            );
+            setSubmitted(true);
+            form.resetForm();
+          },
+          onError: () => {
+            haptics.notification(NotificationFeedbackType.Error);
+          },
         },
-        onError: () => {
-          haptics.notification(NotificationFeedbackType.Error);
-        },
-      });
+      );
     });
 
     if (!didSubmit) {
@@ -57,10 +80,12 @@ export default function ContactScreen() {
   }, [form, mutation, haptics]);
 
   const handleSendAnother = useCallback(() => {
+    haptics.impact(ImpactFeedbackStyle.Light);
     setSubmitted(false);
     setConfirmationMessage('');
+    setVerifyError(null);
     mutation.reset();
-  }, [mutation]);
+  }, [mutation, haptics]);
 
   const sectionHeaderStyle = {
     fontSize: 13,
@@ -109,6 +134,8 @@ export default function ContactScreen() {
           </Text>
           <Pressable
             onPress={handleSendAnother}
+            accessibilityRole="button"
+            accessibilityLabel="Send Another"
             style={({ pressed }) => ({
               marginTop: 8,
               paddingVertical: 14,
@@ -140,8 +167,10 @@ export default function ContactScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Error banner */}
-        {mutation.isError && (
+        {(mutation.isError || verifyError) && (
           <View
+            accessibilityRole="alert"
+            accessibilityLiveRegion="assertive"
             style={{
               padding: 12,
               borderRadius: 10,
@@ -150,8 +179,8 @@ export default function ContactScreen() {
               borderColor: isDark ? '#7f1d1d' : '#fecaca',
             }}
           >
-            <Text style={{ fontSize: 14, color: '#ef4444' }}>
-              {mutation.error?.message || 'Something went wrong. Please try again.'}
+            <Text style={{ fontSize: 14, color: isDark ? '#fca5a5' : '#ef4444' }}>
+              {verifyError || mutation.error?.message || 'Something went wrong. Please try again.'}
             </Text>
           </View>
         )}
@@ -169,6 +198,7 @@ export default function ContactScreen() {
               style={inputStyle}
               placeholder="First Name"
               placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+              accessibilityLabel="First Name"
               value={form.firstName}
               onChangeText={form.setFirstName}
               autoCapitalize="words"
@@ -177,7 +207,11 @@ export default function ContactScreen() {
               onSubmitEditing={() => lastNameRef.current?.focus()}
             />
             {form.errors.firstName && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text
+                accessibilityRole="alert"
+                accessibilityLiveRegion="polite"
+                style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}
+              >
                 {form.errors.firstName}
               </Text>
             )}
@@ -190,6 +224,7 @@ export default function ContactScreen() {
               style={inputStyle}
               placeholder="Last Name"
               placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+              accessibilityLabel="Last Name"
               value={form.lastName}
               onChangeText={form.setLastName}
               autoCapitalize="words"
@@ -198,7 +233,11 @@ export default function ContactScreen() {
               onSubmitEditing={() => emailRef.current?.focus()}
             />
             {form.errors.lastName && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text
+                accessibilityRole="alert"
+                accessibilityLiveRegion="polite"
+                style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}
+              >
                 {form.errors.lastName}
               </Text>
             )}
@@ -211,6 +250,7 @@ export default function ContactScreen() {
               style={inputStyle}
               placeholder="Email"
               placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+              accessibilityLabel="Email"
               value={form.email}
               onChangeText={form.setEmail}
               keyboardType="email-address"
@@ -220,7 +260,11 @@ export default function ContactScreen() {
               onSubmitEditing={() => phoneRef.current?.focus()}
             />
             {form.errors.email && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text
+                accessibilityRole="alert"
+                accessibilityLiveRegion="polite"
+                style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}
+              >
                 {form.errors.email}
               </Text>
             )}
@@ -233,6 +277,7 @@ export default function ContactScreen() {
               style={inputStyle}
               placeholder="Phone (optional)"
               placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+              accessibilityLabel="Phone number, optional"
               value={form.phone}
               onChangeText={form.setPhone}
               keyboardType="phone-pad"
@@ -249,13 +294,18 @@ export default function ContactScreen() {
               style={[inputStyle, { minHeight: 120, textAlignVertical: 'top' }]}
               placeholder="Your message..."
               placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+              accessibilityLabel="Your message"
               value={form.message}
               onChangeText={form.setMessage}
               multiline
               numberOfLines={5}
             />
             {form.errors.message && (
-              <Text style={{ fontSize: 13, color: '#ef4444', paddingLeft: 4 }}>
+              <Text
+                accessibilityRole="alert"
+                accessibilityLiveRegion="polite"
+                style={{ fontSize: 13, color: isDark ? '#fca5a5' : '#ef4444', paddingLeft: 4 }}
+              >
                 {form.errors.message}
               </Text>
             )}
@@ -264,16 +314,19 @@ export default function ContactScreen() {
           {/* Submit */}
           <Pressable
             onPress={handleSubmit}
-            disabled={mutation.isPending}
+            disabled={isLoading}
+            accessibilityRole="button"
+            accessibilityLabel={isLoading ? 'Sending message' : 'Send Message'}
+            accessibilityState={{ disabled: isLoading }}
             style={({ pressed }) => ({
               paddingVertical: 14,
               borderRadius: 12,
-              backgroundColor: mutation.isPending ? (isDark ? '#1e3a5f' : '#93c5fd') : '#3b82f6',
+              backgroundColor: isLoading ? (isDark ? '#1e40af' : '#93c5fd') : '#3b82f6',
               alignItems: 'center',
               opacity: pressed ? 0.8 : 1,
             })}
           >
-            {mutation.isPending ? (
+            {isLoading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
               <Text style={{ fontSize: 16, fontWeight: '600', color: '#ffffff' }}>

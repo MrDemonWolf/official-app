@@ -1,8 +1,10 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link, router, Stack } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   RefreshControl,
   Text,
   TextInput,
@@ -77,6 +79,23 @@ export default function BlogScreen() {
     haptics.notification();
   }, [refetch, haptics]);
 
+  const androidHeaderRight = !isIOS
+    ? () => (
+        <Pressable
+          onPress={() => router.push('/bookmarks' as any)}
+          accessibilityRole="button"
+          accessibilityLabel="Bookmarks"
+          style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+        >
+          <MaterialIcons
+            name="bookmark-outline"
+            size={24}
+            color={isDark ? '#f4f4f5' : '#18181b'}
+          />
+        </Pressable>
+      )
+    : undefined;
+
   const ListHeader = useMemo(() => {
     return (
       <View style={{ gap: 12 }}>
@@ -112,7 +131,7 @@ export default function BlogScreen() {
   if (isLoading && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog' }} />
+        <Stack.Screen options={{ title: 'Blog', headerRight: androidHeaderRight }} />
         <ActivityIndicator size="large" />
       </View>
     );
@@ -121,7 +140,7 @@ export default function BlogScreen() {
   if (error && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white p-5 dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog' }} />
+        <Stack.Screen options={{ title: 'Blog', headerRight: androidHeaderRight }} />
         <Text className="text-center text-base text-zinc-900 dark:text-zinc-100" selectable>
           Failed to load posts. Please try again later.
         </Text>
@@ -172,17 +191,20 @@ export default function BlogScreen() {
           </View>
         }
       />
+      <Stack.Screen options={{ title: 'Blog', headerRight: androidHeaderRight }} />
       <Stack.SearchBar
         placeholder="Search posts..."
         onChangeText={(e: any) => setSearchQuery(e.nativeEvent.text)}
         onCancelButtonPress={() => setSearchQuery('')}
       />
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button
-          icon="bookmark"
-          onPress={() => router.push('/bookmarks' as any)}
-        />
-      </Stack.Toolbar>
+      {isIOS && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            icon="bookmark"
+            onPress={() => router.push('/bookmarks' as any)}
+          />
+        </Stack.Toolbar>
+      )}
     </>
   );
 }

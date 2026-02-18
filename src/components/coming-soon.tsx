@@ -1,5 +1,7 @@
-import { SymbolView } from 'expo-symbols';
 import { Text, View } from 'react-native';
+
+import { PlatformIcon } from '@/components/platform-icon';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 interface ComingSoonProps {
   title: string;
@@ -7,13 +9,17 @@ interface ComingSoonProps {
 }
 
 export function ComingSoon({ title, message }: ComingSoonProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
     <View className="flex-1 items-center justify-center gap-4 p-8">
-      <SymbolView
+      <PlatformIcon
         name="hammer.fill"
         size={64}
-        tintColor="#71717a"
-        resizeMode="scaleAspectFit"
+        tintColor={isDark ? '#a1a1aa' : '#71717a'}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
       />
       <Text className="text-center text-2xl font-bold text-zinc-900 dark:text-zinc-100">
         {title}

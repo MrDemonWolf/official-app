@@ -1,9 +1,11 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import Constants from 'expo-constants';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useCallback } from 'react';
 import { Alert, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettings } from '@/contexts/settings-context';
 import { useClearBookmarks } from '@/hooks/use-bookmarks';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -27,6 +29,8 @@ const FONT_VALUES: FontSize[] = ['small', 'medium', 'large'];
 export default function SettingsScreen() {
   const { settings, setThemePreference, setFontSize, setHapticsEnabled, setNotificationsEnabled } = useSettings();
   const scale = FONT_SCALES[settings.fontSize];
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const queryClient = useQueryClient();
   const haptics = useHaptics();
   const clearBookmarks = useClearBookmarks();
@@ -81,7 +85,10 @@ export default function SettingsScreen() {
         <SegmentedControl
           values={THEME_LABELS}
           selectedIndex={THEME_VALUES.indexOf(settings.themePreference)}
-          onChange={({ nativeEvent }) => setThemePreference(THEME_VALUES[nativeEvent.selectedSegmentIndex])}
+          onChange={({ nativeEvent }) => {
+            haptics.selection();
+            setThemePreference(THEME_VALUES[nativeEvent.selectedSegmentIndex]);
+          }}
         />
       </View>
 
@@ -93,14 +100,24 @@ export default function SettingsScreen() {
         <SegmentedControl
           values={FONT_LABELS}
           selectedIndex={FONT_VALUES.indexOf(settings.fontSize)}
-          onChange={({ nativeEvent }) => setFontSize(FONT_VALUES[nativeEvent.selectedSegmentIndex])}
+          onChange={({ nativeEvent }) => {
+            haptics.selection();
+            setFontSize(FONT_VALUES[nativeEvent.selectedSegmentIndex]);
+          }}
         />
-        <View className="mt-2 rounded-lg bg-zinc-100 dark:bg-zinc-950" style={{ padding: 12 }}>
+        <View
+          style={{
+            marginTop: 8,
+            borderRadius: 8,
+            padding: 12,
+            backgroundColor: isDark ? '#27272a' : '#f4f4f5',
+          }}
+        >
           <Text
-            className="text-zinc-700 dark:text-zinc-300"
             style={{
               fontSize: scale.body,
               lineHeight: scale.body * scale.lineHeight,
+              color: isDark ? '#e4e4e7' : '#3f3f46',
             }}
           >
             The quick brown fox jumps over the lazy dog. This is a preview of how blog content will
@@ -124,7 +141,15 @@ export default function SettingsScreen() {
                 Vibration on taps and interactions
               </Text>
             </View>
-            <Switch value={settings.hapticsEnabled} onValueChange={setHapticsEnabled} />
+            <Switch
+              value={settings.hapticsEnabled}
+              onValueChange={(value) => {
+                haptics.impact(ImpactFeedbackStyle.Light);
+                setHapticsEnabled(value);
+              }}
+              accessibilityLabel="Haptic Feedback"
+              accessibilityHint="Toggles vibration on taps and interactions"
+            />
           </View>
         </View>
       )}
@@ -143,7 +168,15 @@ export default function SettingsScreen() {
               Get notified about new posts
             </Text>
           </View>
-          <Switch value={settings.notificationsEnabled} onValueChange={setNotificationsEnabled} />
+          <Switch
+            value={settings.notificationsEnabled}
+            onValueChange={(value) => {
+              haptics.selection();
+              setNotificationsEnabled(value);
+            }}
+            accessibilityLabel="Push Notifications"
+            accessibilityHint="Toggles notifications about new posts"
+          />
         </View>
       </View>
 
@@ -154,17 +187,29 @@ export default function SettingsScreen() {
         </Text>
         <Pressable
           onPress={handleClearCache}
-          className="rounded-[10px] bg-zinc-100 dark:bg-zinc-950"
-          style={({ pressed }) => ({ padding: 12, opacity: pressed ? 0.7 : 1 })}
+          accessibilityRole="button"
+          accessibilityLabel="Clear Cache"
+          style={({ pressed }) => ({
+            padding: 12,
+            borderRadius: 10,
+            backgroundColor: isDark ? '#27272a' : '#f4f4f5',
+            opacity: pressed ? 0.7 : 1,
+          })}
         >
-          <Text className="text-base text-red-500">Clear Cache</Text>
+          <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Cache</Text>
         </Pressable>
         <Pressable
           onPress={handleClearBookmarks}
-          className="rounded-[10px] bg-zinc-100 dark:bg-zinc-950"
-          style={({ pressed }) => ({ padding: 12, opacity: pressed ? 0.7 : 1 })}
+          accessibilityRole="button"
+          accessibilityLabel="Clear Bookmarks"
+          style={({ pressed }) => ({
+            padding: 12,
+            borderRadius: 10,
+            backgroundColor: isDark ? '#27272a' : '#f4f4f5',
+            opacity: pressed ? 0.7 : 1,
+          })}
         >
-          <Text className="text-base text-red-500">Clear Bookmarks</Text>
+          <Text style={{ fontSize: 16, color: '#ef4444' }}>Clear Bookmarks</Text>
         </Pressable>
       </View>
 

@@ -1,8 +1,6 @@
 # MrDemonWolf - Official App
 
-The official MrDemonWolf mobile app — a portfolio and blog reader built with React Native and Expo, powered by a WordPress backend. Browse blog posts, learn about MrDemonWolf, and stay connected across iOS and Android.
-
-Built with modern native technologies for a smooth, native-feeling experience on every platform.
+The official MrDemonWolf mobile app for my website. Portfolio, blog reader, bookmarks, push notifications, and dark mode — built with Expo and React Native.
 
 ## Features
 
@@ -10,7 +8,7 @@ Built with modern native technologies for a smooth, native-feeling experience on
 - **Blog** — Infinite scroll blog feed with featured images, author metadata, categories, and full post reading with rich HTML rendering.
 - **Bookmarks** — Save blog and portfolio posts locally with SQLite-backed offline bookmarks.
 - **Portfolio** — Portfolio showcase with detail screens.
-- **Contact** — Coming soon (Gravity Forms integration).
+- **Contact** — Contact form with invisible device attestation via Firebase App Check and PackRelay/WPForms backend.
 - **Push Notifications** — Subscribe to new blog post notifications via TailSignal, with automatic device registration and deep linking to posts.
 - **Settings** — Theme (light/dark/auto), font size scaling, haptic feedback toggle (iOS), notifications toggle, and cache management.
 - **Tab Persistence** — Remembers your last visited tab across app launches.
@@ -85,8 +83,8 @@ Copy `.env.example` to `.env` and configure the values for your WordPress site:
 | `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://yoursite.com/wp-json/wp/v2`) |
 | `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
 | `EXPO_PUBLIC_APP_VARIANT` | App variant — `development` or `production` |
-| `EXPO_PUBLIC_GF_API_URL` | Gravity Forms REST API base URL for the contact form |
-| `EXPO_PUBLIC_GF_CONTACT_FORM_ID` | Gravity Forms form ID for the contact form |
+| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay REST API base URL for the contact form (e.g. `https://yoursite.com/wp-json/packrelay/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID used by PackRelay for the contact form |
 | `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal REST API base URL for push notification device registration (requires the [TailSignal](https://tailsignal.com) WordPress plugin) |
 
 ### WordPress ACF Setup

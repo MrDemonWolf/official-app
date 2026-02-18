@@ -31,9 +31,7 @@ export function useNotifications() {
           registerDevice(token);
         }
       })
-      .catch((e) => {
-        console.warn('Failed to register for push notifications:', e);
-      });
+      .catch(() => {});
 
     // Handle notification taps — navigate to the relevant post
     responseListener.current = Notifications.addNotificationResponseReceivedListener(

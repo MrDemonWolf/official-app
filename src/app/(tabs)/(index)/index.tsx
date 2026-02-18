@@ -54,7 +54,7 @@ export default function AboutScreen() {
   const { data: user, isLoading, refetch } = useAbout();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { impact } = useHaptics();
+  const haptics = useHaptics();
   const [refreshing, setRefreshing] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(0);
 
@@ -73,19 +73,18 @@ export default function AboutScreen() {
     setRefreshing(true);
     setCacheBuster(Date.now());
     await refetch();
+    haptics.notification();
     setRefreshing(false);
-  }, [refetch]);
+  }, [refetch, haptics]);
 
   const handleSocialPress = async (url: string) => {
-    impact();
+    haptics.impact();
     try {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
         await Linking.openURL(url);
       }
-    } catch (e) {
-      console.warn('Failed to open URL:', url, e);
-    }
+    } catch {}
   };
 
   if (isLoading) {
@@ -125,6 +124,7 @@ export default function AboutScreen() {
             source={{ uri: avatarUrl }}
             style={{ width: '100%', height: '100%' }}
             contentFit="cover"
+            alt={`${authorName} avatar`}
           />
         </View>
 
@@ -161,6 +161,8 @@ export default function AboutScreen() {
               <Pressable
                 key={link.key}
                 onPress={() => handleSocialPress(link.url)}
+                accessibilityRole="link"
+                accessibilityLabel={`${link.key.charAt(0).toUpperCase() + link.key.slice(1)} profile`}
                 style={({ pressed }) => ({
                   width: 44,
                   height: 44,

@@ -103,7 +103,7 @@ function renderInline(
       result.push(
         <Text
           key={key}
-          style={[parentStyles, { color: '#0a7ea4', textDecorationLine: 'underline' }]}
+          style={[parentStyles, { color: isDark ? '#38bdf8' : '#0a7ea4', textDecorationLine: 'underline' }]}
           onPress={href ? () => Linking.openURL(href) : undefined}
         >
           {renderInline(node.children, scale, isDark, parentStyles, `${key}-`)}
