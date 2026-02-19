@@ -55,3 +55,6 @@ app-example
 *.apk
 *.aab
 *.ipa
+
+# Claude Code
+.claude
