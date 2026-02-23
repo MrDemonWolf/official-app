@@ -1,9 +1,9 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import * as Linking from 'expo-linking';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 
+import { PlatformIcon } from '@/components/platform-icon';
 import { useAbout } from '@/hooks/use-about';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -27,10 +27,20 @@ const FALLBACK_BIO = [
   'Join me for some fun and engaging content that blends both business and pleasure.',
 ];
 
+// Brand icon SVGs — tinted at runtime via expo-image tintColor
+const SOCIAL_ICON_SOURCES: Record<string, number> = {
+  github: require('@/assets/images/social/github.svg'),
+  discord: require('@/assets/images/social/discord.svg'),
+  twitter: require('@/assets/images/social/twitter.svg'),
+  twitch: require('@/assets/images/social/twitch.svg'),
+  youtube: require('@/assets/images/social/youtube.svg'),
+};
+
+type SocialKey = 'github' | 'discord' | 'twitter' | 'twitch' | 'youtube' | 'website';
+
 interface SocialLink {
-  key: string;
+  key: SocialKey;
   url: string;
-  icon: React.ComponentProps<typeof Ionicons>['name'];
 }
 
 function getSocialLinks(acf: WPAuthorAcf | undefined, authorUrl: string | undefined): SocialLink[] {
@@ -38,14 +48,14 @@ function getSocialLinks(acf: WPAuthorAcf | undefined, authorUrl: string | undefi
 
   const links: SocialLink[] = [];
 
-  if (acf.github_url) links.push({ key: 'github', url: acf.github_url, icon: 'logo-github' });
-  if (acf.discord_url) links.push({ key: 'discord', url: acf.discord_url, icon: 'logo-discord' });
-  if (acf.twitter_url) links.push({ key: 'twitter', url: acf.twitter_url, icon: 'logo-twitter' });
-  if (acf.twitch_url) links.push({ key: 'twitch', url: acf.twitch_url, icon: 'logo-twitch' });
-  if (acf.youtube_url) links.push({ key: 'youtube', url: acf.youtube_url, icon: 'logo-youtube' });
+  if (acf.github_url) links.push({ key: 'github', url: acf.github_url });
+  if (acf.discord_url) links.push({ key: 'discord', url: acf.discord_url });
+  if (acf.twitter_url) links.push({ key: 'twitter', url: acf.twitter_url });
+  if (acf.twitch_url) links.push({ key: 'twitch', url: acf.twitch_url });
+  if (acf.youtube_url) links.push({ key: 'youtube', url: acf.youtube_url });
 
   const websiteUrl = acf.website_url || authorUrl;
-  if (websiteUrl) links.push({ key: 'website', url: websiteUrl, icon: 'globe-outline' });
+  if (websiteUrl) links.push({ key: 'website', url: websiteUrl });
 
   return links;
 }
@@ -174,11 +184,16 @@ export default function AboutScreen() {
                   justifyContent: 'center',
                 })}
               >
-                <Ionicons
-                  name={link.icon}
-                  size={22}
-                  color={isDark ? '#fafafa' : '#18181b'}
-                />
+                {/* Brand icons use SVG via expo-image; website uses SF Symbol / Material Icon */}
+                {link.key === 'website' ? (
+                  <PlatformIcon name="globe" size={22} tintColor={isDark ? '#fafafa' : '#18181b'} />
+                ) : (
+                  <Image
+                    source={SOCIAL_ICON_SOURCES[link.key]}
+                    style={{ width: 22, height: 22 }}
+                    tintColor={isDark ? '#fafafa' : '#18181b'}
+                  />
+                )}
               </Pressable>
             ))}
           </View>

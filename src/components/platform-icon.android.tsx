@@ -7,6 +7,8 @@ const SF_TO_MATERIAL: Record<string, string> = {
   'bookmark.fill': 'bookmark',
   'hammer.fill': 'construction',
   'doc.text': 'article',
+  'square.and.arrow.up': 'share',
+  'globe': 'language',
 };
 
 export function PlatformIcon({

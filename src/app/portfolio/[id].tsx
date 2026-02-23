@@ -1,4 +1,3 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -14,6 +13,7 @@ import {
 } from 'react-native';
 
 import { HtmlContent } from '@/components/html-content';
+import { PlatformIcon } from '@/components/platform-icon';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -257,7 +257,7 @@ export default function PortfolioDetailScreen() {
                   accessibilityLabel="Share"
                   style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
                 >
-                  <MaterialIcons name="share" size={24} color={isDark ? '#f4f4f5' : '#18181b'} />
+                  <PlatformIcon name="square.and.arrow.up" size={24} tintColor={isDark ? '#f4f4f5' : '#18181b'} />
                 </Pressable>
                 <Pressable
                   onPress={handleBookmark}
@@ -265,10 +265,10 @@ export default function PortfolioDetailScreen() {
                   accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
                   style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
                 >
-                  <MaterialIcons
-                    name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+                  <PlatformIcon
+                    name={bookmarked ? 'bookmark.fill' : 'bookmark'}
                     size={24}
-                    color={isDark ? '#f4f4f5' : '#18181b'}
+                    tintColor={isDark ? '#f4f4f5' : '#18181b'}
                   />
                 </Pressable>
               </View>

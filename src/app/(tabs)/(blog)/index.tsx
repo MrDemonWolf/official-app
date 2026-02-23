@@ -1,4 +1,3 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link, router, Stack } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -14,6 +13,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BlogPostCard } from '@/components/blog-post-card';
+import { PlatformIcon } from '@/components/platform-icon';
 import { CategoryFilter } from '@/components/category-filter';
 import { useCategories } from '@/hooks/use-categories';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -87,10 +87,10 @@ export default function BlogScreen() {
           accessibilityLabel="Bookmarks"
           style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
         >
-          <MaterialIcons
-            name="bookmark-outline"
+          <PlatformIcon
+            name="bookmark"
             size={24}
-            color={isDark ? '#f4f4f5' : '#18181b'}
+            tintColor={isDark ? '#f4f4f5' : '#18181b'}
           />
         </Pressable>
       )
