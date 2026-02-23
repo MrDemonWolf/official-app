@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { HtmlContent } from '@/components/html-content';
+import { PlatformIcon } from '@/components/platform-icon';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -137,6 +139,32 @@ export default function BlogPostScreen() {
     day: 'numeric',
   });
 
+  // Android header with PlatformIcon buttons (maps to MaterialIcons)
+  const headerRight = () => (
+    <View style={{ flexDirection: 'row', gap: 8 }}>
+      <Pressable
+        onPress={handleShare}
+        accessibilityRole="button"
+        accessibilityLabel="Share"
+        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+      >
+        <PlatformIcon name="square.and.arrow.up" size={24} tintColor={isDark ? '#f4f4f5' : '#18181b'} />
+      </Pressable>
+      <Pressable
+        onPress={handleBookmark}
+        accessibilityRole="button"
+        accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+      >
+        <PlatformIcon
+          name={bookmarked ? 'bookmark.fill' : 'bookmark'}
+          size={24}
+          tintColor={isDark ? '#f4f4f5' : '#18181b'}
+        />
+      </Pressable>
+    </View>
+  );
+
   return (
     <>
       <ScrollView
@@ -184,15 +212,7 @@ export default function BlogPostScreen() {
           <HtmlContent html={contentHtml} />
         </View>
       </ScrollView>
-      <Stack.Screen options={{ title }} />
-      {/* iOS native toolbar buttons using SF Symbols */}
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
-        <Stack.Toolbar.Button
-          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
-          onPress={handleBookmark}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen options={{ title, headerRight }} />
     </>
   );
 }
