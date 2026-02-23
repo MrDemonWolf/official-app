@@ -12,6 +12,9 @@ const NSE_TARGET_NAME = "NotificationServiceExtension";
  * Downloads the image from the push payload and attaches it.
  */
 const NSE_SWIFT_SOURCE = `import UserNotifications
+import os.log
+
+private let logger = Logger(subsystem: "com.mrdemonwolf.OfficialApp.NotificationServiceExtension", category: "NSE")
 
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
@@ -29,29 +32,53 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        // Expo sends the image URL under the "image" key in the body payload
-        // which gets mapped to the aps body. Check multiple locations.
+        // Log the full userInfo payload for debugging.
+        logger.info("NSE didReceive — userInfo keys: \\(request.content.userInfo.keys.map { String(describing: $0) }.joined(separator: ", "))")
+        if let jsonData = try? JSONSerialization.data(withJSONObject: request.content.userInfo, options: .prettyPrinted),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            logger.info("NSE userInfo payload: \\(jsonString)")
+        }
+
+        // Check multiple payload locations for the image URL.
+        // Expo's push service maps richContent.image to body._richContent.image in APNs.
         var imageURLString: String?
 
-        // Check "image" in the root payload (Expo push API format)
-        if let image = request.content.userInfo["image"] as? String {
+        // Check body._richContent.image (Expo push API official APNs mapping)
+        if let body = request.content.userInfo["body"] as? [String: Any],
+           let richContent = body["_richContent"] as? [String: Any],
+           let image = richContent["image"] as? String {
             imageURLString = image
+            logger.info("NSE found image in body._richContent: \\(image)")
         }
-        // Check inside "body" dict if present
-        else if let body = request.content.userInfo["body"] as? [String: Any],
-                let image = body["image"] as? String {
+        // Check "richContent.image" at root level (fallback)
+        else if let richContent = request.content.userInfo["richContent"] as? [String: Any],
+                let image = richContent["image"] as? String {
             imageURLString = image
+            logger.info("NSE found image in richContent: \\(image)")
+        }
+        // Check "image" at root level
+        else if let image = request.content.userInfo["image"] as? String {
+            imageURLString = image
+            logger.info("NSE found image at root: \\(image)")
+        }
+        else {
+            logger.warning("NSE could not find image URL in any payload location")
         }
 
         guard let urlString = imageURLString,
               let url = URL(string: urlString) else {
+            logger.warning("NSE no valid image URL, delivering without image")
             contentHandler(content)
             return
         }
 
+        logger.info("NSE downloading image from: \\(urlString)")
         downloadImage(from: url) { attachment in
             if let attachment = attachment {
                 content.attachments = [attachment]
+                logger.info("NSE image attached successfully")
+            } else {
+                logger.error("NSE image download/attach failed")
             }
             contentHandler(content)
         }
@@ -176,12 +203,31 @@ function withNotificationServiceExtension(config) {
     );
 
     // Add source file to the target's build phase.
+    // Use the full relative path so Xcode finds the file in the subdirectory.
     xcodeProject.addBuildPhase(
       ["NotificationService.swift"],
       "PBXSourcesBuildPhase",
       "Sources",
       target.uuid
     );
+
+    // Fix the file reference path to point to the NSE subdirectory.
+    // addBuildPhase creates a PBXFileReference with just the filename,
+    // but the file lives in NotificationServiceExtension/.
+    const pbxFileRef = xcodeProject.pbxFileReferenceSection();
+    for (const key in pbxFileRef) {
+      const ref = pbxFileRef[key];
+      if (
+        typeof ref === "object" &&
+        ref.name &&
+        ref.name.includes("NotificationService.swift") &&
+        ref.path &&
+        !ref.path.includes(NSE_TARGET_NAME)
+      ) {
+        ref.path = `${NSE_TARGET_NAME}/NotificationService.swift`;
+        break;
+      }
+    }
 
     // Set build settings for the NSE target.
     const configurations = xcodeProject.pbxXCBuildConfigurationSection();
