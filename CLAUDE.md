@@ -49,6 +49,8 @@ src/
 ├── services/               # API layers (WordPress REST, PackRelay/WPForms, Firebase App Check, notifications, bookmarks)
 ├── types/                  # TypeScript type definitions
 └── global.css              # Tailwind/NativeWind imports
+
+plugins/                    # Custom Expo config plugins (notification-service-extension.js)
 ```
 
 ### Navigation (Expo Router with file-based routing)
@@ -69,7 +71,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 | About | `(index)/index.tsx` | Profile screen with avatar, role, social links, bio from WP user |
 | Blog | `(blog)/index.tsx` | Infinite scroll blog list with cache pre-population |
 | Blog Post | `blog/[id].tsx` | Detail screen with HTML content rendering |
-| Bookmarks | `(blog)/bookmarks.tsx` | Saved posts list (SQLite-backed) |
+| Bookmarks | `(blog)/bookmarks.tsx` | Saved blog posts list (SQLite-backed) |
 | Portfolio | `(portfolio)/index.tsx` | Portfolio showcase |
 | Portfolio Item | `portfolio/[id].tsx` | Portfolio detail screen |
 | Contact | `(contact)/index.tsx` | Contact form with Firebase App Check via PackRelay/WPForms |
@@ -86,9 +88,9 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - **React Query** (`@tanstack/react-query`) for all server state
 - `src/hooks/query-keys.ts` — Centralized query key factory
 - `src/services/wordpress.ts` — WordPress REST API (users, posts, media)
-- `src/services/contact.ts` — Contact form submission via PackRelay/WPForms
+- `src/services/contact.ts` — Contact form submission via [PackRelay](https://github.com/MrDemonWolf/packrelay)/[WPForms](https://wpforms.com/)
 - `src/services/app-check.ts` — Firebase App Check initialization and token management
-- `src/services/notifications.ts` — TailSignal push notification registration
+- `src/services/notifications.ts` — [TailSignal](https://github.com/MrDemonWolf/tailsignal) push notification registration with registration status verification
 - `src/services/bookmarks.ts` — SQLite-backed local bookmarks
 - Blog list pre-populates individual post caches for instant detail screen rendering
 
@@ -100,7 +102,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - `use-categories.ts` — Category listing for blog filter
 - `use-portfolio.ts` — Portfolio item queries
 - `use-bookmarks.ts` — Bookmark CRUD (useBookmarks, useIsBookmarked, useToggleBookmark, useClearBookmarks)
-- `use-notifications.ts` — Push notification registration and response handling
+- `use-notifications.ts` — Push notification registration, auto re-registration on app launch, and response handling
 - `use-contact-form.ts` / `use-contact-form-state.ts` — Contact form submission with App Check verification
 - `use-color-scheme.ts` — Theme resolution (system + user preference)
 - `use-haptics.ts` — Haptic feedback gated by settings (iOS only)
@@ -126,14 +128,16 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 
 ### Push Notifications
 
-- `src/services/notifications.ts` — Registers/unregisters Expo push tokens with TailSignal backend
-- `src/hooks/use-notifications.ts` — Manages registration lifecycle and deep-link navigation on tap
+- `src/services/notifications.ts` — Registers/unregisters Expo push tokens with [TailSignal](https://github.com/MrDemonWolf/tailsignal) backend, verifies registration status before re-registering
+- `src/hooks/use-notifications.ts` — Manages registration lifecycle with auto re-registration on app launch and deep-link navigation on tap
 - Gated by `settings.notificationsEnabled`
+- iOS Notification Service Extension (`notification-service-extension.js` config plugin) enables rich push notification images via `mutableContent`
+- TailSignal sends notification data with snake_case keys (e.g. `post_id`, `post_type`)
 
 ### Components
 
 - `blog-post-card.tsx` — Blog card with featured image, metadata, haptic feedback
-- `bookmark-button.tsx` — Toggle bookmark button for posts
+- `bookmark-button.tsx` — Toggle bookmark button for blog posts
 - `category-filter.tsx` — Category filter bar for blog
 - `coming-soon.tsx` — Placeholder for incomplete sections
 - `html-content.tsx` — WordPress HTML renderer (headings, lists, quotes, code, images, links)
@@ -142,6 +146,44 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 ### Path Aliases
 
 TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`).
+
+### Environment Variables
+
+| Variable | Description |
+|---|---|
+| `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (`/wp-json/wp/v2`) |
+| `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
+| `EXPO_PUBLIC_APP_VARIANT` | App variant: `development`, `preview`, or `production` |
+| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal push notification REST API base URL (`/wp-json/tailsignal/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay/WPForms contact form REST API base URL (`/wp-json/packrelay/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID for the contact form |
+
+Copy `.env.example` to `.env` and fill in the values for local development.
+
+EAS environment variables are managed via `eas env:create` / `eas env:list` and are configured for `development`, `preview`, and `production` environments.
+
+### Firebase Configuration
+
+Firebase App Check is used on both platforms to verify contact form submissions.
+
+- iOS: App Attest with DeviceCheck fallback
+- Android: Play Integrity
+
+Config files (committed to repo — they contain no sensitive values per Expo/Google guidance):
+- `GoogleService-Info.plist` — iOS Firebase config (download from Firebase Console)
+- `google-services.json` — Android Firebase config (download from Firebase Console)
+
+Both files are referenced in `app.config.ts` via `googleServicesFile` and are required for prebuild.
+
+> **TODO:** Download the **production** `GoogleService-Info.plist` from Firebase Console
+> (bundle ID: `com.mrdemonwolf.OfficialApp`) and upload it to EAS for production builds:
+> ```bash
+> eas env:create production --name GOOGLE_SERVICES_PLIST --type file --visibility plaintext --value ./GoogleService-Info.plist
+> ```
+> Then update `app.config.ts` to use the EAS env var for production:
+> ```ts
+> googleServicesFile: process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
+> ```
 
 ### EAS & Store Configuration
 
