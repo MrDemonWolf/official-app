@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/hooks/query-keys';
-import { getPortfolioItem, getPortfolioItems } from '@/services/portfolio';
+import { getPortfolioCategories, getPortfolioItem, getPortfolioItems } from '@/services/portfolio';
 
 export function usePortfolioItems(perPage: number = 10) {
   return useInfiniteQuery({
@@ -13,6 +13,14 @@ export function usePortfolioItems(perPage: number = 10) {
       return nextPage <= lastPage.totalPages ? nextPage : undefined;
     },
     staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function usePortfolioCategories() {
+  return useQuery({
+    queryKey: queryKeys.portfolioCategories,
+    queryFn: getPortfolioCategories,
+    staleTime: 1000 * 60 * 30,
   });
 }
 

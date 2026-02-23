@@ -6,6 +6,7 @@ export const queryKeys = {
   portfolioItem: (id: string) => ['portfolio-item', id] as const,
   searchPosts: (query: string) => ['search-posts', query] as const,
   categories: ['categories'] as const,
+  portfolioCategories: ['portfolio-categories'] as const,
   bookmarks: (type?: string) => ['bookmarks', type] as const,
   isBookmarked: (postId: number) => ['is-bookmarked', postId] as const,
 };
