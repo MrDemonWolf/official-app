@@ -92,23 +92,21 @@ Copy `.env.example` to `.env` and configure the values for your WordPress site:
 The About screen pulls social links and a role/tagline from [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) user fields. Install the ACF plugin on your WordPress site, then create a field group:
 
 1. Go to **ACF > Field Groups** and create a new group (e.g. "User Profile")
-2. Add the following fields:
+2. Add a **Text** field for `role_title`
+3. Add a **Repeater** field named `social_links` with these sub-fields:
 
-   | Field Label | Field Name | Field Type |
-   |---|---|---|
-   | Role / Title | `role_title` | Text |
-   | GitHub URL | `github_url` | URL |
-   | Discord URL | `discord_url` | URL |
-   | Twitter / X URL | `twitter_url` | URL |
-   | Twitch URL | `twitch_url` | URL |
-   | YouTube URL | `youtube_url` | URL |
-   | Website URL | `website_url` | URL |
+   | Sub-field Label | Field Name | Field Type | Required |
+   |---|---|---|---|
+   | Platform | `platform` | Select or Text | Yes |
+   | URL | `url` | URL | Yes |
+   | Icon URL | `icon_url` | URL | No |
+   | Label | `label` | Text | No |
 
-3. Set the **Location** rule to: **User Role** is equal to **All**
-4. Under **Settings**, enable **Show in REST API**
-5. Fill in the fields on your WordPress user profile
+4. Set the **Location** rule to: **User Role** is equal to **All**
+5. Under **Settings**, enable **Show in REST API**
+6. Add social links on your WordPress user profile — each row is a platform + URL
 
-Only fields with values will show as icons on the About screen. If no ACF fields are configured, the social links row simply won't appear.
+The app bundles icons for 14 platforms: `github`, `discord`, `x`, `twitch`, `youtube`, `facebook`, `instagram`, `bluesky`, `linkedin`, `mastodon`, `threads`, `tiktok`, `reddit`, `steam`. Use `website` for a globe icon. For any other platform, provide an `icon_url` pointing to a remote SVG/PNG and it will be loaded automatically. Add, remove, or reorder links in WordPress without any app changes.
 
 ### Code Quality
 
