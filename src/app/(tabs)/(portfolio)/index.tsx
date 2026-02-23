@@ -1,12 +1,13 @@
 import { Link } from 'expo-router';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, Text, View, useWindowDimensions } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { CategoryFilter } from '@/components/category-filter';
 import { PortfolioCard } from '@/components/portfolio-card';
 import { queryKeys } from '@/hooks/query-keys';
 import { useHaptics } from '@/hooks/use-haptics';
-import { usePortfolioItems } from '@/hooks/use-portfolio';
+import { usePortfolioCategories, usePortfolioItems } from '@/hooks/use-portfolio';
 
 export default function PortfolioScreen() {
   const {
@@ -19,18 +20,37 @@ export default function PortfolioScreen() {
     refetch,
     isRefetching,
   } = usePortfolioItems();
+  const { data: categories } = usePortfolioCategories();
   const haptics = useHaptics();
   const queryClient = useQueryClient();
   const { width } = useWindowDimensions();
   const isWideScreen = width > 768;
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
-  const items = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages]);
+  const allItems = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages]);
+
+  // Filter by project_category if a category chip is selected
+  const items = useMemo(() => {
+    if (!selectedCategory) return allItems;
+    return allItems.filter((item) => item.project_category?.includes(selectedCategory));
+  }, [allItems, selectedCategory]);
 
   useEffect(() => {
-    for (const item of items) {
+    for (const item of allItems) {
       queryClient.setQueryData(queryKeys.portfolioItem(item.id.toString()), item);
     }
-  }, [items, queryClient]);
+  }, [allItems, queryClient]);
+
+  const ListHeader = useMemo(() => {
+    if (!categories || categories.length === 0) return null;
+    return (
+      <CategoryFilter
+        categories={categories}
+        selectedId={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
+    );
+  }, [categories, selectedCategory]);
 
   const handleRefresh = useCallback(async () => {
     await refetch();
@@ -72,6 +92,7 @@ export default function PortfolioScreen() {
           </Link>
         </View>
       )}
+      ListHeaderComponent={ListHeader}
       onEndReached={() => {
         if (hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
