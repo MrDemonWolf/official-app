@@ -7,7 +7,7 @@ import { PlatformIcon } from '@/components/platform-icon';
 import { useAbout } from '@/hooks/use-about';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
-import type { WPAuthorAcf } from '@/types/wordpress';
+import type { WPAuthorAcf, WPSocialLink } from '@/types/wordpress';
 
 const FALLBACK_AVATAR =
   'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=800';
@@ -31,33 +31,43 @@ const FALLBACK_BIO = [
 const SOCIAL_ICON_SOURCES: Record<string, number> = {
   github: require('@/assets/images/social/github.svg'),
   discord: require('@/assets/images/social/discord.svg'),
-  twitter: require('@/assets/images/social/twitter.svg'),
+  x: require('@/assets/images/social/x.svg'),
   twitch: require('@/assets/images/social/twitch.svg'),
   youtube: require('@/assets/images/social/youtube.svg'),
+  facebook: require('@/assets/images/social/facebook.svg'),
+  instagram: require('@/assets/images/social/instagram.svg'),
+  bluesky: require('@/assets/images/social/bluesky.svg'),
+  linkedin: require('@/assets/images/social/linkedin.svg'),
+  mastodon: require('@/assets/images/social/mastodon.svg'),
+  threads: require('@/assets/images/social/threads.svg'),
+  tiktok: require('@/assets/images/social/tiktok.svg'),
+  reddit: require('@/assets/images/social/reddit.svg'),
+  steam: require('@/assets/images/social/steam.svg'),
 };
 
-type SocialKey = 'github' | 'discord' | 'twitter' | 'twitch' | 'youtube' | 'website';
-
 interface SocialLink {
-  key: SocialKey;
+  platform: string;
   url: string;
+  label: string;
+  iconSource: number | null;
+  iconUrl: string | null;
+  isWebsite: boolean;
 }
 
-function getSocialLinks(acf: WPAuthorAcf | undefined, authorUrl: string | undefined): SocialLink[] {
-  if (!acf) return [];
+function getSocialLinks(acf: WPAuthorAcf | undefined): SocialLink[] {
+  if (!acf?.social_links) return [];
 
-  const links: SocialLink[] = [];
+  return acf.social_links
+    .filter((link: WPSocialLink) => link.url)
+    .map((link: WPSocialLink) => {
+      const platform = link.platform.toLowerCase();
+      const isWebsite = platform === 'website';
+      const iconSource = SOCIAL_ICON_SOURCES[platform] ?? null;
+      const iconUrl = !isWebsite && !iconSource && link.icon_url ? link.icon_url : null;
+      const label = link.label || platform.charAt(0).toUpperCase() + platform.slice(1);
 
-  if (acf.github_url) links.push({ key: 'github', url: acf.github_url });
-  if (acf.discord_url) links.push({ key: 'discord', url: acf.discord_url });
-  if (acf.twitter_url) links.push({ key: 'twitter', url: acf.twitter_url });
-  if (acf.twitch_url) links.push({ key: 'twitch', url: acf.twitch_url });
-  if (acf.youtube_url) links.push({ key: 'youtube', url: acf.youtube_url });
-
-  const websiteUrl = acf.website_url || authorUrl;
-  if (websiteUrl) links.push({ key: 'website', url: websiteUrl });
-
-  return links;
+      return { platform, url: link.url, label, iconSource, iconUrl, isWebsite };
+    });
 }
 
 export default function AboutScreen() {
@@ -77,7 +87,7 @@ export default function AboutScreen() {
   const avatarUrl = cacheBuster > 0
     ? `${baseAvatarUrl}${baseAvatarUrl.includes('?') ? '&' : '?'}_t=${cacheBuster}`
     : baseAvatarUrl;
-  const socialLinks = getSocialLinks(user?.acf, user?.url);
+  const socialLinks = getSocialLinks(user?.acf);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -166,13 +176,13 @@ export default function AboutScreen() {
 
         {/* Social links row */}
         {socialLinks.length > 0 ? (
-          <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
             {socialLinks.map((link) => (
               <Pressable
-                key={link.key}
+                key={link.platform + link.url}
                 onPress={() => handleSocialPress(link.url)}
                 accessibilityRole="link"
-                accessibilityLabel={`${link.key.charAt(0).toUpperCase() + link.key.slice(1)} profile`}
+                accessibilityLabel={`${link.label} profile`}
                 style={({ pressed }) => ({
                   width: 44,
                   height: 44,
@@ -184,15 +194,22 @@ export default function AboutScreen() {
                   justifyContent: 'center',
                 })}
               >
-                {/* Brand icons use SVG via expo-image; website uses SF Symbol / Material Icon */}
-                {link.key === 'website' ? (
+                {link.isWebsite ? (
                   <PlatformIcon name="globe" size={22} tintColor={isDark ? '#fafafa' : '#18181b'} />
-                ) : (
+                ) : link.iconSource ? (
                   <Image
-                    source={SOCIAL_ICON_SOURCES[link.key]}
+                    source={link.iconSource}
                     style={{ width: 22, height: 22 }}
                     tintColor={isDark ? '#fafafa' : '#18181b'}
                   />
+                ) : link.iconUrl ? (
+                  <Image
+                    source={{ uri: link.iconUrl }}
+                    style={{ width: 22, height: 22 }}
+                    tintColor={isDark ? '#fafafa' : '#18181b'}
+                  />
+                ) : (
+                  <PlatformIcon name="globe" size={22} tintColor={isDark ? '#fafafa' : '#18181b'} />
                 )}
               </Pressable>
             ))}

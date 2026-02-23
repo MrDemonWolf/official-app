@@ -91,14 +91,16 @@ export interface WPEmbeddedFeaturedMedia {
   };
 }
 
+export interface WPSocialLink {
+  platform: string;
+  url: string;
+  icon_url?: string;
+  label?: string;
+}
+
 export interface WPAuthorAcf {
   role_title?: string;
-  github_url?: string;
-  discord_url?: string;
-  twitter_url?: string;
-  twitch_url?: string;
-  youtube_url?: string;
-  website_url?: string;
+  social_links?: WPSocialLink[];
 }
 
 export interface WPUser {

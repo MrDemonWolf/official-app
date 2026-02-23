@@ -6,7 +6,7 @@ import type {
 } from '@/types/wordpress';
 
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://mrdemonwolf.com/wp-json/wp/v2';
+  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://hotpink-jaguar-740254.hostingersite.com/wp-json/wp/v2';
 
 const WORDPRESS_USER_ID = process.env.EXPO_PUBLIC_WORDPRESS_USER_ID || '1';
 

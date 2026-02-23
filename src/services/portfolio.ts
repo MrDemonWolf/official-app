@@ -2,7 +2,7 @@ import type { WPPortfolioItem, WPPortfolioResponse } from '@/types/portfolio';
 import type { WPCategory } from '@/types/wordpress';
 
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://mrdemonwolf.com/wp-json/wp/v2';
+  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://hotpink-jaguar-740254.hostingersite.com/wp-json/wp/v2';
 
 export async function getPortfolioItems(
   page: number = 1,
