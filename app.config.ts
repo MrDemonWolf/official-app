@@ -65,6 +65,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "expo-font",
+    "expo-image",
     "expo-sqlite",
     "expo-web-browser",
     "./src/plugins/modular-headers",
@@ -87,6 +88,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         color: "#3b82f6",
       },
     ],
+    "./src/plugins/notification-service-extension",
     "@react-native-firebase/app",
     "@react-native-firebase/app-check",
   ],
