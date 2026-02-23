@@ -1,42 +1,22 @@
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { forwardRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { decodeHtmlEntities } from '@/lib/decode-html';
 import { cn } from '@/lib/utils';
+import { getFeaturedImage, stripHtml } from '@/lib/wordpress-helpers';
 import type { WPPortfolioItem } from '@/types/portfolio';
 
 interface PortfolioCardProps {
   item: WPPortfolioItem;
   onPress?: () => void;
+  ref?: React.Ref<View>;
 }
 
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').trim();
-}
-
-function getFeaturedImage(item: WPPortfolioItem) {
-  const media = item._embedded?.['wp:featuredmedia']?.[0];
-  if (!media) return null;
-
-  const sizes = media.media_details?.sizes;
-  const preferred = sizes?.medium_large ?? sizes?.medium;
-
-  if (preferred) {
-    return { url: preferred.source_url, alt: media.alt_text || '' };
-  }
-
-  if (media.source_url) {
-    return { url: media.source_url, alt: media.alt_text || '' };
-  }
-
-  return null;
-}
-
-export const PortfolioCard = forwardRef<View, PortfolioCardProps>(({ item, onPress }, ref) => {
+export function PortfolioCard({ item, onPress, ref }: PortfolioCardProps) {
   const title = decodeHtmlEntities(item.title.rendered);
   const excerpt = decodeHtmlEntities(stripHtml(item.excerpt.rendered)).slice(0, 150);
   const featuredImage = getFeaturedImage(item);
@@ -114,6 +94,4 @@ export const PortfolioCard = forwardRef<View, PortfolioCardProps>(({ item, onPre
       </View>
     </Pressable>
   );
-});
-
-PortfolioCard.displayName = 'PortfolioCard';
+}

@@ -3,39 +3,36 @@ import { ConfigContext, ExpoConfig } from "expo/config";
 const APP_VARIANT = process.env.APP_VARIANT || "development";
 const IS_PRODUCTION = APP_VARIANT === "production";
 
-const getBundleId = () => {
-  return IS_PRODUCTION
-    ? "com.mrdemonwolf.OfficialApp"
-    : "com.mrdemonwolf.OfficialApp.dev";
-};
+const EAS_PROJECT_ID = "4a220b17-d746-48f1-9f46-d83a0a933b40";
 
-const getIcon = () => {
-  return "./src/assets/images/icon.png";
-};
+const BUNDLE_ID = IS_PRODUCTION
+  ? "com.mrdemonwolf.OfficialApp"
+  : "com.mrdemonwolf.OfficialApp.dev";
 
-const getAndroidForegroundIcon = () => {
-  return "./src/assets/images/android-icon-foreground.png";
-};
+const APP_NAME = IS_PRODUCTION ? "MrDemonWolf" : "MDW (Dev)";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   owner: "mrdemonwolf-org",
-  name: IS_PRODUCTION ? "MrDemonWolf" : "MDW (Dev)",
+  name: APP_NAME,
   slug: "official-app",
   version: "1.0.0",
   orientation: "portrait",
-  icon: getIcon(),
+  icon: "./src/assets/images/icon.png",
   scheme: "mrdemonwolf",
   userInterfaceStyle: "automatic",
+
   updates: {
-    url: "https://u.expo.dev/4a220b17-d746-48f1-9f46-d83a0a933b40",
+    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
   },
+
   runtimeVersion: {
     policy: "appVersion",
   },
+
   ios: {
     supportsTablet: true,
-    bundleIdentifier: getBundleId(),
+    bundleIdentifier: BUNDLE_ID,
     buildNumber: "2",
     googleServicesFile: "./GoogleService-Info.plist",
     config: {
@@ -44,29 +41,33 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       NSMotionUsageDescription:
         "This app uses haptic feedback to enhance your experience.",
-      UIBackgroundModes: [],
+      UIBackgroundModes: ["remote-notification"],
     },
   },
+
   android: {
-    package: getBundleId(),
+    package: BUNDLE_ID,
     versionCode: 2,
     googleServicesFile: "./google-services.json",
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
-      foregroundImage: getAndroidForegroundIcon(),
+      foregroundImage: "./src/assets/images/android-icon-foreground.png",
       backgroundImage: "./src/assets/images/android-icon-background.png",
       monochromeImage: "./src/assets/images/android-icon-monochrome.png",
     },
   },
+
   web: {
     output: "static",
     favicon: "./src/assets/images/favicon.png",
   },
+
   plugins: [
     "expo-router",
     "expo-font",
     "expo-sqlite",
     "expo-web-browser",
+    "./src/plugins/modular-headers",
     [
       "expo-splash-screen",
       {
@@ -89,11 +90,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "@react-native-firebase/app",
     "@react-native-firebase/app-check",
   ],
+
   extra: {
     eas: {
-      projectId: "4a220b17-d746-48f1-9f46-d83a0a933b40",
+      projectId: EAS_PROJECT_ID,
     },
   },
+
   experiments: {
     typedRoutes: true,
     reactCompiler: true,

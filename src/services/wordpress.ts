@@ -1,6 +1,5 @@
 import type {
   WPCategory,
-  WPMedia,
   WPPost,
   WPPostsResponse,
   WPUser,
@@ -70,36 +69,6 @@ export async function getCategories(): Promise<WPCategory[]> {
 
   if (!response.ok) {
     throw new Error(`Failed to fetch categories: ${response.statusText}`);
-  }
-
-  return response.json();
-}
-
-export async function getPostsByCategory(
-  categoryId: number,
-  page: number = 1,
-  perPage: number = 10
-): Promise<WPPostsResponse> {
-  const response = await fetch(
-    `${API_BASE_URL}/posts?categories=${categoryId}&page=${page}&per_page=${perPage}&_embed`
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch posts by category: ${response.statusText}`);
-  }
-
-  const posts: WPPost[] = await response.json();
-  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-  const total = parseInt(response.headers.get('X-WP-Total') || '0', 10);
-
-  return { posts, totalPages, total };
-}
-
-export async function getMedia(id: number): Promise<WPMedia> {
-  const response = await fetch(`${API_BASE_URL}/media/${id}`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch media: ${response.statusText}`);
   }
 
   return response.json();

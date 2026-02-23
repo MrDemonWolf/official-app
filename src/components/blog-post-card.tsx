@@ -1,24 +1,21 @@
 import { Image } from 'expo-image';
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { forwardRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useHaptics } from '@/hooks/use-haptics';
 import { decodeHtmlEntities } from '@/lib/decode-html';
 import { cn } from '@/lib/utils';
-import { getFeaturedImage } from '@/lib/wordpress-helpers';
+import { getFeaturedImage, stripHtml } from '@/lib/wordpress-helpers';
 import type { WPPost } from '@/types/wordpress';
 
 interface BlogPostCardProps {
   post: WPPost;
   onPress?: () => void;
+  ref?: React.Ref<View>;
 }
 
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').trim();
-}
-
-export const BlogPostCard = forwardRef<View, BlogPostCardProps>(({ post, onPress }, ref) => {
+export function BlogPostCard({ post, onPress, ref }: BlogPostCardProps) {
   const title = decodeHtmlEntities(post.title.rendered);
   const excerpt = decodeHtmlEntities(stripHtml(post.excerpt.rendered)).slice(0, 150);
   const date = new Date(post.date).toLocaleDateString('en-US', {
@@ -86,6 +83,4 @@ export const BlogPostCard = forwardRef<View, BlogPostCardProps>(({ post, onPress
       </View>
     </Pressable>
   );
-});
-
-BlogPostCard.displayName = 'BlogPostCard';
+}

@@ -20,32 +20,9 @@ import { useHaptics } from '@/hooks/use-haptics';
 import { usePortfolioItem } from '@/hooks/use-portfolio';
 import { useShare } from '@/hooks/use-share';
 import { decodeHtmlEntities } from '@/lib/decode-html';
+import { getFeaturedImage } from '@/lib/wordpress-helpers';
 import { getBookmarkedContent } from '@/services/bookmarks';
 import type { BookmarkedPost } from '@/types/bookmark';
-
-function getFeaturedImage(item: { _embedded?: any }) {
-  const media = item._embedded?.['wp:featuredmedia']?.[0];
-  if (!media) return null;
-  const sizes = media.media_details?.sizes;
-  const preferred = sizes?.medium_large ?? sizes?.medium;
-  if (preferred) {
-    return {
-      url: preferred.source_url,
-      alt: media.alt_text || '',
-      width: preferred.width,
-      height: preferred.height,
-    };
-  }
-  if (media.source_url) {
-    return {
-      url: media.source_url,
-      alt: media.alt_text || '',
-      width: media.media_details?.width ?? 0,
-      height: media.media_details?.height ?? 0,
-    };
-  }
-  return null;
-}
 
 const isIOS = process.env.EXPO_OS === 'ios';
 

@@ -1,5 +1,3 @@
-import type { WPPost } from '@/types/wordpress';
-
 interface FeaturedImage {
   url: string;
   alt: string;
@@ -7,8 +5,8 @@ interface FeaturedImage {
   height: number;
 }
 
-export function getFeaturedImage(post: WPPost): FeaturedImage | null {
-  const media = post._embedded?.['wp:featuredmedia']?.[0];
+export function getFeaturedImage(item: { _embedded?: any }): FeaturedImage | null {
+  const media = item._embedded?.['wp:featuredmedia']?.[0];
   if (!media) return null;
 
   const sizes = media.media_details?.sizes;
@@ -35,4 +33,8 @@ export function getFeaturedImage(post: WPPost): FeaturedImage | null {
   }
 
   return null;
+}
+
+export function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').trim();
 }
