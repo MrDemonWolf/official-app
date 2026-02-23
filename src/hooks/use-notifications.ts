@@ -37,12 +37,14 @@ export function useNotifications() {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const data = response.notification.request.content.data;
-        if (data?.postId) {
-          const postId = String(data.postId);
-          if (data.postType === 'portfolio') {
-            router.push(`/portfolio/${postId}` as any);
+        const postId = data?.post_id ?? data?.postId;
+        if (postId) {
+          const id = String(postId);
+          const postType = data?.post_type ?? data?.postType;
+          if (postType === 'portfolio' || postType === 'project') {
+            router.push(`/portfolio/${id}` as any);
           } else {
-            router.push(`/blog/${postId}`);
+            router.push(`/blog/${id}`);
           }
         }
       }
