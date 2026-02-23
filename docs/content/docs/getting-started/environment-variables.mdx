@@ -1,0 +1,51 @@
+---
+title: Environment Variables
+description: All environment variables used by the MrDemonWolf Official App.
+---
+
+# Environment Variables
+
+Copy `.env.example` to `.env` and fill in the values for local development.
+
+## Required Variables
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://example.com/wp-json/wp/v2`) |
+| `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
+
+## Optional Variables
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_APP_VARIANT` | App variant: `development`, `preview`, or `production` |
+| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal push notification API base URL (e.g. `https://example.com/wp-json/tailsignal/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay/WPForms contact form API base URL (e.g. `https://example.com/wp-json/packrelay/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID for the contact form |
+
+## EAS Environment Variables
+
+For cloud builds, environment variables are managed via EAS:
+
+```bash
+# Create a variable for a specific environment
+eas env:create --name EXPO_PUBLIC_WORDPRESS_API_URL --value "https://example.com/wp-json/wp/v2" --environment production
+
+# List all variables
+eas env:list
+
+# List variables for a specific environment
+eas env:list --environment production
+```
+
+Variables are configured for `development`, `preview`, and `production` environments separately.
+
+## App Variants
+
+The `EXPO_PUBLIC_APP_VARIANT` variable controls the app's bundle ID and behavior:
+
+| Variant | Bundle ID | Use Case |
+|---------|-----------|----------|
+| `development` | `com.mrdemonwolf.OfficialApp.dev` | Local development, internal testing |
+| `preview` | `com.mrdemonwolf.OfficialApp.dev` | TestFlight / internal distribution |
+| `production` | `com.mrdemonwolf.OfficialApp` | App Store / Play Store release |

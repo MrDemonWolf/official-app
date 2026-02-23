@@ -1,0 +1,71 @@
+---
+title: EAS Build
+description: Building the app with EAS Build for iOS and Android.
+---
+
+# EAS Build
+
+The app is built using [EAS Build](https://docs.expo.dev/build/introduction/) from Expo.
+
+## Build Profiles
+
+| Profile | Distribution | Use Case |
+|---------|-------------|----------|
+| `development` | Internal | Dev client for local testing |
+| `production` | Store | App Store / Play Store release |
+
+Both profiles use `appVersionSource: "remote"` with auto-increment, so version numbers are managed by EAS.
+
+## Running Builds
+
+EAS CLI must be available in your PATH. If using zsh, run via `zsh -l` to ensure PATH is set:
+
+```bash
+# iOS build
+eas build --platform ios
+
+# Android build
+eas build --platform android
+
+# Both platforms
+eas build --platform all
+```
+
+### Development Build
+
+```bash
+eas build --platform ios --profile development
+eas build --platform android --profile development
+```
+
+Development builds include the Expo dev client for hot reloading and debugging.
+
+### Production Build
+
+```bash
+eas build --platform ios --profile production
+eas build --platform android --profile production
+```
+
+Production builds are optimized and signed for store distribution.
+
+## Credentials
+
+### iOS
+
+- Distribution certificate and provisioning profile managed by EAS
+- Run `eas credentials` to view or update
+
+### Android
+
+- JKS keystore for signing
+- Google Service Account JSON for Play Store uploads
+- Run `eas credentials` to manage
+
+## Configuration
+
+Build configuration lives in `eas.json` at the project root. Key settings:
+
+- **Owner**: `mrdemonwolf-org`
+- **Project ID**: `4a220b17-d746-48f1-9f46-d83a0a933b40`
+- **Bundle IDs**: `com.mrdemonwolf.OfficialApp` (prod) / `com.mrdemonwolf.OfficialApp.dev` (dev)

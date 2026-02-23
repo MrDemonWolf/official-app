@@ -1,0 +1,55 @@
+---
+title: Overview
+description: High-level architecture of the MrDemonWolf Official App.
+---
+
+# Architecture Overview
+
+The app is built on **Expo SDK 55** with **React Native 0.83** and the **New Architecture** enabled. It uses Expo Router for file-based routing, React Query for server state management, and NativeWind/Tailwind for styling.
+
+## Project Structure
+
+Source code lives under `src/` to keep the root clean. Expo Router auto-detects `src/app/`.
+
+```
+src/
+├── app/                    # Expo Router file-based routing
+├── assets/images/          # App icons, splash, favicons, social SVGs
+├── components/             # Reusable React components
+├── contexts/               # React Context providers (settings)
+├── hooks/                  # Custom React hooks (queries, haptics, form state)
+├── lib/                    # Utilities (HTML parsing, font scale, WP helpers)
+├── services/               # API layers (WordPress, PackRelay, Firebase, notifications, bookmarks)
+├── types/                  # TypeScript type definitions
+└── global.css              # Tailwind/NativeWind imports
+
+plugins/                    # Custom Expo config plugins
+```
+
+## Key Technologies
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Expo SDK | 55 | App framework and build tooling |
+| React Native | 0.83 | Native UI rendering (New Architecture) |
+| Expo Router | 55 | File-based navigation |
+| React Query | v5 | Server state management and caching |
+| NativeWind | v5 | Tailwind CSS for React Native |
+| Tailwind CSS | v4 | Utility-first styling |
+| SQLite | via expo-sqlite | Local bookmark storage |
+| AsyncStorage | via settings context | User preferences persistence |
+| Firebase App Check | v23 | Device attestation for API security |
+
+## Path Aliases
+
+TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`):
+
+```ts
+import { useAbout } from '@/hooks/use-about';
+import { getUser } from '@/services/wordpress';
+```
+
+## Experimental Features
+
+- **Typed routes** — `experiments.typedRoutes` enabled for compile-time route safety
+- **React Compiler** — `experiments.reactCompiler` enabled for automatic memoization

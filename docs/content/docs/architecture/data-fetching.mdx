@@ -1,0 +1,64 @@
+---
+title: Data Fetching
+description: React Query setup, WordPress REST API integration, and caching strategy.
+---
+
+# Data Fetching
+
+All server state is managed with **React Query** (`@tanstack/react-query` v5).
+
+## Query Keys
+
+Centralized query key factory in `src/hooks/query-keys.ts`:
+
+```ts
+export const queryKeys = {
+  user: ['user'],
+  posts: ['posts'],
+  post: (id: string) => ['post', id],
+  categories: ['categories'],
+  portfolio: ['portfolio'],
+  // ...
+};
+```
+
+## WordPress REST API
+
+The `src/services/wordpress.ts` module provides typed functions for all WordPress endpoints:
+
+| Function | Endpoint | Returns |
+|----------|----------|---------|
+| `getUser()` | `/users/{id}` | `WPUser` |
+| `getPosts(page, perPage)` | `/posts?page=&per_page=&_embed` | `WPPostsResponse` |
+| `getPost(id)` | `/posts/{id}?_embed` | `WPPost` |
+| `searchPosts(query, page, perPage)` | `/posts?search=&_embed` | `WPPostsResponse` |
+| `getCategories()` | `/categories?per_page=100` | `WPCategory[]` |
+
+The `_embed` parameter tells WordPress to include embedded data (featured images, author, terms) in the response, avoiding extra API calls.
+
+## Custom Hooks
+
+| Hook | Purpose |
+|------|---------|
+| `useAbout()` | Fetches WP user data (5-min stale time, always refetches on mount) |
+| `usePosts()` | Infinite query for blog post list |
+| `usePost(id)` | Single post query |
+| `useSearchPosts(query)` | Infinite search across posts |
+| `useCategories()` | Category listing for blog filter |
+| `usePortfolio()` | Portfolio item queries |
+
+## Cache Strategy
+
+- **Stale time**: 5 minutes for user data, configurable per query
+- **Cache pre-population**: Blog list pre-populates individual post caches so detail screens render instantly
+- **Persistence**: React Query cache is persisted to AsyncStorage via `@tanstack/query-sync-storage-persister`
+- **Pagination**: Uses `useInfiniteQuery` with cursor-based pagination via WordPress `X-WP-TotalPages` header
+
+## Response Headers
+
+WordPress REST API responses include pagination headers:
+
+- `X-WP-TotalPages` — Total number of pages
+- `X-WP-Total` — Total number of items
+
+These are parsed in the service layer to support infinite scroll.

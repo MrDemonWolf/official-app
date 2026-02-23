@@ -1,0 +1,60 @@
+---
+title: Firebase App Check
+description: Firebase App Check initialization, token management, and platform providers.
+---
+
+# Firebase App Check
+
+Firebase App Check verifies that API requests come from a genuine app running on a real device. It's used to protect the contact form endpoint from automated abuse.
+
+## Service Layer
+
+`src/services/app-check.ts` provides two functions:
+
+### `initializeAppCheck()`
+
+Called once at app startup (in the root layout). Configures platform-specific attestation providers:
+
+| Platform | Production Provider | Development Provider |
+|----------|-------------------|---------------------|
+| iOS | App Attest with DeviceCheck fallback | Debug |
+| Android | Play Integrity | Debug |
+
+Token auto-refresh is enabled.
+
+### `getAppCheckToken()`
+
+Returns a fresh App Check token for authenticating API requests. Throws a user-friendly error if:
+
+- App Check was not initialized
+- Token retrieval fails (device verification issue)
+
+## Integration Flow
+
+```
+User submits contact form
+  → getAppCheckToken() → fresh token
+  → submitContactForm({ data, appCheckToken })
+  → PackRelay validates token with Firebase
+  → WPForms processes submission
+```
+
+## Dependencies
+
+- `@react-native-firebase/app` — Firebase core
+- `@react-native-firebase/app-check` — App Check module
+
+## Debug Mode
+
+In development (`__DEV__` is `true`), the debug provider is used. This allows testing on simulators and emulators without real device attestation.
+
+For debug mode to work, you may need to register the debug token in the Firebase Console under **App Check > Apps > Manage debug tokens**.
+
+## Config Files
+
+Firebase requires platform-specific config files in the project root:
+
+- `GoogleService-Info.plist` — iOS (from Firebase Console)
+- `google-services.json` — Android (from Firebase Console)
+
+These are referenced in `app.config.ts` via the `googleServicesFile` option and are required for `expo prebuild`.

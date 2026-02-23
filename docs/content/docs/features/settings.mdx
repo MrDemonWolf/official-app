@@ -1,0 +1,66 @@
+---
+title: Settings
+description: Theme, font size, haptics, notifications, cache management, and tab persistence.
+---
+
+# Settings
+
+The Settings screen provides user-configurable options stored in AsyncStorage.
+
+## Settings Context
+
+`src/contexts/settings-context.tsx` provides a global settings context with:
+
+- `SettingsProvider` — Wraps the app, loads saved settings on mount
+- `useSettings()` — Hook to read and update settings
+
+All settings are persisted to AsyncStorage and restored on cold launch.
+
+## Available Settings
+
+### Theme Preference
+
+- **Options**: Light, Dark, Auto (system)
+- **Key**: `themePreference`
+- **Effect**: Controls `useColorScheme()` return value
+
+### Font Size
+
+- **Options**: Configurable scale factor
+- **Key**: `fontSize`
+- **Effect**: Scales text throughout the app
+
+### Haptics (iOS only)
+
+- **Options**: Enabled / Disabled
+- **Key**: `hapticsEnabled`
+- **Effect**: Gates all haptic feedback via `useHaptics()` hook
+- Only shown on iOS (`process.env.EXPO_OS === 'ios'`)
+
+### Push Notifications
+
+- **Options**: Enabled / Disabled
+- **Key**: `notificationsEnabled`
+- **Effect**: Registers/unregisters device with TailSignal
+
+### Cache Management
+
+- Clear React Query cache
+- Removes all cached API responses
+- Forces fresh data on next screen visit
+
+## Tab Persistence
+
+The settings context also manages the last active tab:
+
+- Saves the current tab segment when the user navigates
+- Restores the last visited tab on cold launch
+- Uses `useSegments()` from Expo Router to track the active tab
+
+## App Info
+
+The Settings screen displays:
+
+- App version (from `expo-constants`)
+- Build number
+- EAS update information (if available via `expo-updates`)

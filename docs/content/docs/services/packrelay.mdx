@@ -1,0 +1,72 @@
+---
+title: PackRelay
+description: PackRelay/WPForms contact form API integration.
+---
+
+# PackRelay
+
+[PackRelay](https://github.com/MrDemonWolf/packrelay) is a WordPress plugin that bridges mobile app contact forms to WPForms. It accepts form submissions via REST API and validates them with Firebase App Check tokens.
+
+## How It Works
+
+1. The app collects form data and a Firebase App Check token
+2. Data is sent to the PackRelay REST endpoint
+3. PackRelay validates the App Check token with Firebase
+4. If valid, PackRelay submits the data to WPForms
+5. WPForms processes the submission (sends email, stores entry)
+
+## API Endpoint
+
+```
+POST {PACKRELAY_API_URL}/submit/{FORM_ID}
+```
+
+### Request
+
+```json
+{
+  "fields": {
+    "1": "First Name",
+    "2": "Last Name",
+    "3": "email@example.com",
+    "4": "555-0123",
+    "5": "Message body"
+  },
+  "app_check_token": "eyJhbGciOi..."
+}
+```
+
+The `fields` object maps WPForms field IDs to values. Field IDs are configured in the WPForms form builder.
+
+### Response
+
+**Success**:
+```json
+{
+  "success": true,
+  "message": "Form submitted successfully"
+}
+```
+
+**Error**:
+```json
+{
+  "success": false,
+  "message": "Validation failed: invalid App Check token"
+}
+```
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_PACKRELAY_API_URL` | Base URL (e.g. `https://example.com/wp-json/packrelay/v1`) |
+| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID |
+
+## WordPress Setup
+
+1. Install and activate [PackRelay](https://github.com/MrDemonWolf/packrelay) on your WordPress site
+2. Install and activate [WPForms](https://wpforms.com/)
+3. Create a contact form in WPForms with fields for first name, last name, email, phone, and message
+4. Note the form ID and field IDs
+5. Configure PackRelay with your Firebase project credentials

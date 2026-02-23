@@ -1,0 +1,80 @@
+---
+title: TailSignal
+description: TailSignal push notification service for device registration and notification delivery.
+---
+
+# TailSignal
+
+[TailSignal](https://github.com/MrDemonWolf/tailsignal) is a WordPress plugin that manages push notification delivery via Expo's push notification service.
+
+## API Endpoints
+
+### Register Device
+
+```
+POST {TAILSIGNAL_API_URL}/register
+```
+
+```json
+{
+  "expo_token": "ExponentPushToken[xxxxx]",
+  "device_type": "ios",
+  "device_model": "iPhone 15 Pro",
+  "os_version": "18.0",
+  "app_version": "1.0.0"
+}
+```
+
+Registers a device to receive push notifications. Device info is collected using `expo-device` and `expo-constants`.
+
+### Check Registration Status
+
+```
+GET {TAILSIGNAL_API_URL}/register/status?expo_token=ExponentPushToken[xxxxx]
+```
+
+**Response**:
+```json
+{
+  "registered": true,
+  "active": true
+}
+```
+
+Used on app launch to verify registration before re-registering.
+
+### Unregister Device
+
+```
+DELETE {TAILSIGNAL_API_URL}/register?expo_token=ExponentPushToken[xxxxx]
+```
+
+Removes the device registration. Called when the user disables notifications.
+
+## Notification Data Format
+
+TailSignal sends notifications with **snake_case** keys:
+
+```json
+{
+  "post_id": "123",
+  "post_type": "post"
+}
+```
+
+| Key | Values | Navigation Target |
+|-----|--------|-------------------|
+| `post_type` | `post` | `blog/{post_id}` |
+| `post_type` | `project` | `portfolio/{post_id}` |
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | Base URL (e.g. `https://example.com/wp-json/tailsignal/v1`) |
+
+## WordPress Setup
+
+1. Install and activate [TailSignal](https://github.com/MrDemonWolf/tailsignal) on your WordPress site
+2. Configure TailSignal with your Expo project credentials
+3. TailSignal uses WordPress hooks to send notifications when posts are published

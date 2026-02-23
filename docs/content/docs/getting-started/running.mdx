@@ -1,0 +1,70 @@
+---
+title: Running the App
+description: Start the development server and run the app on iOS, Android, or web.
+---
+
+# Running the App
+
+## Development Server
+
+Start the Expo dev server:
+
+```bash
+pnpm start
+```
+
+This launches the Expo CLI with the `development` app variant.
+
+## iOS Simulator
+
+```bash
+pnpm ios
+```
+
+Requires Xcode and an iOS simulator to be installed on macOS.
+
+## Android Emulator
+
+```bash
+pnpm android
+```
+
+Requires Android Studio with an AVD (Android Virtual Device) configured.
+
+## Web
+
+```bash
+pnpm web
+```
+
+Starts the app for web using `react-native-web`.
+
+## App Variant Scripts
+
+Run with different variants for testing:
+
+```bash
+# Preview variant
+pnpm start:preview
+
+# Production variant
+pnpm start:prod
+
+# iOS with specific variant
+pnpm ios:preview
+pnpm ios:prod
+
+# Android with specific variant
+pnpm android:preview
+pnpm android:prod
+```
+
+## Code Quality
+
+```bash
+# Run ESLint
+pnpm lint
+
+# Run TypeScript type checking
+pnpm type-check
+```

@@ -1,0 +1,103 @@
+---
+title: REST API Configuration
+description: WordPress custom post types, taxonomies, and REST API configuration for the portfolio.
+---
+
+# WordPress REST API Configuration
+
+The app uses both built-in WordPress post types (posts, categories) and custom post types for the portfolio.
+
+## Built-in Endpoints
+
+These work out of the box with a standard WordPress installation:
+
+| Endpoint | Used For |
+|----------|----------|
+| `/wp-json/wp/v2/users/{id}` | About screen profile |
+| `/wp-json/wp/v2/posts` | Blog list and search |
+| `/wp-json/wp/v2/posts/{id}` | Blog post detail |
+| `/wp-json/wp/v2/categories` | Blog category filter |
+
+## Custom Post Type: Project
+
+The portfolio uses a custom post type registered in WordPress.
+
+### Registration
+
+Add to your theme's `functions.php` or a custom plugin:
+
+```php
+function register_project_post_type() {
+    register_post_type('project', [
+        'labels' => [
+            'name' => 'Projects',
+            'singular_name' => 'Project',
+        ],
+        'public' => true,
+        'has_archive' => true,
+        'show_in_rest' => true,     // Required for REST API
+        'rest_base' => 'projects',
+        'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
+        'menu_icon' => 'dashicons-portfolio',
+    ]);
+}
+add_action('init', 'register_project_post_type');
+```
+
+### REST API Endpoint
+
+```
+GET /wp-json/wp/v2/projects
+GET /wp-json/wp/v2/projects/{id}
+```
+
+## Custom Taxonomies
+
+### Project Category
+
+```php
+function register_project_category_taxonomy() {
+    register_taxonomy('project_category', 'project', [
+        'labels' => [
+            'name' => 'Project Categories',
+            'singular_name' => 'Project Category',
+        ],
+        'public' => true,
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'rest_base' => 'project-categories',
+    ]);
+}
+add_action('init', 'register_project_category_taxonomy');
+```
+
+### Project Tag
+
+```php
+function register_project_tag_taxonomy() {
+    register_taxonomy('project_tag', 'project', [
+        'labels' => [
+            'name' => 'Project Tags',
+            'singular_name' => 'Project Tag',
+        ],
+        'public' => true,
+        'hierarchical' => false,
+        'show_in_rest' => true,
+        'rest_base' => 'project-tags',
+    ]);
+}
+add_action('init', 'register_project_tag_taxonomy');
+```
+
+## Required Plugins
+
+| Plugin | Purpose |
+|--------|---------|
+| [Advanced Custom Fields](https://www.advancedcustomfields.com/) | Custom fields for user profile and projects |
+| [PackRelay](https://github.com/MrDemonWolf/packrelay) | Contact form API bridge |
+| [TailSignal](https://github.com/MrDemonWolf/tailsignal) | Push notification management |
+| [WPForms](https://wpforms.com/) | Contact form backend |
+
+## Permalink Settings
+
+Ensure WordPress permalinks are set to **Post name** (`/%postname%/`) for clean REST API URLs. Go to **Settings > Permalinks** in the WordPress admin.

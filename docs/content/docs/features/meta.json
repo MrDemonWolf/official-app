@@ -1,0 +1,12 @@
+{
+  "title": "Features",
+  "pages": [
+    "about-screen",
+    "blog",
+    "portfolio",
+    "contact-form",
+    "push-notifications",
+    "bookmarks",
+    "settings"
+  ]
+}

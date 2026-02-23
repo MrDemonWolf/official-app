@@ -39,9 +39,6 @@ yarn-error.*
 credentials.json
 credentials/
 
-# Firebase
-google-services.json
-
 # typescript
 *.tsbuildinfo
 
@@ -55,6 +52,11 @@ app-example
 *.apk
 *.aab
 *.ipa
+
+# Docs
+docs/.next/
+docs/out/
+docs/.source/
 
 # Claude Code
 .claude

@@ -1,0 +1,56 @@
+---
+title: Installation
+description: Prerequisites and setup instructions for the MrDemonWolf Official App.
+---
+
+# Installation
+
+## Prerequisites
+
+- **Node.js** 20+ (LTS recommended)
+- **pnpm** — package manager (`npm install -g pnpm`)
+- **Expo CLI** — included via `npx expo`
+- **EAS CLI** — for builds and submissions (`npm install -g eas-cli`)
+- **Xcode** (macOS only) — for iOS simulator
+- **Android Studio** — for Android emulator
+
+## Clone & Install
+
+```bash
+git clone https://github.com/MrDemonWolf/official-app.git
+cd official-app
+pnpm install
+```
+
+## Environment Setup
+
+Copy the example environment file and fill in values:
+
+```bash
+cp .env.example .env
+```
+
+See [Environment Variables](/docs/getting-started/environment-variables) for a full reference of required values.
+
+## Firebase Configuration
+
+Download the Firebase config files from the Firebase Console and place them in the project root:
+
+- `GoogleService-Info.plist` — iOS Firebase config
+- `google-services.json` — Android Firebase config
+
+See [Firebase Setup](/docs/getting-started/firebase-setup) for detailed instructions.
+
+## Generate Native Projects
+
+Before running on a device or simulator, generate the native iOS and Android projects:
+
+```bash
+pnpm prebuild
+```
+
+To clean and regenerate:
+
+```bash
+pnpm prebuild:clean
+```

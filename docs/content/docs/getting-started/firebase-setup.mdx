@@ -1,0 +1,81 @@
+---
+title: Firebase Setup
+description: Configure Firebase App Check for iOS and Android device verification.
+---
+
+# Firebase Setup
+
+Firebase App Check is used to verify contact form submissions from real devices. It prevents automated abuse by requiring device attestation before accepting form data.
+
+## Download Config Files
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/)
+2. Select your project (or create one)
+3. Add an iOS app with bundle ID `com.mrdemonwolf.OfficialApp` (or `.dev` for development)
+4. Download `GoogleService-Info.plist` and place it in the project root
+5. Add an Android app with package name `com.mrdemonwolf.OfficialApp`
+6. Download `google-services.json` and place it in the project root
+
+Both files are referenced in `app.config.ts` via `googleServicesFile` and are required for prebuild.
+
+## Platform Providers
+
+### iOS — App Attest + DeviceCheck Fallback
+
+- **Production**: Uses App Attest as the primary provider with DeviceCheck as fallback
+- **Development**: Uses the debug provider for simulator testing
+
+### Android — Play Integrity
+
+- **Production**: Uses Play Integrity API
+- **Development**: Uses the debug provider for emulator testing
+
+## App Check Initialization
+
+App Check is initialized once at app startup in the root layout. The provider configuration is in `src/services/app-check.ts`:
+
+```ts
+export async function initializeAppCheck(): Promise<void> {
+  appCheckInstance = await _initializeAppCheck(undefined, {
+    provider: {
+      providerOptions: {
+        apple: {
+          provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
+        },
+        android: {
+          provider: __DEV__ ? 'debug' : 'playIntegrity',
+        },
+      },
+    },
+    isTokenAutoRefreshEnabled: true,
+  });
+}
+```
+
+## Token Usage
+
+App Check tokens are attached to contact form submissions. The `getAppCheckToken()` function retrieves a fresh token:
+
+```ts
+const token = await getAppCheckToken();
+// Token is sent with the form submission to PackRelay
+```
+
+## EAS Production Setup
+
+For production builds, upload the iOS config to EAS:
+
+```bash
+eas env:create production \
+  --name GOOGLE_SERVICES_PLIST \
+  --type file \
+  --visibility plaintext \
+  --value ./GoogleService-Info.plist
+```
+
+Then reference the EAS env var in `app.config.ts`:
+
+```ts
+googleServicesFile:
+  process.env.GOOGLE_SERVICES_PLIST || './GoogleService-Info.plist',
+```

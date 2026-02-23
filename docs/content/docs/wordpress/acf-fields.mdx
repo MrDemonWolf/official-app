@@ -1,0 +1,104 @@
+---
+title: ACF Fields
+description: Advanced Custom Fields setup for user profile, social links, banner image, and portfolio technologies.
+---
+
+# ACF Fields
+
+The app relies on [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/) to extend WordPress with custom data. These fields are exposed via the REST API.
+
+## User Profile Fields
+
+These fields are added to the **User** profile in WordPress and appear on the About screen.
+
+### `role_title` (Text)
+
+The user's job title or role displayed below their name.
+
+- **Field type**: Text
+- **Location**: User profile
+- **Example**: "Full Stack Developer"
+
+### `social_links` (Repeater)
+
+A repeater field for social media links. Each row contains:
+
+| Sub-field | Type | Description |
+|-----------|------|-------------|
+| `platform` | Select | Platform identifier (github, discord, x, twitch, youtube, facebook, instagram, bluesky, linkedin, mastodon, threads, tiktok, reddit, steam, website) |
+| `url` | URL | Profile URL |
+| `label` | Text | Display label (optional, defaults to platform name) |
+| `icon_url` | URL | Custom icon URL (optional, for platforms without bundled icons) |
+
+#### Setting Up the Repeater
+
+1. In ACF, create a new Field Group
+2. Set location rule: **User Role** is equal to **All**
+3. Add a **Repeater** field named `social_links`
+4. Add sub-fields: `platform` (Select), `url` (URL), `label` (Text), `icon_url` (URL)
+5. For the `platform` select field, add choices:
+   ```
+   github : GitHub
+   discord : Discord
+   x : X (Twitter)
+   twitch : Twitch
+   youtube : YouTube
+   facebook : Facebook
+   instagram : Instagram
+   bluesky : Bluesky
+   linkedin : LinkedIn
+   mastodon : Mastodon
+   threads : Threads
+   tiktok : TikTok
+   reddit : Reddit
+   steam : Steam
+   website : Website
+   ```
+
+### `banner_image` (Image)
+
+Optional custom banner image for the About screen. If not set, the app uses a blurred version of the user's Gravatar.
+
+- **Field type**: Image
+- **Return format**: URL
+- **Location**: User profile
+
+## Portfolio Fields
+
+These fields are added to the **Project** custom post type.
+
+### `technologies` (Repeater)
+
+A repeater field listing technologies used in the project.
+
+| Sub-field | Type | Description |
+|-----------|------|-------------|
+| `name` | Text | Technology name (e.g. "React", "Node.js") |
+| `icon` | Text | Optional icon identifier |
+
+## REST API Exposure
+
+ACF fields are automatically included in REST API responses when **Show in REST API** is enabled in the field group settings.
+
+The fields appear under the `acf` key in API responses:
+
+```json
+{
+  "id": 1,
+  "name": "MrDemonWolf",
+  "acf": {
+    "role_title": "Full Stack Developer",
+    "social_links": [
+      {
+        "platform": "github",
+        "url": "https://github.com/MrDemonWolf",
+        "label": "GitHub",
+        "icon_url": ""
+      }
+    ],
+    "banner_image": "https://example.com/wp-content/uploads/banner.jpg"
+  }
+}
+```
+
+Make sure to enable **Show in REST API** in each ACF field group's settings.

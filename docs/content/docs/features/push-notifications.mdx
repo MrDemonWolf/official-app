@@ -1,0 +1,94 @@
+---
+title: Push Notifications
+description: TailSignal push notifications with Expo push tokens, auto re-registration, and rich notifications.
+---
+
+# Push Notifications
+
+The app uses [TailSignal](https://github.com/MrDemonWolf/tailsignal) for push notification delivery via Expo's push notification service.
+
+## Registration Flow
+
+1. App requests notification permissions from the OS
+2. Expo generates a push token tied to the EAS project ID
+3. Token and device info are sent to the TailSignal backend
+4. TailSignal stores the registration for future notifications
+
+## Auto Re-registration
+
+On every app launch, the notification hook:
+
+1. Checks if the user has notifications enabled in settings
+2. Gets the current Expo push token
+3. Calls `isDeviceRegistered(token)` to verify registration status
+4. If not registered (or registration expired), re-registers the device
+
+This handles cases where the backend loses registrations or tokens change.
+
+## Device Registration
+
+```
+POST {TAILSIGNAL_API_URL}/register
+```
+
+```json
+{
+  "expo_token": "ExponentPushToken[...]",
+  "device_type": "ios",
+  "device_model": "iPhone 15 Pro",
+  "os_version": "18.0",
+  "app_version": "1.0.0"
+}
+```
+
+## Registration Status Check
+
+```
+GET {TAILSIGNAL_API_URL}/register/status?expo_token=...
+```
+
+Returns `{ "registered": true, "active": true }` if the device is actively registered.
+
+## Unregistration
+
+```
+DELETE {TAILSIGNAL_API_URL}/register?expo_token=...
+```
+
+Called when the user disables notifications in Settings.
+
+## Deep Linking on Tap
+
+When a user taps a notification, the app navigates to the relevant screen:
+
+- `post_type: "post"` → `blog/{post_id}`
+- `post_type: "project"` → `portfolio/{post_id}`
+
+TailSignal sends notification data with **snake_case** keys (e.g. `post_id`, `post_type`).
+
+## Rich Notifications (iOS)
+
+iOS supports rich push notifications with images via a Notification Service Extension:
+
+- Custom Expo config plugin: `plugins/notification-service-extension.js`
+- Notifications with `mutableContent: true` can include an image attachment
+- The service extension downloads and attaches the image before display
+
+## Android Notification Channel
+
+Android requires a notification channel:
+
+```ts
+await Notifications.setNotificationChannelAsync('default', {
+  name: 'Default',
+  importance: Notifications.AndroidImportance.DEFAULT,
+});
+```
+
+## Settings Integration
+
+Push notifications are gated by `settings.notificationsEnabled`:
+
+- Toggle in Settings screen
+- Enabling registers the device
+- Disabling unregisters the device

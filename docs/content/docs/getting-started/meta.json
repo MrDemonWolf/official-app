@@ -1,0 +1,9 @@
+{
+  "title": "Getting Started",
+  "pages": [
+    "installation",
+    "environment-variables",
+    "firebase-setup",
+    "running"
+  ]
+}

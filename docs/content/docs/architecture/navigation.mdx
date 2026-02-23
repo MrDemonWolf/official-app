@@ -1,0 +1,69 @@
+---
+title: Navigation
+description: Expo Router file-based routing, tab layout, and platform-specific navigation.
+---
+
+# Navigation
+
+The app uses **Expo Router** with file-based routing. All route files live under `src/app/`.
+
+## Root Layout
+
+`src/app/_layout.tsx` is the root layout. It wraps the app with:
+
+- `QueryClientProvider` — React Query client
+- `SettingsProvider` — Global settings context
+- `Stack` — Root stack navigator
+- Theme configuration
+
+## Tab Navigation
+
+The app has 5 tabs organized under `src/app/(tabs)/`:
+
+| Tab | Route Group | Screen |
+|-----|-------------|--------|
+| About | `(index)` | Profile with avatar, social links, bio |
+| Blog | `(blog)` | Blog list + bookmarks |
+| Portfolio | `(portfolio)` | Portfolio showcase |
+| Contact | `(contact)` | Contact form |
+| Settings | `(settings)` | App settings |
+
+### Platform-Specific Tab Layouts
+
+Tab layouts differ between iOS and Android:
+
+**iOS** (`_layout.tsx`):
+- Uses `NativeTabs` component
+- SF Symbols for tab icons
+- Tab persistence via `useSegments()`
+
+**Android** (`_layout.android.tsx`):
+- Uses `Tabs` component
+- MaterialIcons for tab icons
+- Same persistence logic
+
+### Tab Persistence
+
+The last visited tab is saved to `AsyncStorage` via the settings context. On cold launch, the app restores the previously active tab using `useSegments()`.
+
+## Route Table
+
+| Route | File | Description |
+|-------|------|-------------|
+| About | `(tabs)/(index)/index.tsx` | Profile screen |
+| Blog List | `(tabs)/(blog)/index.tsx` | Infinite scroll blog list |
+| Blog Post | `blog/[id].tsx` | Blog post detail |
+| Bookmarks | `(tabs)/(blog)/bookmarks.tsx` | Saved blog posts |
+| Portfolio | `(tabs)/(portfolio)/index.tsx` | Portfolio list |
+| Portfolio Item | `portfolio/[id].tsx` | Portfolio detail |
+| Contact | `(tabs)/(contact)/index.tsx` | Contact form |
+| Settings | `(tabs)/(settings)/index.tsx` | App settings |
+
+## Deep Linking
+
+Push notification taps navigate to specific screens using Expo Router's deep linking:
+
+- Blog posts: ``router.push(`/blog/${postId}`)``
+- Portfolio items: ``router.push(`/portfolio/${postId}`)``
+
+The notification response handler in `use-notifications.ts` extracts `post_id` and `post_type` from the notification data (snake_case keys from TailSignal).

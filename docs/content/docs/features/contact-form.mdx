@@ -1,0 +1,77 @@
+---
+title: Contact Form
+description: Contact form with PackRelay/WPForms integration and Firebase App Check verification.
+---
+
+# Contact Form
+
+The contact form allows users to send messages. Submissions are verified with Firebase App Check and sent through PackRelay to WPForms on the WordPress backend.
+
+## How It Works
+
+1. User fills out the form (first name, last name, email, phone, message)
+2. App requests a Firebase App Check token for device verification
+3. Form data and App Check token are sent to PackRelay
+4. PackRelay validates the token and submits to WPForms
+5. WPForms processes the submission (email notification, database entry)
+
+## Form Fields
+
+| Field | WPForms Field ID | Required |
+|-------|-----------------|----------|
+| First Name | `1` | Yes |
+| Last Name | `2` | Yes |
+| Email | `3` | Yes |
+| Phone | `4` | No |
+| Message | `5` | Yes |
+
+Field IDs are mapped in `src/services/contact.ts`:
+
+```ts
+const FIELD_IDS: Record<string, string> = {
+  firstName: '1',
+  lastName: '2',
+  email: '3',
+  phone: '4',
+  message: '5',
+};
+```
+
+## API Endpoint
+
+```
+POST {PACKRELAY_API_URL}/submit/{PACKRELAY_FORM_ID}
+```
+
+Request body:
+
+```json
+{
+  "fields": {
+    "1": "John",
+    "2": "Doe",
+    "3": "john@example.com",
+    "4": "555-1234",
+    "5": "Hello!"
+  },
+  "app_check_token": "eyJ..."
+}
+```
+
+## Hooks
+
+- `useContactForm()` — Handles form submission with App Check token
+- `useContactFormState()` — Manages form field state and validation
+
+## Error Handling
+
+- Network errors show a connectivity message
+- App Check failures prompt the user to retry or restart
+- Server validation errors are displayed from the response
+
+## Environment Variables
+
+| Variable | Purpose |
+|----------|---------|
+| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay REST API base URL |
+| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID |

@@ -1,0 +1,59 @@
+---
+title: About Screen
+description: Profile screen with parallax banner, avatar, social links, and bio from WordPress.
+---
+
+# About Screen
+
+The About screen displays the app owner's profile, pulling data from the WordPress REST API user endpoint.
+
+## Data Source
+
+User data is fetched via `useAbout()` which calls `getUser()` from the WordPress service:
+
+```
+GET /wp-json/wp/v2/users/{WORDPRESS_USER_ID}
+```
+
+The user ID is configured via the `EXPO_PUBLIC_WORDPRESS_USER_ID` environment variable (defaults to `1`).
+
+## Profile Elements
+
+| Element | Source | Fallback |
+|---------|--------|----------|
+| Name | `user.name` | "MrDemonWolf" |
+| Role title | `user.acf.role_title` | Not shown |
+| Avatar | `user.avatar_urls` (highest resolution) | Gravatar default |
+| Banner | Blurred avatar at 800px | — |
+| Bio | `user.description` | Hardcoded fallback paragraphs |
+| Social links | `user.acf.social_links` (ACF repeater) | Not shown |
+
+## Parallax Banner (iOS)
+
+On iOS, the About screen features a parallax banner effect using `react-native-reanimated`:
+
+- Banner image scales up on overscroll (pull down)
+- Parallax translation on normal scroll
+- Dark gradient overlay for readability
+- Avatar overlaps the bottom of the banner
+
+The Android version uses a simplified layout without parallax animation.
+
+## Social Links
+
+Social links come from an ACF repeater field (`social_links`) on the WordPress user. Each link has:
+
+- `platform` — Platform identifier (e.g. `github`, `twitter`, `discord`)
+- `url` — The profile URL
+- `label` — Display label
+- `icon_url` — Optional custom icon URL
+
+The app bundles 14 brand SVG icons that are tinted at runtime:
+
+github, discord, x, twitch, youtube, facebook, instagram, bluesky, linkedin, mastodon, threads, tiktok, reddit, steam
+
+For the special `website` platform, a globe icon is shown. If a platform has no bundled icon, it falls back to `icon_url` from the ACF field, then to the globe icon.
+
+## ACF Fields Required
+
+See [ACF Fields](/docs/wordpress/acf-fields) for WordPress setup instructions.

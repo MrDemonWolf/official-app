@@ -1,0 +1,80 @@
+---
+title: Platform Differences
+description: iOS vs Android implementations, platform-specific files, and EXPO_OS usage.
+---
+
+# Platform Differences
+
+The app handles platform differences through file-based overrides and runtime checks.
+
+## Platform-Specific Files
+
+Expo supports automatic platform resolution through file extensions:
+
+- `.tsx` — Default (used on iOS and web)
+- `.android.tsx` — Android-specific override
+
+When both files exist, React Native automatically resolves to the `.android.tsx` file on Android and the `.tsx` file on iOS.
+
+### Files with Android Overrides
+
+| Default (iOS) | Android Override |
+|----------------|-----------------|
+| `(tabs)/_layout.tsx` | `(tabs)/_layout.android.tsx` |
+| `(tabs)/(index)/index.tsx` | `(tabs)/(index)/index.android.tsx` |
+
+## Platform Detection
+
+Use `process.env.EXPO_OS` instead of `Platform.OS` for build-time platform detection:
+
+```ts
+if (process.env.EXPO_OS === 'ios') {
+  // iOS-only code
+}
+```
+
+This enables dead code elimination at build time — Android builds won't include iOS-only code paths.
+
+## Tab Icons
+
+| Platform | Icon Library | Example |
+|----------|-------------|---------|
+| iOS | SF Symbols (via `expo-symbols`) | `house.fill`, `doc.text.fill` |
+| Android | MaterialIcons (via `@expo/vector-icons`) | `home`, `article` |
+
+## Haptics
+
+Haptic feedback is iOS-only:
+
+```ts
+const haptics = useHaptics();
+// haptics.impact() — only triggers on iOS, no-op on Android
+```
+
+The `useHaptics` hook checks `process.env.EXPO_OS === 'ios'` and the user's haptics preference from settings.
+
+## About Screen
+
+The About screen has platform-specific implementations:
+
+**iOS** (`index.tsx`):
+- Parallax banner with `react-native-reanimated` animated scroll
+- Banner image scales and translates on scroll
+- Overscroll keeps banner pinned to top
+
+**Android** (`index.android.tsx`):
+- Simplified layout without parallax animation
+- Standard scroll behavior
+
+## Notification Channels
+
+Android requires notification channels:
+
+```ts
+if (process.env.EXPO_OS === 'android') {
+  await Notifications.setNotificationChannelAsync('default', {
+    name: 'Default',
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
+}
+```

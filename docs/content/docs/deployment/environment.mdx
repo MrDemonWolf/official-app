@@ -1,0 +1,57 @@
+---
+title: Environment Configuration
+description: EAS environment variables, build variants, and bundle ID configuration.
+---
+
+# Environment Configuration
+
+## EAS Environment Variables
+
+Environment variables for cloud builds are managed via EAS CLI:
+
+```bash
+# Create a variable
+eas env:create --name EXPO_PUBLIC_WORDPRESS_API_URL \
+  --value "https://example.com/wp-json/wp/v2" \
+  --environment production
+
+# List variables
+eas env:list
+eas env:list --environment production
+
+# Update a variable
+eas env:update --name EXPO_PUBLIC_WORDPRESS_API_URL \
+  --value "https://new-url.com/wp-json/wp/v2" \
+  --environment production
+```
+
+Variables are scoped to environments: `development`, `preview`, and `production`.
+
+## Build Variants
+
+The `EXPO_PUBLIC_APP_VARIANT` (or `APP_VARIANT`) variable controls the app configuration:
+
+| Variant | Bundle ID | Icon | Purpose |
+|---------|-----------|------|---------|
+| `development` | `com.mrdemonwolf.OfficialApp.dev` | Dev icon | Local development |
+| `preview` | `com.mrdemonwolf.OfficialApp.dev` | Dev icon | Internal testing |
+| `production` | `com.mrdemonwolf.OfficialApp` | Production icon | Store release |
+
+The variant is set in the npm scripts:
+
+```bash
+pnpm start        # APP_VARIANT=development
+pnpm start:preview # APP_VARIANT=preview
+pnpm start:prod   # APP_VARIANT=production
+```
+
+## EAS Project Configuration
+
+| Setting | Value |
+|---------|-------|
+| Owner | `mrdemonwolf-org` |
+| Project ID | `4a220b17-d746-48f1-9f46-d83a0a933b40` |
+| iOS Bundle ID (prod) | `com.mrdemonwolf.OfficialApp` |
+| iOS Bundle ID (dev) | `com.mrdemonwolf.OfficialApp.dev` |
+| Android Package (prod) | `com.mrdemonwolf.OfficialApp` |
+| Android Package (dev) | `com.mrdemonwolf.OfficialApp.dev` |

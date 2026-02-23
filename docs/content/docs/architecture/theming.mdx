@@ -1,0 +1,72 @@
+---
+title: Theming
+description: Light/dark mode, NativeWind/Tailwind styling, and color scheme management.
+---
+
+# Theming
+
+The app supports light mode, dark mode, and automatic (system) theme switching.
+
+## Theme Preferences
+
+Users can choose between three options in Settings:
+
+- **Light** — Always light mode
+- **Dark** — Always dark mode
+- **Auto** — Follow system setting
+
+The preference is stored in `AsyncStorage` via the settings context.
+
+## Color Scheme Hook
+
+`src/hooks/use-color-scheme.ts` combines the system color scheme with the user's preference:
+
+```ts
+const colorScheme = useColorScheme();
+const isDark = colorScheme === 'dark';
+```
+
+When the user preference is `'auto'`, the hook returns the system's current scheme. Otherwise, it returns the explicit choice.
+
+## NativeWind / Tailwind CSS
+
+The app uses **NativeWind v5** with **Tailwind CSS v4** for styling:
+
+- Tailwind utility classes work in React Native via NativeWind
+- Dark mode classes use the `dark:` prefix
+- Global styles are in `src/global.css`
+
+```tsx
+<View className="bg-zinc-50 dark:bg-zinc-950">
+  <Text className="text-zinc-900 dark:text-zinc-100">
+    Hello
+  </Text>
+</View>
+```
+
+## Inline Styles
+
+Some components use inline styles for dynamic values (animations, computed dimensions) alongside Tailwind classes:
+
+```tsx
+<Text
+  style={{
+    fontSize: 24,
+    fontWeight: '800',
+    color: isDark ? '#fafafa' : '#18181b',
+  }}
+>
+  {authorName}
+</Text>
+```
+
+## Color Palette
+
+The app primarily uses Tailwind's **zinc** color scale for neutral UI elements:
+
+| Token | Light | Dark |
+|-------|-------|------|
+| Background | `zinc-50` (#fafafa) | `zinc-950` (#09090b) |
+| Text primary | `zinc-900` (#18181b) | `zinc-50` (#fafafa) |
+| Text secondary | `zinc-600` (#52525b) | `zinc-400` (#a1a1aa) |
+| Border | `zinc-200` (#e4e4e7) | `zinc-800` (#27272a) |
