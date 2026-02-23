@@ -4,6 +4,8 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Linking,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -11,20 +13,21 @@ import {
 } from 'react-native';
 
 import { HtmlContent } from '@/components/html-content';
+import { PlatformIcon } from '@/components/platform-icon';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
-import { usePost } from '@/hooks/use-post';
+import { usePortfolioItem } from '@/hooks/use-portfolio';
 import { useShare } from '@/hooks/use-share';
 import { decodeHtmlEntities } from '@/lib/decode-html';
 import { getFeaturedImage } from '@/lib/wordpress-helpers';
 import { getBookmarkedContent } from '@/services/bookmarks';
 import type { BookmarkedPost } from '@/types/bookmark';
 
-export default function BlogPostScreen() {
+export default function PortfolioDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const postId = id ? parseInt(id, 10) : undefined;
-  const { data: post, isLoading, error } = usePost(id);
+  const { data: item, isLoading, error } = usePortfolioItem(id);
   const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -50,19 +53,22 @@ export default function BlogPostScreen() {
     }
   }, [error, id]);
 
-  // Normalize data — compute from whichever source is available
+  // Normalize data
   const resolved = useMemo(() => {
-    if (post) {
+    if (item) {
       return {
-        title: decodeHtmlEntities(post.title.rendered),
-        dateStr: post.date,
-        contentHtml: post.content.rendered,
-        featuredImage: getFeaturedImage(post),
+        title: decodeHtmlEntities(item.title.rendered),
+        dateStr: item.date,
+        contentHtml: item.content.rendered,
+        featuredImage: getFeaturedImage(item),
         offlineFeaturedUrl: null as string | null,
-        postLink: post.link,
-        authorName: post._embedded?.author?.[0]?.name || null,
-        excerpt: decodeHtmlEntities(post.excerpt.rendered.replace(/<[^>]*>/g, '')).slice(0, 150),
-        postId: post.id,
+        postLink: item.link,
+        authorName: item._embedded?.author?.[0]?.name || null,
+        excerpt: decodeHtmlEntities(item.excerpt.rendered.replace(/<[^>]*>/g, '')).slice(0, 150),
+        postId: item.id,
+        projectUrl: item.acf?.project_url,
+        technologies: item.acf?.technologies,
+        client: item.acf?.client,
       };
     }
     if (offlinePost) {
@@ -76,10 +82,13 @@ export default function BlogPostScreen() {
         authorName: offlinePost.author_name,
         excerpt: offlinePost.excerpt,
         postId: offlinePost.post_id,
+        projectUrl: undefined as string | undefined,
+        technologies: undefined as string | undefined,
+        client: undefined as string | undefined,
       };
     }
     return null;
-  }, [post, offlinePost]);
+  }, [item, offlinePost]);
 
   const handleShare = useCallback(() => {
     if (resolved) {
@@ -96,7 +105,7 @@ export default function BlogPostScreen() {
       haptics.notification(NotificationFeedbackType.Success);
       addBookmark.mutate({
         post_id: resolved.postId,
-        post_type: 'post',
+        post_type: 'portfolio',
         title: resolved.title,
         excerpt: resolved.excerpt,
         featured_image_url: resolved.featuredImage?.url || resolved.offlineFeaturedUrl || null,
@@ -122,20 +131,42 @@ export default function BlogPostScreen() {
       <View className="flex-1 items-center justify-center bg-white p-5 dark:bg-zinc-950">
         <Stack.Screen options={{ title: 'Error' }} />
         <Text className="text-center text-base text-zinc-900 dark:text-zinc-100" selectable>
-          Failed to load post. Please try again later.
+          Failed to load portfolio item. Please try again later.
         </Text>
       </View>
     );
   }
 
   const {
-    title, dateStr, contentHtml, featuredImage, offlineFeaturedUrl,
+    title, contentHtml, featuredImage, offlineFeaturedUrl,
+    projectUrl, technologies, client,
   } = resolved;
-  const date = new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+
+  // Android header with PlatformIcon buttons (maps to MaterialIcons)
+  const headerRight = () => (
+    <View style={{ flexDirection: 'row', gap: 8 }}>
+      <Pressable
+        onPress={handleShare}
+        accessibilityRole="button"
+        accessibilityLabel="Share"
+        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+      >
+        <PlatformIcon name="square.and.arrow.up" size={24} tintColor={isDark ? '#f4f4f5' : '#18181b'} />
+      </Pressable>
+      <Pressable
+        onPress={handleBookmark}
+        accessibilityRole="button"
+        accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+      >
+        <PlatformIcon
+          name={bookmarked ? 'bookmark.fill' : 'bookmark'}
+          size={24}
+          tintColor={isDark ? '#f4f4f5' : '#18181b'}
+        />
+      </Pressable>
+    </View>
+  );
 
   return (
     <>
@@ -180,19 +211,65 @@ export default function BlogPostScreen() {
           />
         )}
         <View style={{ padding: 16, gap: 16, maxWidth: 680, alignSelf: 'center', width: '100%' }}>
-          <Text className="text-sm text-zinc-500 dark:text-zinc-400">{date}</Text>
+          {/* Meta info */}
+          {(technologies || client) && (
+            <View style={{ gap: 8 }}>
+              {client && (
+                <Text style={{ fontSize: 14, color: isDark ? '#a1a1aa' : '#71717a' }}>
+                  Client: {client}
+                </Text>
+              )}
+              {technologies && (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                  {technologies.split(',').map((tech: string) => (
+                    <View
+                      key={tech.trim()}
+                      style={{
+                        paddingHorizontal: 8,
+                        paddingVertical: 3,
+                        borderRadius: 6,
+                        backgroundColor: '#3b82f620',
+                      }}
+                    >
+                      <Text style={{ fontSize: 12, color: '#3b82f6', fontWeight: '500' }}>
+                        {tech.trim()}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Project URL */}
+          {projectUrl && (
+            <Pressable
+              onPress={() => {
+                haptics.impact(ImpactFeedbackStyle.Light);
+                Linking.openURL(projectUrl);
+              }}
+              accessibilityRole="link"
+              accessibilityLabel="View Project"
+              accessibilityHint="Opens the project in your browser"
+              style={({ pressed }) => ({
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderRadius: 10,
+                backgroundColor: '#3b82f6',
+                alignItems: 'center',
+                opacity: pressed ? 0.8 : 1,
+              })}
+            >
+              <Text style={{ fontSize: 15, fontWeight: '600', color: '#ffffff' }}>
+                View Project
+              </Text>
+            </Pressable>
+          )}
+
           <HtmlContent html={contentHtml} />
         </View>
       </ScrollView>
-      <Stack.Screen options={{ title }} />
-      {/* iOS native toolbar buttons using SF Symbols */}
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
-        <Stack.Toolbar.Button
-          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
-          onPress={handleBookmark}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen options={{ title, headerRight }} />
     </>
   );
 }

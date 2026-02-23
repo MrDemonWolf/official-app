@@ -3,8 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   RefreshControl,
   Text,
+  TextInput,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -12,7 +14,9 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BlogPostCard } from '@/components/blog-post-card';
 import { CategoryFilter } from '@/components/category-filter';
+import { PlatformIcon } from '@/components/platform-icon';
 import { useCategories } from '@/hooks/use-categories';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { queryKeys } from '@/hooks/query-keys';
 import { useHaptics } from '@/hooks/use-haptics';
 import { usePosts } from '@/hooks/use-posts';
@@ -22,6 +26,8 @@ export default function BlogScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { width } = useWindowDimensions();
   const isWideScreen = width > 768;
 
@@ -71,21 +77,56 @@ export default function BlogScreen() {
     haptics.notification();
   }, [refetch, haptics]);
 
-  const ListHeader = useMemo(() => {
-    if (!categories || categories.length === 0 || isSearching) return null;
-    return (
-      <CategoryFilter
-        categories={categories}
-        selectedId={selectedCategory}
-        onSelect={setSelectedCategory}
+  // Android bookmark button in the header
+  const headerRight = () => (
+    <Pressable
+      onPress={() => router.push('/bookmarks' as any)}
+      accessibilityRole="button"
+      accessibilityLabel="Bookmarks"
+      style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+    >
+      <PlatformIcon
+        name="bookmark"
+        size={24}
+        tintColor={isDark ? '#f4f4f5' : '#18181b'}
       />
+    </Pressable>
+  );
+
+  const ListHeader = useMemo(() => {
+    return (
+      <View style={{ gap: 12 }}>
+        {/* Android TextInput search bar */}
+        <TextInput
+          placeholder="Search posts..."
+          placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={{
+            fontSize: 16,
+            padding: 12,
+            borderRadius: 10,
+            backgroundColor: isDark ? '#18181b' : '#ffffff',
+            color: isDark ? '#f4f4f5' : '#18181b',
+          }}
+        />
+
+        {/* Category filter */}
+        {categories && categories.length > 0 && !isSearching && (
+          <CategoryFilter
+            categories={categories}
+            selectedId={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
+        )}
+      </View>
     );
-  }, [categories, selectedCategory, isSearching]);
+  }, [isDark, searchQuery, categories, selectedCategory, isSearching]);
 
   if (isLoading && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog' }} />
+        <Stack.Screen options={{ title: 'Blog', headerRight }} />
         <ActivityIndicator size="large" />
       </View>
     );
@@ -94,7 +135,7 @@ export default function BlogScreen() {
   if (error && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white p-5 dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog' }} />
+        <Stack.Screen options={{ title: 'Blog', headerRight }} />
         <Text className="text-center text-base text-zinc-900 dark:text-zinc-100" selectable>
           Failed to load posts. Please try again later.
         </Text>
@@ -145,20 +186,7 @@ export default function BlogScreen() {
           </View>
         }
       />
-      <Stack.Screen options={{ title: 'Blog' }} />
-      {/* iOS native search bar integrated into the navigation header */}
-      <Stack.SearchBar
-        placeholder="Search posts..."
-        onChangeText={(e: any) => setSearchQuery(e.nativeEvent.text)}
-        onCancelButtonPress={() => setSearchQuery('')}
-      />
-      {/* iOS native toolbar with SF Symbol bookmark button */}
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button
-          icon="bookmark"
-          onPress={() => router.push('/bookmarks' as any)}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen options={{ title: 'Blog', headerRight }} />
     </>
   );
 }

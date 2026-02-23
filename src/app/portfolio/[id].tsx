@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
-  Pressable,
   ScrollView,
   Text,
   View,
@@ -13,7 +12,6 @@ import {
 } from 'react-native';
 
 import { HtmlContent } from '@/components/html-content';
-import { PlatformIcon } from '@/components/platform-icon';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -23,8 +21,6 @@ import { decodeHtmlEntities } from '@/lib/decode-html';
 import { getFeaturedImage } from '@/lib/wordpress-helpers';
 import { getBookmarkedContent } from '@/services/bookmarks';
 import type { BookmarkedPost } from '@/types/bookmark';
-
-const isIOS = process.env.EXPO_OS === 'ios';
 
 export default function PortfolioDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -219,72 +215,40 @@ export default function PortfolioDetailScreen() {
 
           {/* Project URL */}
           {projectUrl && (
-            <Pressable
-              onPress={() => {
+            <View
+              style={{
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderRadius: 10,
+                backgroundColor: '#3b82f6',
+                alignItems: 'center',
+              }}
+              onTouchEnd={() => {
                 haptics.impact(ImpactFeedbackStyle.Light);
                 Linking.openURL(projectUrl);
               }}
               accessibilityRole="link"
               accessibilityLabel="View Project"
               accessibilityHint="Opens the project in your browser"
-              style={({ pressed }) => ({
-                paddingVertical: 12,
-                paddingHorizontal: 16,
-                borderRadius: 10,
-                backgroundColor: '#3b82f6',
-                alignItems: 'center',
-                opacity: pressed ? 0.8 : 1,
-              })}
             >
               <Text style={{ fontSize: 15, fontWeight: '600', color: '#ffffff' }}>
                 View Project
               </Text>
-            </Pressable>
+            </View>
           )}
 
           <HtmlContent html={contentHtml} />
         </View>
       </ScrollView>
-      <Stack.Screen
-        options={{
-          title,
-          ...(!isIOS && {
-            headerRight: () => (
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Pressable
-                  onPress={handleShare}
-                  accessibilityRole="button"
-                  accessibilityLabel="Share"
-                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
-                >
-                  <PlatformIcon name="square.and.arrow.up" size={24} tintColor={isDark ? '#f4f4f5' : '#18181b'} />
-                </Pressable>
-                <Pressable
-                  onPress={handleBookmark}
-                  accessibilityRole="button"
-                  accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
-                >
-                  <PlatformIcon
-                    name={bookmarked ? 'bookmark.fill' : 'bookmark'}
-                    size={24}
-                    tintColor={isDark ? '#f4f4f5' : '#18181b'}
-                  />
-                </Pressable>
-              </View>
-            ),
-          }),
-        }}
-      />
-      {isIOS && (
-        <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
-          <Stack.Toolbar.Button
-            icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
-            onPress={handleBookmark}
-          />
-        </Stack.Toolbar>
-      )}
+      <Stack.Screen options={{ title }} />
+      {/* iOS native toolbar buttons using SF Symbols */}
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={handleShare} />
+        <Stack.Toolbar.Button
+          icon={bookmarked ? 'bookmark.fill' : 'bookmark'}
+          onPress={handleBookmark}
+        />
+      </Stack.Toolbar>
     </>
   );
 }
