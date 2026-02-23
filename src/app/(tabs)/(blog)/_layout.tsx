@@ -1,22 +1,10 @@
 import { Stack } from 'expo-router/stack';
 
-const isIOS = process.env.EXPO_OS === 'ios';
+import { defaultStackScreenOptions } from '@/lib/stack-options';
 
 export default function BlogStack() {
   return (
-    <Stack
-      screenOptions={{
-        ...(isIOS && {
-          headerTransparent: true,
-          headerLargeTitle: true,
-          headerLargeStyle: { backgroundColor: 'transparent' },
-          headerShadowVisible: false,
-          headerLargeTitleShadowVisible: false,
-          scrollEdgeEffects: { top: 'automatic' },
-        }),
-        headerBackButtonDisplayMode: 'minimal',
-      }}
-    >
+    <Stack screenOptions={defaultStackScreenOptions}>
       <Stack.Screen name="index" options={{ title: 'Blog' }} />
       <Stack.Screen name="bookmarks" options={{ title: 'Bookmarks', headerLargeTitle: false }} />
     </Stack>
