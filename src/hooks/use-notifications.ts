@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { useSettings } from '@/contexts/settings-context';
 import {
+  isDeviceRegistered,
   registerDevice,
   registerForPushNotifications,
   unregisterDevice,
@@ -25,10 +26,15 @@ export function useNotifications() {
     }
 
     registerForPushNotifications()
-      .then((token) => {
-        if (token) {
-          tokenRef.current = token;
-          registerDevice(token);
+      .then(async (token) => {
+        if (!token) return;
+
+        tokenRef.current = token;
+
+        // Check if already registered and active; re-register if not.
+        const registered = await isDeviceRegistered(token);
+        if (!registered) {
+          await registerDevice(token);
         }
       })
       .catch(() => {});
