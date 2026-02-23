@@ -72,3 +72,26 @@ export async function unregisterDevice(token: string): Promise<void> {
     // Silently fail — device unregistration is best-effort
   }
 }
+
+/**
+ * Check if a token is registered and active on the TailSignal backend.
+ * Returns true only if the device is both registered and active.
+ */
+export async function isDeviceRegistered(token: string): Promise<boolean> {
+  if (!TAILSIGNAL_API_URL) return false;
+
+  try {
+    const response = await fetch(
+      `${TAILSIGNAL_API_URL}/register/status?expo_token=${encodeURIComponent(token)}`
+    );
+
+    if (!response.ok) return false;
+
+    const data = await response.json();
+    return data.registered === true && data.active === true;
+  } catch {
+    // If the check fails (network error, server down), assume registered
+    // to avoid spamming re-registrations when the backend is unreachable.
+    return true;
+  }
+}
