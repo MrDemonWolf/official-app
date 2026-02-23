@@ -1,0 +1,92 @@
+---
+title: WordPress REST API
+description: WordPress REST API integration for fetching users, posts, and categories.
+---
+
+# WordPress REST API
+
+The app fetches all content from a WordPress backend via the REST API. The service layer is in `src/services/wordpress.ts`.
+
+## Configuration
+
+```
+EXPO_PUBLIC_WORDPRESS_API_URL=https://example.com/wp-json/wp/v2
+EXPO_PUBLIC_WORDPRESS_USER_ID=1
+```
+
+## Endpoints
+
+### Get User
+
+```
+GET /users/{id}
+```
+
+Returns the WordPress user profile including name, description, avatar URLs, and ACF fields.
+
+**Used by**: `useAbout()` hook → About screen
+
+### Get Posts (Paginated)
+
+```
+GET /posts?page={page}&per_page={perPage}&_embed
+```
+
+Returns a paginated list of blog posts with embedded data.
+
+**Response headers**:
+- `X-WP-TotalPages` — Total pages available
+- `X-WP-Total` — Total post count
+
+**Used by**: `usePosts()` hook → Blog list
+
+### Get Single Post
+
+```
+GET /posts/{id}?_embed
+```
+
+Returns a single post with embedded featured image, author, and terms.
+
+**Used by**: `usePost(id)` hook → Blog post detail
+
+### Search Posts
+
+```
+GET /posts?search={query}&page={page}&per_page={perPage}&_embed
+```
+
+Searches posts by query string.
+
+**Used by**: `useSearchPosts(query)` hook → Blog search
+
+### Get Categories
+
+```
+GET /categories?per_page=100
+```
+
+Returns all post categories.
+
+**Used by**: `useCategories()` hook → Category filter
+
+## TypeScript Types
+
+Types are defined in `src/types/wordpress.ts`:
+
+- `WPUser` — User profile with ACF fields
+- `WPPost` — Blog post with embedded data
+- `WPPostsResponse` — Paginated posts response (`{ posts, totalPages, total }`)
+- `WPCategory` — Category with name and slug
+- `WPAuthorAcf` — ACF fields on the user (role_title, social_links, banner_image)
+- `WPSocialLink` — Social link entry from ACF repeater
+
+## The `_embed` Parameter
+
+Adding `_embed` to requests tells WordPress to include related data inline:
+
+- Featured media (images)
+- Author information
+- Taxonomy terms (categories, tags)
+
+This avoids making separate API calls for each relationship.

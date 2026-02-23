@@ -1,0 +1,54 @@
+---
+title: EAS Submit
+description: Submitting builds to the App Store and Play Store via EAS Submit.
+---
+
+# EAS Submit
+
+[EAS Submit](https://docs.expo.dev/submit/introduction/) handles uploading builds to the App Store and Google Play Store.
+
+## App Store (iOS)
+
+```bash
+eas submit --platform ios
+```
+
+This uploads the latest iOS build to App Store Connect. You'll need:
+
+- An Apple Developer account
+- App Store Connect API key (or Apple ID credentials)
+- The app must be created in App Store Connect first
+
+## Play Store (Android)
+
+```bash
+eas submit --platform android
+```
+
+This uploads the latest Android build to the Google Play Console. You'll need:
+
+- A Google Play Developer account
+- Google Service Account JSON key with appropriate permissions
+- The app must be created in the Play Console first
+
+## Automated Submission
+
+You can chain build and submit:
+
+```bash
+eas build --platform ios --auto-submit
+eas build --platform android --auto-submit
+```
+
+This automatically submits the build after it completes.
+
+## Credentials Management
+
+```bash
+# View and manage all credentials
+eas credentials
+
+# Platform-specific
+eas credentials --platform ios
+eas credentials --platform android
+```

@@ -1,0 +1,69 @@
+---
+title: Blog
+description: Blog list with infinite scroll, search, category filtering, and post detail rendering.
+---
+
+# Blog
+
+The blog feature displays WordPress posts with infinite scroll, search, and category filtering.
+
+## Blog List
+
+**Route**: `(tabs)/(blog)/index.tsx`
+
+- Infinite scroll powered by `useInfiniteQuery`
+- Posts fetched 10 at a time via `getPosts(page, perPage)`
+- Each post rendered as a `BlogPostCard` with featured image, title, excerpt, date, and category
+- Pull-to-refresh support
+- Cache pre-population: individual post data is written to the query cache when the list loads, so detail screens render instantly
+
+## Search
+
+**Hook**: `useSearchPosts(query)`
+
+- Debounced search input
+- Infinite scroll through search results
+- Uses WordPress `?search=` parameter
+
+## Category Filtering
+
+**Component**: `CategoryFilter`
+**Hook**: `useCategories()`
+
+- Horizontal scrollable filter bar
+- Fetches all categories from WordPress
+- Filters posts client-side or via API parameter
+
+## Blog Post Detail
+
+**Route**: `blog/[id].tsx`
+
+- Full HTML content rendered via the `HtmlContent` component
+- Supports: headings, paragraphs, lists, blockquotes, code blocks, images, links
+- Featured image displayed at the top
+- Share button using native share sheet (`useShare` hook)
+- Haptic feedback on interactions (iOS)
+
+## Blog Post Card
+
+**Component**: `BlogPostCard` (`src/components/blog-post-card.tsx`)
+
+- Featured image with aspect ratio
+- Post title and excerpt
+- Publication date and category badges
+- Haptic feedback on press (iOS)
+- Navigates to `blog/[id]` on tap
+
+## HTML Content Renderer
+
+**Component**: `HtmlContent` (`src/components/html-content.tsx`)
+
+Custom HTML-to-React Native renderer that handles WordPress content:
+
+- Headings (h1–h6) with appropriate sizing
+- Paragraphs with proper line height
+- Ordered and unordered lists
+- Blockquotes with styled borders
+- Code blocks with monospace font
+- Images with responsive sizing
+- Links that open in the system browser

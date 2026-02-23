@@ -1,0 +1,58 @@
+---
+title: Bookmarks
+description: SQLite-backed local bookmarks for saving blog posts.
+---
+
+# Bookmarks
+
+Users can bookmark blog posts for later reading. Bookmarks are stored locally using SQLite via `expo-sqlite`.
+
+## Storage
+
+Bookmarks are persisted in a local SQLite database on the device. This means:
+
+- Bookmarks are available offline
+- No server-side storage needed
+- Data stays on the device
+
+## Hooks
+
+### `useBookmarks()`
+
+Returns the list of all bookmarked posts.
+
+### `useIsBookmarked(postId)`
+
+Returns whether a specific post is bookmarked.
+
+### `useToggleBookmark()`
+
+Returns a mutation function to toggle a post's bookmark status.
+
+### `useClearBookmarks()`
+
+Returns a mutation function to clear all bookmarks.
+
+## Components
+
+### Bookmark Button
+
+**Component**: `BookmarkButton` (`src/components/bookmark-button.tsx`)
+
+A toggle button that appears on blog post cards and detail screens. Shows filled/outline state based on bookmark status.
+
+### Bookmarks Screen
+
+**Route**: `(tabs)/(blog)/bookmarks.tsx`
+
+Lists all bookmarked posts with the same card layout as the main blog list. Accessible from the Blog tab.
+
+## Service Layer
+
+`src/services/bookmarks.ts` provides the SQLite operations:
+
+- `getBookmarks()` — Fetch all bookmarked post IDs
+- `addBookmark(postId)` — Save a post ID
+- `removeBookmark(postId)` — Remove a post ID
+- `isBookmarked(postId)` — Check if a post is bookmarked
+- `clearBookmarks()` — Remove all bookmarks

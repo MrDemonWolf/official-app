@@ -1,0 +1,54 @@
+---
+title: Portfolio
+description: Portfolio showcase with project categories, technology tags, and detail screens.
+---
+
+# Portfolio
+
+The portfolio feature showcases projects pulled from WordPress custom post types.
+
+## Portfolio List
+
+**Route**: `(tabs)/(portfolio)/index.tsx`
+
+- Displays portfolio items as cards
+- Category filtering support
+- Technology tag display
+
+## Portfolio Card
+
+**Component**: `PortfolioCard` (`src/components/portfolio-card.tsx`)
+
+- Featured image
+- Project title
+- Category badges
+- Technology tags
+- Navigates to `portfolio/[id]` on tap
+
+## Portfolio Detail
+
+**Route**: `portfolio/[id].tsx`
+
+- Full project description with HTML content rendering
+- Featured image
+- Technology tags
+- Project links (live site, source code)
+- Share button
+
+## WordPress Setup
+
+Portfolio items use a custom post type (`project`) with custom taxonomies:
+
+- `project_category` — Project categories (e.g. "Web App", "WordPress Theme")
+- `project_tag` — Technology tags (e.g. "React", "Node.js", "WordPress")
+
+See [WordPress REST API](/docs/wordpress/rest-api) for custom post type configuration.
+
+## ACF Fields
+
+Portfolio items use ACF fields for additional data:
+
+- `technologies` — Repeater field for technology stack
+- Project URLs and metadata
+
+See [ACF Fields](/docs/wordpress/acf-fields) for setup details.
