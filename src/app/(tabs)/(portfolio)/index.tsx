@@ -24,7 +24,7 @@ export default function PortfolioScreen() {
   const haptics = useHaptics();
   const queryClient = useQueryClient();
   const { width } = useWindowDimensions();
-  const isWideScreen = width > 768;
+  const isWideScreen = width >= 768;
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const allItems = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages]);
@@ -86,7 +86,7 @@ export default function PortfolioScreen() {
       numColumns={isWideScreen ? 2 : 1}
       columnWrapperStyle={isWideScreen ? { gap: 16 } : undefined}
       renderItem={({ item }) => (
-        <View style={isWideScreen ? { flex: 1 } : undefined}>
+        <View style={isWideScreen ? { width: (width - 48) / 2 } : undefined}>
           <Link href={`/portfolio/${item.id}` as any} asChild>
             <PortfolioCard item={item} />
           </Link>

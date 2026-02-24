@@ -23,7 +23,7 @@ export default function BlogScreen() {
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const { width } = useWindowDimensions();
-  const isWideScreen = width > 768;
+  const isWideScreen = width >= 768;
 
   // Debounce search
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function BlogScreen() {
         numColumns={isWideScreen ? 2 : 1}
         columnWrapperStyle={isWideScreen ? { gap: 16 } : undefined}
         renderItem={({ item }) => (
-          <View style={isWideScreen ? { flex: 1 } : undefined}>
+          <View style={isWideScreen ? { width: (width - 48) / 2 } : undefined}>
             <Link href={`/blog/${item.id}`} asChild>
               <BlogPostCard post={item} />
             </Link>
