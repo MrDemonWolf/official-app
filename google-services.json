@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "311719856742",
+    "project_id": "mrdemonwolf-official-app",
+    "storage_bucket": "mrdemonwolf-official-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311719856742:android:6a6bdcce1b9e8336c37ba7",
+        "android_client_info": {
+          "package_name": "com.mrdemonwolf.OfficialApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMpw82PMcxorhA1a1WNpYzGy4ynIGvIuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311719856742:android:061734057afa6cb3c37ba7",
+        "android_client_info": {
+          "package_name": "com.mrdemonwolf.OfficialApp.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMpw82PMcxorhA1a1WNpYzGy4ynIGvIuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

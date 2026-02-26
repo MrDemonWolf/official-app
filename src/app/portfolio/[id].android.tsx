@@ -1,21 +1,16 @@
-import { Image } from 'expo-image';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
-  Linking,
   Pressable,
   ScrollView,
   Text,
   View,
-  useWindowDimensions,
 } from 'react-native';
 
-import { HtmlContent } from '@/components/html-content';
 import { PlatformIcon } from '@/components/platform-icon';
+import { PortfolioDetailBody } from '@/components/portfolio-detail-body';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useHaptics } from '@/hooks/use-haptics';
 import { usePortfolioItem } from '@/hooks/use-portfolio';
 import { useShare } from '@/hooks/use-share';
 import { decodeHtmlEntities } from '@/lib/decode-html';
@@ -24,11 +19,9 @@ import { getFeaturedImage } from '@/lib/wordpress-helpers';
 export default function PortfolioDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: item, isLoading } = usePortfolioItem(id);
-  const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { shareContent } = useShare();
-  const haptics = useHaptics();
 
   const resolved = useMemo(() => {
     if (!item) return null;
@@ -69,11 +62,6 @@ export default function PortfolioDetailScreen() {
     );
   }
 
-  const {
-    title, contentHtml, featuredImage,
-    projectUrl, technologies, client,
-  } = resolved;
-
   // Android header with PlatformIcon buttons (maps to MaterialIcons)
   const headerRight = () => (
     <Pressable
@@ -92,80 +80,15 @@ export default function PortfolioDetailScreen() {
         contentInsetAdjustmentBehavior="automatic"
         className="bg-zinc-50 dark:bg-zinc-950"
       >
-        {featuredImage && (
-          <Image
-            source={{ uri: featuredImage.url }}
-            style={{
-              width,
-              aspectRatio:
-                featuredImage.width && featuredImage.height
-                  ? featuredImage.width / featuredImage.height
-                  : 16 / 9,
-            }}
-            contentFit="cover"
-            alt={featuredImage.alt}
-          />
-        )}
-        <View style={{ padding: 16, gap: 16, maxWidth: 680, alignSelf: 'center', width: '100%' }}>
-          {/* Meta info */}
-          {(technologies || client) && (
-            <View style={{ gap: 8 }}>
-              {client && (
-                <Text style={{ fontSize: 14, color: isDark ? '#a1a1aa' : '#71717a' }}>
-                  Client: {client}
-                </Text>
-              )}
-              {technologies && (
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                  {technologies.split(',').map((tech: string) => (
-                    <View
-                      key={tech.trim()}
-                      style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 3,
-                        borderRadius: 6,
-                        backgroundColor: '#3b82f620',
-                      }}
-                    >
-                      <Text style={{ fontSize: 12, color: '#3b82f6', fontWeight: '500' }}>
-                        {tech.trim()}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* Project URL */}
-          {projectUrl && (
-            <Pressable
-              onPress={() => {
-                haptics.impact(ImpactFeedbackStyle.Light);
-                Linking.openURL(projectUrl);
-              }}
-              accessibilityRole="link"
-              accessibilityLabel="View Project"
-              accessibilityHint="Opens the project in your browser"
-              style={({ pressed }) => ({
-                paddingVertical: 12,
-                paddingHorizontal: 16,
-                borderRadius: 10,
-                backgroundColor: '#3b82f6',
-                alignItems: 'center',
-                opacity: pressed ? 0.8 : 1,
-              })}
-            >
-              <Text style={{ fontSize: 15, fontWeight: '600', color: '#ffffff' }}>
-                View Project
-              </Text>
-            </Pressable>
-          )}
-
-          <HtmlContent html={contentHtml} />
-        </View>
+        <PortfolioDetailBody
+          contentHtml={resolved.contentHtml}
+          featuredImage={resolved.featuredImage}
+          projectUrl={resolved.projectUrl}
+          technologies={resolved.technologies}
+          client={resolved.client}
+        />
       </ScrollView>
-      <Stack.Screen options={{ title, headerRight }} />
+      <Stack.Screen options={{ title: resolved.title, headerRight }} />
     </>
   );
 }

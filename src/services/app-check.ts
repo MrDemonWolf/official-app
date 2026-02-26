@@ -1,4 +1,11 @@
-import appCheck from '@react-native-firebase/app-check';
+import {
+  initializeAppCheck as _initializeAppCheck,
+  getToken as _getToken,
+} from '@react-native-firebase/app-check';
+
+import type { AppCheck } from '@react-native-firebase/app-check';
+
+let appCheckInstance: AppCheck | null = null;
 
 /**
  * Initialize Firebase App Check with native device attestation.
@@ -7,18 +14,20 @@ import appCheck from '@react-native-firebase/app-check';
  * - iOS: App Attest (primary) with DeviceCheck fallback
  * - Android: Play Integrity
  */
-export function initializeAppCheck(): void {
-  const provider = appCheck().newReactNativeFirebaseAppCheckProvider();
-  provider.configure({
-    apple: {
-      provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
+export async function initializeAppCheck(): Promise<void> {
+  appCheckInstance = await _initializeAppCheck(undefined, {
+    provider: {
+      providerOptions: {
+        apple: {
+          provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
+        },
+        android: {
+          provider: __DEV__ ? 'debug' : 'playIntegrity',
+        },
+      },
     },
-    android: {
-      provider: __DEV__ ? 'debug' : 'playIntegrity',
-    },
+    isTokenAutoRefreshEnabled: true,
   });
-
-  appCheck().initializeAppCheck({ provider, isTokenAutoRefreshEnabled: true });
 }
 
 /**
@@ -26,8 +35,12 @@ export function initializeAppCheck(): void {
  * Throws a user-friendly error if token retrieval fails.
  */
 export async function getAppCheckToken(): Promise<string> {
+  if (!appCheckInstance) {
+    throw new Error('App Check not initialized. Call initializeAppCheck() first.');
+  }
+
   try {
-    const { token } = await appCheck().getToken(true);
+    const { token } = await _getToken(appCheckInstance, true);
     return token;
   } catch {
     throw new Error(

@@ -2,7 +2,7 @@ import type { WPPortfolioItem, WPPortfolioResponse } from '@/types/portfolio';
 import type { WPCategory } from '@/types/wordpress';
 
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://hotpink-jaguar-740254.hostingersite.com/wp-json/wp/v2';
+  process.env.EXPO_PUBLIC_WORDPRESS_API_URL || 'https://mrdemonwolf.dev/wp-json/wp/v2';
 
 export async function getPortfolioItems(
   page: number = 1,
@@ -32,6 +32,26 @@ export async function getPortfolioCategories(): Promise<WPCategory[]> {
   }
 
   return response.json();
+}
+
+export async function searchPortfolioItems(
+  query: string,
+  page: number = 1,
+  perPage: number = 10
+): Promise<WPPortfolioResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/project?search=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}&_embed`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to search portfolio items: ${response.statusText}`);
+  }
+
+  const items: WPPortfolioItem[] = await response.json();
+  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+  const total = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+
+  return { items, totalPages, total };
 }
 
 export async function getPortfolioItem(id: string): Promise<WPPortfolioItem> {

@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -8,10 +7,9 @@ import {
   ScrollView,
   Text,
   View,
-  useWindowDimensions,
 } from 'react-native';
 
-import { HtmlContent } from '@/components/html-content';
+import { BlogPostBody } from '@/components/blog-post-body';
 import { PlatformIcon } from '@/components/platform-icon';
 import { useIsBookmarked, useToggleBookmark } from '@/hooks/use-bookmarks';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -27,7 +25,6 @@ export default function BlogPostScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const postId = id ? parseInt(id, 10) : undefined;
   const { data: post, isLoading, error } = usePost(id);
-  const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { shareContent } = useShare();
@@ -130,15 +127,6 @@ export default function BlogPostScreen() {
     );
   }
 
-  const {
-    title, dateStr, contentHtml, featuredImage, offlineFeaturedUrl,
-  } = resolved;
-  const date = new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-
   // Android header with PlatformIcon buttons (maps to MaterialIcons)
   const headerRight = () => (
     <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -171,48 +159,15 @@ export default function BlogPostScreen() {
         contentInsetAdjustmentBehavior="automatic"
         className="bg-zinc-50 dark:bg-zinc-950"
       >
-        {/* Offline banner */}
-        {isOffline && (
-          <View
-            style={{
-              padding: 10,
-              backgroundColor: isDark ? '#422006' : '#fef3c7',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 13, color: isDark ? '#fbbf24' : '#92400e' }}>
-              Viewing saved copy — you appear to be offline
-            </Text>
-          </View>
-        )}
-
-        {featuredImage && (
-          <Image
-            source={{ uri: featuredImage.url }}
-            style={{
-              width,
-              aspectRatio:
-                featuredImage.width && featuredImage.height
-                  ? featuredImage.width / featuredImage.height
-                  : 16 / 9,
-            }}
-            contentFit="cover"
-            alt={featuredImage.alt}
-          />
-        )}
-        {!featuredImage && offlineFeaturedUrl && (
-          <Image
-            source={{ uri: offlineFeaturedUrl }}
-            style={{ width, aspectRatio: 16 / 9 }}
-            contentFit="cover"
-          />
-        )}
-        <View style={{ padding: 16, gap: 16, maxWidth: 680, alignSelf: 'center', width: '100%' }}>
-          <Text className="text-sm text-zinc-500 dark:text-zinc-400">{date}</Text>
-          <HtmlContent html={contentHtml} />
-        </View>
+        <BlogPostBody
+          contentHtml={resolved.contentHtml}
+          dateStr={resolved.dateStr}
+          featuredImage={resolved.featuredImage}
+          offlineFeaturedUrl={resolved.offlineFeaturedUrl}
+          isOffline={isOffline}
+        />
       </ScrollView>
-      <Stack.Screen options={{ title, headerRight }} />
+      <Stack.Screen options={{ title: resolved.title, headerRight }} />
     </>
   );
 }

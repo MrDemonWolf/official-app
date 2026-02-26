@@ -1,10 +1,10 @@
 import 'expo-sqlite/localStorage/install';
-import { createContext, use, useCallback, useState } from 'react';
+import { createContext, use, useState } from 'react';
 
 import type { FontSize, Settings, TabName, ThemePreference } from '@/types/settings';
 import { DEFAULT_SETTINGS } from '@/types/settings';
 
-const STORAGE_KEY = 'app_settings';
+export const STORAGE_KEY = 'app_settings';
 
 interface SettingsContextValue {
   settings: Settings;
@@ -37,19 +37,19 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     return DEFAULT_SETTINGS;
   });
 
-  const update = useCallback((patch: Partial<Settings>) => {
+  const update = (patch: Partial<Settings>) => {
     setSettings((prev) => {
       const next = { ...prev, ...patch };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
-  }, []);
+  };
 
-  const setFontSize = useCallback((fontSize: FontSize) => update({ fontSize }), [update]);
-  const setThemePreference = useCallback((themePreference: ThemePreference) => update({ themePreference }), [update]);
-  const setHapticsEnabled = useCallback((hapticsEnabled: boolean) => update({ hapticsEnabled }), [update]);
-  const setLastTab = useCallback((lastTab: TabName) => update({ lastTab }), [update]);
-  const setNotificationsEnabled = useCallback((notificationsEnabled: boolean) => update({ notificationsEnabled }), [update]);
+  const setFontSize = (fontSize: FontSize) => update({ fontSize });
+  const setThemePreference = (themePreference: ThemePreference) => update({ themePreference });
+  const setHapticsEnabled = (hapticsEnabled: boolean) => update({ hapticsEnabled });
+  const setLastTab = (lastTab: TabName) => update({ lastTab });
+  const setNotificationsEnabled = (notificationsEnabled: boolean) => update({ notificationsEnabled });
 
   return (
     <SettingsContext
