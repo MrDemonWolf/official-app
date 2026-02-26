@@ -1,35 +1,6 @@
 # Search
 
-## Stack.SearchBar (SDK 55+, Preferred)
-
-Use the `Stack.SearchBar` component for native search bar integration:
-
-```tsx
-import { Stack } from "expo-router/stack";
-import { useState } from "react";
-
-export default function ListScreen() {
-  const [search, setSearch] = useState("");
-
-  return (
-    <>
-      <FlatList
-        data={filteredItems}
-        contentInsetAdjustmentBehavior="automatic"
-      />
-      <Stack.SearchBar
-        placeholder="Search items..."
-        onChangeText={(e) => setSearch(e.nativeEvent.text)}
-        onCancelButtonPress={() => setSearch("")}
-      />
-    </>
-  );
-}
-```
-
-**Important:** `Stack.SearchBar` is a sibling of the ScrollView/FlatList, not nested inside `Stack.Screen` options.
-
-## Header Search Bar (Legacy — SDK 54 and earlier)
+## Header Search Bar
 
 Add a search bar to the stack header with `headerSearchBarOptions`:
 

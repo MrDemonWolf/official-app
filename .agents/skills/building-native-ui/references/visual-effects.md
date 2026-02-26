@@ -4,8 +4,6 @@
 
 Use `expo-blur` for blur effects. Prefer systemMaterial tints as they adapt to dark mode.
 
-**SDK 55 Note:** On Android 12+, expo-blur now uses the RenderNode API for efficient blurring. You must wrap blurrable background content in a `<BlurTargetView>`.
-
 ```tsx
 import { BlurView } from "expo-blur";
 
