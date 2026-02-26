@@ -1,4 +1,4 @@
-import { Link, router, Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -12,18 +12,16 @@ import {
 } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { BlogPostCard } from '@/components/blog-post-card';
 import { CategoryFilter } from '@/components/category-filter';
 import { PlatformIcon } from '@/components/platform-icon';
+import { PortfolioCard } from '@/components/portfolio-card';
 import { QuickActionsSheet } from '@/components/quick-actions-sheet';
-import { useCategories } from '@/hooks/use-categories';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { queryKeys } from '@/hooks/query-keys';
 import { useHaptics } from '@/hooks/use-haptics';
-import { usePosts } from '@/hooks/use-posts';
-import { useSearchPosts } from '@/hooks/use-search-posts';
+import { usePortfolioCategories, usePortfolioItems, useSearchPortfolio } from '@/hooks/use-portfolio';
 
-export default function BlogScreen() {
+export default function PortfolioScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -41,11 +39,11 @@ export default function BlogScreen() {
 
   const isSearching = debouncedQuery.length > 0;
 
-  const postsQuery = usePosts();
-  const searchResults = useSearchPosts(debouncedQuery);
-  const { data: categories } = useCategories();
+  const portfolioQuery = usePortfolioItems();
+  const searchResults = useSearchPortfolio(debouncedQuery);
+  const { data: categories } = usePortfolioCategories();
 
-  const activeQuery = isSearching ? searchResults : postsQuery;
+  const activeQuery = isSearching ? searchResults : portfolioQuery;
   const {
     data,
     isLoading,
@@ -60,53 +58,39 @@ export default function BlogScreen() {
   const haptics = useHaptics();
   const queryClient = useQueryClient();
 
-  const allPosts = useMemo(() => data?.pages.flatMap((page) => page.posts) ?? [], [data?.pages]);
+  const allItems = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages]);
 
-  // Filter by category if selected
-  const posts = useMemo(() => {
-    if (!selectedCategory) return allPosts;
-    return allPosts.filter((p) => p.categories?.includes(selectedCategory));
-  }, [allPosts, selectedCategory]);
+  // Filter by project_category if a category chip is selected
+  const items = useMemo(() => {
+    if (!selectedCategory) return allItems;
+    return allItems.filter((item) => item.project_category?.includes(selectedCategory));
+  }, [allItems, selectedCategory]);
 
   useEffect(() => {
-    for (const post of allPosts) {
-      queryClient.setQueryData(queryKeys.post(post.id.toString()), post);
+    for (const item of allItems) {
+      queryClient.setQueryData(queryKeys.portfolioItem(item.id.toString()), item);
     }
-  }, [allPosts, queryClient]);
+  }, [allItems, queryClient]);
 
   const handleRefresh = useCallback(async () => {
     await refetch();
     haptics.notification();
   }, [refetch, haptics]);
 
-  // Android header: bookmark icon + overflow menu
+  // Android header: overflow menu
   const headerRight = () => (
-    <View style={{ flexDirection: 'row', gap: 4 }}>
-      <Pressable
-        onPress={() => router.push('/bookmarks' as any)}
-        accessibilityRole="button"
-        accessibilityLabel="Bookmarks"
-        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
-      >
-        <PlatformIcon
-          name="bookmark"
-          size={24}
-          tintColor={isDark ? '#f4f4f5' : '#18181b'}
-        />
-      </Pressable>
-      <Pressable
-        onPress={() => setSheetVisible(true)}
-        accessibilityRole="button"
-        accessibilityLabel="More options"
-        style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
-      >
-        <PlatformIcon
-          name="ellipsis"
-          size={24}
-          tintColor={isDark ? '#f4f4f5' : '#18181b'}
-        />
-      </Pressable>
-    </View>
+    <Pressable
+      onPress={() => setSheetVisible(true)}
+      accessibilityRole="button"
+      accessibilityLabel="More options"
+      style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
+    >
+      <PlatformIcon
+        name="ellipsis"
+        size={24}
+        tintColor={isDark ? '#f4f4f5' : '#18181b'}
+      />
+    </Pressable>
   );
 
   const ListHeader = useMemo(() => {
@@ -114,7 +98,7 @@ export default function BlogScreen() {
       <View style={{ gap: 12 }}>
         {/* Android TextInput search bar */}
         <TextInput
-          placeholder="Search posts..."
+          placeholder="Search portfolio..."
           placeholderTextColor={isDark ? '#52525b' : '#a1a1aa'}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -139,21 +123,21 @@ export default function BlogScreen() {
     );
   }, [isDark, searchQuery, categories, selectedCategory, isSearching]);
 
-  if (isLoading && posts.length === 0) {
+  if (isLoading && items.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog', headerRight }} />
+        <Stack.Screen options={{ title: 'Portfolio', headerRight }} />
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  if (error && posts.length === 0) {
+  if (error && items.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white p-5 dark:bg-zinc-950">
-        <Stack.Screen options={{ title: 'Blog', headerRight }} />
+        <Stack.Screen options={{ title: 'Portfolio', headerRight }} />
         <Text className="text-center text-base text-zinc-900 dark:text-zinc-100" selectable>
-          Failed to load posts. Please try again later.
+          Failed to load portfolio. Please try again later.
         </Text>
       </View>
     );
@@ -162,7 +146,7 @@ export default function BlogScreen() {
   return (
     <>
       <FlatList
-        data={posts}
+        data={items}
         keyExtractor={(item) => item.id.toString()}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ padding: 16, gap: 16 }}
@@ -172,8 +156,8 @@ export default function BlogScreen() {
         columnWrapperStyle={isWideScreen ? { gap: 16 } : undefined}
         renderItem={({ item }) => (
           <View style={isWideScreen ? { width: (width - 48) / 2 } : undefined}>
-            <Link href={`/blog/${item.id}`} asChild>
-              <BlogPostCard post={item} />
+            <Link href={`/portfolio/${item.id}` as any} asChild>
+              <PortfolioCard item={item} />
             </Link>
           </View>
         )}
@@ -197,16 +181,15 @@ export default function BlogScreen() {
         ListEmptyComponent={
           <View className="items-center p-5">
             <Text className="text-base text-zinc-500">
-              {isSearching ? 'No results found.' : 'No posts found.'}
+              {isSearching ? 'No results found.' : 'No portfolio items found.'}
             </Text>
           </View>
         }
       />
-      <Stack.Screen options={{ title: 'Blog', headerRight }} />
+      <Stack.Screen options={{ title: 'Portfolio', headerRight }} />
       <QuickActionsSheet
         visible={sheetVisible}
         onClose={() => setSheetVisible(false)}
-        showBookmarks
       />
     </>
   );

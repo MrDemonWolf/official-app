@@ -8,5 +8,6 @@ export function useAbout() {
     queryKey: queryKeys.user,
     queryFn: getUser,
     staleTime: 1000 * 60 * 5,
+    refetchOnMount: 'always',
   });
 }

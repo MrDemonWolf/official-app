@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/hooks/query-keys';
-import { getPortfolioCategories, getPortfolioItem, getPortfolioItems } from '@/services/portfolio';
+import { getPortfolioCategories, getPortfolioItem, getPortfolioItems, searchPortfolioItems } from '@/services/portfolio';
 
 export function usePortfolioItems(perPage: number = 10) {
   return useInfiniteQuery({
@@ -21,6 +21,20 @@ export function usePortfolioCategories() {
     queryKey: queryKeys.portfolioCategories,
     queryFn: getPortfolioCategories,
     staleTime: 1000 * 60 * 30,
+  });
+}
+
+export function useSearchPortfolio(query: string, perPage: number = 10) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.searchPortfolio(query),
+    queryFn: ({ pageParam = 1 }) => searchPortfolioItems(query, pageParam, perPage),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages.length + 1;
+      return nextPage <= lastPage.totalPages ? nextPage : undefined;
+    },
+    enabled: query.length > 0,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

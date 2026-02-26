@@ -23,6 +23,7 @@
     "docs:build": "pnpm --filter docs build"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^4.0.3",
     "@expo/metro-runtime": "^55.0.6",
     "@expo/vector-icons": "^15.0.3",
     "@react-native-firebase/app": "^23.8.6",

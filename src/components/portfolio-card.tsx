@@ -21,6 +21,9 @@ export function PortfolioCard({ item, onPress, ref }: PortfolioCardProps) {
   const excerpt = decodeHtmlEntities(stripHtml(item.excerpt.rendered)).slice(0, 150);
   const featuredImage = getFeaturedImage(item);
   const technologies = item.acf?.technologies;
+  const categories = item._embedded?.['wp:term']?.[0]
+    ?.map((term: { name: string }) => term.name)
+    .join(', ');
   const haptics = useHaptics();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -64,6 +67,11 @@ export function PortfolioCard({ item, onPress, ref }: PortfolioCardProps) {
         >
           {title}
         </Text>
+        {categories && (
+          <Text className="text-sm text-zinc-500 dark:text-zinc-400">
+            {categories}
+          </Text>
+        )}
         {technologies && (
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
             {technologies.split(',').map((tech) => (

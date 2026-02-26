@@ -86,6 +86,7 @@ Copy `.env.example` to `.env` and configure the values for your WordPress site:
 | `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay REST API base URL for the contact form (e.g. `https://yoursite.com/wp-json/packrelay/v1`) |
 | `EXPO_PUBLIC_PACKRELAY_FORM_ID` | [WPForms](https://wpforms.com/) form ID used by [PackRelay](https://github.com/MrDemonWolf/packrelay) for the contact form |
 | `EXPO_PUBLIC_TAILSIGNAL_API_URL` | [TailSignal](https://github.com/MrDemonWolf/tailsignal) REST API base URL for push notification device registration |
+| `APPLE_TEAM_ID` | Apple Developer Team ID (required for iOS builds — used by `@bacons/apple-targets` for extension code signing) |
 
 ### Required WordPress Plugins
 

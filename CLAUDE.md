@@ -50,7 +50,10 @@ src/
 ├── types/                  # TypeScript type definitions
 └── global.css              # Tailwind/NativeWind imports
 
-plugins/                    # Custom Expo config plugins (notification-service-extension.js)
+targets/
+├── notification-service/       # iOS Notification Service Extension (@bacons/apple-targets)
+│   ├── expo-target.config.js   # Declarative target config
+│   └── NotificationService.swift # NSE Swift source
 ```
 
 ### Navigation (Expo Router with file-based routing)
@@ -131,7 +134,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - `src/services/notifications.ts` — Registers/unregisters Expo push tokens with [TailSignal](https://github.com/MrDemonWolf/tailsignal) backend, verifies registration status before re-registering
 - `src/hooks/use-notifications.ts` — Manages registration lifecycle with auto re-registration on app launch and deep-link navigation on tap
 - Gated by `settings.notificationsEnabled`
-- iOS Notification Service Extension (`notification-service-extension.js` config plugin) enables rich push notification images via `mutableContent`
+- iOS Notification Service Extension via `@bacons/apple-targets` (`targets/notification-service/`) enables rich push notification images via `mutableContent`
 - TailSignal sends notification data with snake_case keys (e.g. `post_id`, `post_type`)
 
 ### Components
@@ -157,10 +160,17 @@ TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`).
 | `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal push notification REST API base URL (`/wp-json/tailsignal/v1`) |
 | `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay/WPForms contact form REST API base URL (`/wp-json/packrelay/v1`) |
 | `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID for the contact form |
+| `APPLE_TEAM_ID` | Apple Developer Team ID (required by `@bacons/apple-targets` for iOS extension code signing) |
 
 Copy `.env.example` to `.env` and fill in the values for local development.
 
 EAS environment variables are managed via `eas env:create` / `eas env:list` and are configured for `development`, `preview`, and `production` environments.
+
+Set up `APPLE_TEAM_ID` for EAS builds:
+```bash
+eas env:create --name APPLE_TEAM_ID --value "YOUR_TEAM_ID" --visibility plaintext --environment development
+eas env:create --name APPLE_TEAM_ID --value "YOUR_TEAM_ID" --visibility plaintext --environment production
+```
 
 ### Firebase Configuration
 

@@ -34,6 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     bundleIdentifier: BUNDLE_ID,
     buildNumber: "2",
+    appleTeamId: process.env.APPLE_TEAM_ID,
     googleServicesFile: "./GoogleService-Info.plist",
     config: {
       usesNonExemptEncryption: false,
@@ -88,7 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         color: "#3b82f6",
       },
     ],
-    "./src/plugins/notification-service-extension",
+    "@bacons/apple-targets",
     "@react-native-firebase/app",
     "@react-native-firebase/app-check",
   ],
@@ -98,6 +99,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       projectId: EAS_PROJECT_ID,
     },
   },
+
+  developmentClient: IS_PRODUCTION ? undefined : {},
 
   experiments: {
     typedRoutes: true,
