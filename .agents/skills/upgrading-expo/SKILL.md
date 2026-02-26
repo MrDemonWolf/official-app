@@ -79,19 +79,14 @@ This regenerates the `ios` and `android` directories. Ensure the project is not 
 
 ## Deprecated Packages
 
-| Old Package               | Replacement                                          |
-| ------------------------- | ---------------------------------------------------- |
-| `expo-av`                 | `expo-audio` and `expo-video`                        |
-| `expo-permissions`        | Individual package permission APIs                   |
-| `@expo/vector-icons`      | `expo-image` with `source="sf:name"` for SF Symbols  |
-| `AsyncStorage`            | `expo-sqlite/localStorage/install`                   |
-| `expo-app-loading`        | `expo-splash-screen`                                 |
-| `expo-linear-gradient`    | experimental_backgroundImage + CSS gradients in View |
-| `expo-video-thumbnails`   | `generateThumbnailsAsync` from `expo-video`          |
-| `@react-navigation/bottom-tabs` | `NativeTabs` from `expo-router/unstable-native-tabs` |
-| `Platform.OS`             | `process.env.EXPO_OS` (tree-shakeable)               |
-| `useContext`              | `use()` from React 19                                |
-| `Context.Provider`        | `<Context>` directly (React 19)                      |
+| Old Package          | Replacement                                          |
+| -------------------- | ---------------------------------------------------- |
+| `expo-av`            | `expo-audio` and `expo-video`                        |
+| `expo-permissions`   | Individual package permission APIs                   |
+| `@expo/vector-icons` | `expo-symbols` (for SF Symbols)                      |
+| `AsyncStorage`       | `expo-sqlite/localStorage/install`                   |
+| `expo-app-loading`   | `expo-splash-screen`                                 |
+| expo-linear-gradient | experimental_backgroundImage + CSS gradients in View |
 
 When migrating deprecated packages, update all code usage before removing the old package. For expo-av, consult the migration references to convert Audio.Sound to useAudioPlayer, Audio.Recording to useAudioRecorder, and Video components to VideoView with useVideoPlayer.
 
@@ -128,44 +123,3 @@ Remove redundant metro config options:
 ## New Architecture
 
 The new architecture is enabled by default, the app.json field `"newArchEnabled": true` is no longer needed as it's the default. Expo Go only supports the new architecture as of SDK +53.
-
-## SDK 55 Specific Changes
-
-### Breaking Changes
-- **Legacy Architecture removed**: SDK 55 no longer supports Legacy Architecture at all. The `newArchEnabled` config option is eliminated.
-- **`notification` field removed from app.json**: Migrate to the `expo-notifications` config plugin instead.
-- **`expo-av` removed from Expo Go**: Use `expo-audio` and `expo-video` instead.
-- **`headerBlurEffect` conflicts with `scrollEdgeEffects`**: In SDK 55, `react-native-screens` handles scroll edge blur effects automatically. Remove `headerBlurEffect` from Stack screenOptions to avoid the warning: "Using both blurEffect and scrollEdgeEffects simultaneously may cause overlapping effects."
-- **`Appearance.setColorScheme(null)` → `'unspecified'`**: React Native 0.83 changed `ColorSchemeName` type to `'light' | 'dark' | 'unspecified'` (no longer accepts `null`).
-- **`edgeToEdgeEnabled` removed**: This property no longer exists in the Android config type.
-- **NativeTabs import changes**: `Icon`, `Label`, `Badge` are no longer separate exports. Use `NativeTabs.Trigger.Icon`, `NativeTabs.Trigger.Label`, `NativeTabs.Trigger.Badge` instead.
-- **expo-blur API change**: Android now uses RenderNode API (Android 12+). Requires wrapping blurrable content in `<BlurTargetView>`.
-- **expo-video-thumbnails deprecated**: Use `generateThumbnailsAsync` from `expo-video` instead. Will be removed in SDK 56.
-- **`removeSubscription` deprecated**: Use `subscription.remove()` method returned from event listeners.
-
-### New Features
-- **React Native 0.83.1** and **React 19.2.0**
-- **Hermes v1 opt-in**: Available via `useHermesV1` in `expo-build-properties`
-- **Stack.Toolbar API**: Native iOS toolbar buttons (replaces custom headerRight Pressable patterns)
-- **Stack.SearchBar component**: Replaces `headerSearchBarOptions` for cleaner search bar integration
-- **Expo Router Colors API**: Dynamic Material 3 styles for Android, adaptive colors for iOS
-- **Apple Zoom Transition**: Interactive shared element transitions (iOS, enabled by default)
-- **SDK package versioning**: All Expo SDK packages now use same major version as SDK (e.g., `expo-camera@^55.0.0`)
-- **NativeTabs.Trigger.Icon `md` prop**: Material icons for Android (replaces `drawable` prop)
-
-### Stack screenOptions for SDK 55
-Remove these from Stack screenOptions — they are now handled automatically:
-```tsx
-// Remove these — SDK 55 handles them natively
-headerBlurEffect: 'systemUltraThinMaterial',  // causes conflict with scrollEdgeEffects
-```
-
-Keep these — still needed:
-```tsx
-headerTransparent: true,
-headerLargeTitle: true,
-headerLargeStyle: { backgroundColor: 'transparent' },
-headerShadowVisible: false,
-headerLargeTitleShadowVisible: false,
-headerBackButtonDisplayMode: 'minimal',
-```
