@@ -1,15 +1,6 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { SymbolView } from 'expo-symbols';
 
 import type { PlatformIconProps } from './platform-icon.types';
-
-const SF_TO_MATERIAL: Record<string, string> = {
-  'bookmark': 'bookmark-outline',
-  'bookmark.fill': 'bookmark',
-  'hammer.fill': 'construction',
-  'doc.text': 'article',
-  'square.and.arrow.up': 'share',
-  'globe': 'language',
-};
 
 export function PlatformIcon({
   name,
@@ -19,14 +10,13 @@ export function PlatformIcon({
   accessibilityElementsHidden,
   importantForAccessibility,
 }: PlatformIconProps) {
-  const materialName = SF_TO_MATERIAL[name] ?? 'help-outline';
-
   return (
-    <MaterialIcons
-      name={materialName as any}
+    <SymbolView
+      name={name as any}
       size={size}
-      color={tintColor}
-      style={style as any}
+      tintColor={tintColor}
+      resizeMode="scaleAspectFit"
+      style={style ?? { width: size, height: size }}
       accessibilityElementsHidden={accessibilityElementsHidden}
       importantForAccessibility={importantForAccessibility}
     />

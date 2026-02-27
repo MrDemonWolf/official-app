@@ -33,7 +33,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: BUNDLE_ID,
-    buildNumber: "2",
     appleTeamId: process.env.APPLE_TEAM_ID,
     googleServicesFile: "./GoogleService-Info.plist",
     config: {
@@ -48,7 +47,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 
   android: {
     package: BUNDLE_ID,
-    versionCode: 2,
     googleServicesFile: "./google-services.json",
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
