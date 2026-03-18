@@ -15,8 +15,8 @@
     "prebuild:clean": "APP_VARIANT=development expo prebuild --clean",
     "prebuild:prod": "APP_VARIANT=production expo prebuild",
     "type-check": "tsc",
-    "docs:dev": "pnpm --filter docs dev",
-    "docs:build": "pnpm --filter docs build"
+    "docs:dev": "bun --filter docs dev",
+    "docs:build": "bun --filter docs build"
   },
   "dependencies": {
     "@bacons/apple-targets": "^4.0.3",
@@ -67,10 +67,10 @@
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.2"
   },
-  "pnpm": {
-    "overrides": {
-      "lightningcss": "1.30.1"
-    }
+  "overrides": {
+    "lightningcss": "1.30.1"
   },
+  "workspaces": ["docs"],
+  "trustedDependencies": ["expo-modules-autolinking"],
   "private": true
 }
