@@ -8,12 +8,14 @@
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development",
+      "bun": "latest",
       "env": { "APP_VARIANT": "development" }
     },
     "production": {
       "distribution": "store",
       "channel": "production",
       "autoIncrement": true,
+      "bun": "latest",
       "env": { "APP_VARIANT": "production" }
     }
   }
