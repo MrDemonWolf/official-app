@@ -5,22 +5,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# Install dependencies (uses pnpm)
-pnpm install
+# Install dependencies (uses bun)
+bun install
 
 # Start development server
-pnpm start              # Start Expo dev server
-pnpm ios                # Run on iOS simulator
-pnpm android            # Run on Android emulator
-pnpm web                # Start for web
+bun run start           # Start Expo dev server
+bun run ios             # Run on iOS simulator
+bun run android         # Run on Android emulator
+bun run web             # Start for web
 
 # Code quality
-pnpm lint               # Run ESLint
-pnpm type-check         # Run TypeScript type checking
+bun run lint            # Run ESLint
+bun run type-check      # Run TypeScript type checking
 
 # Build
-pnpm prebuild           # Generate native projects
-pnpm prebuild:clean     # Clean and regenerate native projects
+bun run prebuild        # Generate native projects
+bun run prebuild:clean  # Clean and regenerate native projects
 
 # EAS (run via zsh -l for PATH)
 eas build --platform ios        # Build for iOS
