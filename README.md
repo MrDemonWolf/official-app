@@ -83,17 +83,17 @@ Copy `.env.example` to `.env` and configure the values for your WordPress site:
 | `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (e.g. `https://yoursite.com/wp-json/wp/v2`) |
 | `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
 | `EXPO_PUBLIC_APP_VARIANT` | App variant — `development` or `production` |
-| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay REST API base URL for the contact form (e.g. `https://yoursite.com/wp-json/packrelay/v1`) |
-| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | [WPForms](https://wpforms.com/) form ID used by [PackRelay](https://github.com/MrDemonWolf/packrelay) for the contact form |
-| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | [TailSignal](https://github.com/MrDemonWolf/tailsignal) REST API base URL for push notification device registration |
+| `EXPO_PUBLIC_MRDW_API_URL` | PackRelay REST API base URL for the contact form (e.g. `https://yoursite.com/wp-json/mrdw/v1`) |
+| `EXPO_PUBLIC_MRDW_FORM_ID` | [WPForms](https://wpforms.com/) form ID used by [PackRelay](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) for the contact form |
+| `EXPO_PUBLIC_MRDW_API_URL` | [TailSignal](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) REST API base URL for push notification device registration |
 | `APPLE_TEAM_ID` | Apple Developer Team ID (required for iOS builds — used by `@bacons/apple-targets` for extension code signing) |
 
 ### Required WordPress Plugins
 
 | Plugin | Description |
 |--------|-------------|
-| [TailSignal](https://github.com/MrDemonWolf/tailsignal) | Push notification registration and delivery for Expo apps |
-| [PackRelay](https://github.com/MrDemonWolf/packrelay) | Contact form relay that bridges [WPForms](https://wpforms.com/) with mobile apps via Firebase App Check |
+| [TailSignal](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) | Push notification registration and delivery for Expo apps |
+| [PackRelay](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) | Contact form relay that bridges [WPForms](https://wpforms.com/) with mobile apps via Firebase App Check |
 | [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) | Custom user fields for social links and role/tagline |
 
 ### WordPress ACF Setup
