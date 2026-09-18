@@ -1,9 +1,9 @@
 import type { ContactSubmission, ContactSubmissionResponse } from '@/types/contact';
 
-const PACKRELAY_API_URL =
-  process.env.EXPO_PUBLIC_PACKRELAY_API_URL || '';
-const PACKRELAY_FORM_ID =
-  process.env.EXPO_PUBLIC_PACKRELAY_FORM_ID || '';
+const MRDW_API_URL =
+  process.env.EXPO_PUBLIC_MRDW_API_URL || '';
+const MRDW_FORM_ID =
+  process.env.EXPO_PUBLIC_MRDW_FORM_ID || '';
 
 /** Maps friendly field names to WPForms field IDs */
 const FIELD_IDS: Record<string, string> = {
@@ -30,7 +30,7 @@ export async function submitContactForm(
   let response: Response;
   try {
     response = await fetch(
-      `${PACKRELAY_API_URL}/submit/${PACKRELAY_FORM_ID}`,
+      `${MRDW_API_URL}/submit/${MRDW_FORM_ID}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -2,7 +2,9 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
-const TAILSIGNAL_API_URL = process.env.EXPO_PUBLIC_TAILSIGNAL_API_URL;
+import { getAppCheckToken } from './app-check';
+
+const MRDW_API_URL = process.env.EXPO_PUBLIC_MRDW_API_URL;
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,12 +43,16 @@ export async function registerForPushNotifications(): Promise<string | null> {
 }
 
 export async function registerDevice(token: string): Promise<void> {
-  if (!TAILSIGNAL_API_URL) return;
+  if (!MRDW_API_URL) return;
 
   try {
-    await fetch(`${TAILSIGNAL_API_URL}/register`, {
+    const appCheckToken = await getAppCheckToken();
+    await fetch(`${MRDW_API_URL}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Firebase-AppCheck': appCheckToken,
+      },
       body: JSON.stringify({
         expo_token: token,
         device_type: process.env.EXPO_OS ?? 'unknown',
@@ -61,11 +67,11 @@ export async function registerDevice(token: string): Promise<void> {
 }
 
 export async function unregisterDevice(token: string): Promise<void> {
-  if (!TAILSIGNAL_API_URL) return;
+  if (!MRDW_API_URL) return;
 
   try {
     await fetch(
-      `${TAILSIGNAL_API_URL}/register?expo_token=${encodeURIComponent(token)}`,
+      `${MRDW_API_URL}/register?expo_token=${encodeURIComponent(token)}`,
       { method: 'DELETE' }
     );
   } catch {
@@ -74,15 +80,15 @@ export async function unregisterDevice(token: string): Promise<void> {
 }
 
 /**
- * Check if a token is registered and active on the TailSignal backend.
+ * Check if a token is registered and active on the MrDemonWolf backend.
  * Returns true only if the device is both registered and active.
  */
 export async function isDeviceRegistered(token: string): Promise<boolean> {
-  if (!TAILSIGNAL_API_URL) return false;
+  if (!MRDW_API_URL) return false;
 
   try {
     const response = await fetch(
-      `${TAILSIGNAL_API_URL}/register/status?expo_token=${encodeURIComponent(token)}`
+      `${MRDW_API_URL}/register/status?expo_token=${encodeURIComponent(token)}`
     );
 
     if (!response.ok) return false;

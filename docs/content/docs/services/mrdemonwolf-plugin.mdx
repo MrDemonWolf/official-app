@@ -1,0 +1,121 @@
+---
+title: MrDemonWolf plugin
+description: The WordPress plugin the app talks to for contact form submissions and push notifications.
+---
+
+# MrDemonWolf plugin
+
+[MrDemonWolf](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) is the WordPress plugin this app
+talks to. It has two halves:
+
+- **Forms** — accepts contact form submissions over REST, verified with Firebase App Check, and
+  hands them to Divi, WPForms or Gravity Forms.
+- **Push** — keeps the device registry and delivers notifications through Expo.
+
+It replaces the separate **PackRelay** and **TailSignal** plugins, which are archived. Those are now
+the Forms and Push modules of one plugin.
+
+> **Breaking change in plugin 2.0.0.** The two REST namespaces collapsed into one.
+> `tailsignal/v1` and `packrelay/v1` are gone; everything is under `mrdw/v1`. Route paths,
+> request bodies and responses are unchanged — only the namespace segment moved.
+
+Docs: [mrdemonwolf.github.io/mrdemonwolf-wp-plugin](https://mrdemonwolf.github.io/mrdemonwolf-wp-plugin/)
+
+## Configuration
+
+One base URL now covers both halves:
+
+```
+EXPO_PUBLIC_MRDW_API_URL=https://your-site.example/wp-json/mrdw/v1
+EXPO_PUBLIC_MRDW_FORM_ID=1
+```
+
+`EXPO_PUBLIC_MRDW_FORM_ID` is the form the contact screen submits to. Gravity Forms and WPForms use
+the numeric form ID; Divi uses `pageId:formIndex`, for example `42:0`.
+
+## Contact form
+
+### How it works
+
+1. The app collects the form data and requests a Firebase App Check token
+2. Both are POSTed to the plugin
+3. The plugin verifies the token with Firebase before writing anything
+4. If valid, the submission is handed to the site's form plugin, which sends its usual emails
+5. The submission is also recorded in the plugin's own entries table
+
+### Endpoint
+
+```
+POST {EXPO_PUBLIC_MRDW_API_URL}/submit/{form_id}
+```
+
+```json
+{
+	"fields": {
+		"1": "First Name",
+		"2": "Last Name",
+		"3": "email@example.com",
+		"4": "555-0123",
+		"5": "Message body"
+	},
+	"app_check_token": "eyJhbGciOi..."
+}
+```
+
+`fields` maps the form's field IDs to values.
+
+### Failures worth handling
+
+| Status | Meaning |
+| --- | --- |
+| `403` | App Check could not vouch for this build, or the site's Firebase project ID does not match |
+| `404` | The form ID is not in the plugin's allowed list |
+| `400` | A required field is missing, or an email field failed validation |
+
+App Check tokens are short-lived. Request a fresh one per submission rather than caching.
+
+Implementation: `src/services/contact.ts`.
+
+## Push notifications
+
+### Device registration
+
+```
+POST   {EXPO_PUBLIC_MRDW_API_URL}/register
+DELETE {EXPO_PUBLIC_MRDW_API_URL}/register
+GET    {EXPO_PUBLIC_MRDW_API_URL}/register/status
+```
+
+These routes are public by design — the app has no WordPress user. The Expo push token itself acts
+as the credential: it is issued by Expo, cryptographically random, and knowing one only lets you
+manage that device.
+
+Registration body:
+
+```json
+{
+	"expo_token": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
+	"device_type": "ios",
+	"device_model": "iPhone 15 Pro",
+	"os_version": "18.2",
+	"app_version": "1.0.0"
+}
+```
+
+Registering the same token twice updates the existing device rather than duplicating it.
+
+Implementation: `src/services/notifications.ts`.
+
+### Rich notification images
+
+The plugin sends the post's featured image as `richContent: { image }`, together with
+`mutableContent: true`.
+
+- **Android** renders the image with no app changes.
+- **iOS** only renders it when the build includes a Notification Service Extension, because
+  `mutableContent` is what makes APNs invoke that extension. This app has one at
+  `targets/notification-service/`, so a dev client or TestFlight build shows images. Expo Go does
+  not.
+
+The plugin refuses image URLs that are not HTTPS or not publicly reachable, since the handset
+downloads them directly.
