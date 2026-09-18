@@ -2,6 +2,8 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
+import { getAppCheckToken } from './app-check';
+
 const MRDW_API_URL = process.env.EXPO_PUBLIC_MRDW_API_URL;
 
 Notifications.setNotificationHandler({
@@ -44,9 +46,13 @@ export async function registerDevice(token: string): Promise<void> {
   if (!MRDW_API_URL) return;
 
   try {
+    const appCheckToken = await getAppCheckToken();
     await fetch(`${MRDW_API_URL}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Firebase-AppCheck': appCheckToken,
+      },
       body: JSON.stringify({
         expo_token: token,
         device_type: process.env.EXPO_OS ?? 'unknown',
