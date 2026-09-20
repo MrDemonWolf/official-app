@@ -91,9 +91,9 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 - **React Query** (`@tanstack/react-query`) for all server state
 - `src/hooks/query-keys.ts` — Centralized query key factory
 - `src/services/wordpress.ts` — WordPress REST API (users, posts, media)
-- `src/services/contact.ts` — Contact form submission via [PackRelay](https://github.com/MrDemonWolf/packrelay)/[WPForms](https://wpforms.com/)
+- `src/services/contact.ts` — Contact form submission via [PackRelay](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin)/[WPForms](https://wpforms.com/)
 - `src/services/app-check.ts` — Firebase App Check initialization and token management
-- `src/services/notifications.ts` — [TailSignal](https://github.com/MrDemonWolf/tailsignal) push notification registration with registration status verification
+- `src/services/notifications.ts` — [TailSignal](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) push notification registration with registration status verification
 - `src/services/bookmarks.ts` — SQLite-backed local bookmarks
 - Blog list pre-populates individual post caches for instant detail screen rendering
 
@@ -131,7 +131,7 @@ Each tab has its own `(group)/_layout.tsx` Stack and `index.tsx` screen.
 
 ### Push Notifications
 
-- `src/services/notifications.ts` — Registers/unregisters Expo push tokens with [TailSignal](https://github.com/MrDemonWolf/tailsignal) backend, verifies registration status before re-registering
+- `src/services/notifications.ts` — Registers/unregisters Expo push tokens with [TailSignal](https://github.com/MrDemonWolf/mrdemonwolf-wp-plugin) backend, verifies registration status before re-registering
 - `src/hooks/use-notifications.ts` — Manages registration lifecycle with auto re-registration on app launch and deep-link navigation on tap
 - Gated by `settings.notificationsEnabled`
 - iOS Notification Service Extension via `@bacons/apple-targets` (`targets/notification-service/`) enables rich push notification images via `mutableContent`
@@ -157,9 +157,9 @@ TypeScript path alias `@/*` maps to `src/` (configured in `tsconfig.json`).
 | `EXPO_PUBLIC_WORDPRESS_API_URL` | WordPress REST API base URL (`/wp-json/wp/v2`) |
 | `EXPO_PUBLIC_WORDPRESS_USER_ID` | WordPress user ID for the About screen profile (defaults to `1`) |
 | `EXPO_PUBLIC_APP_VARIANT` | App variant: `development`, `preview`, or `production` |
-| `EXPO_PUBLIC_TAILSIGNAL_API_URL` | TailSignal push notification REST API base URL (`/wp-json/tailsignal/v1`) |
-| `EXPO_PUBLIC_PACKRELAY_API_URL` | PackRelay/WPForms contact form REST API base URL (`/wp-json/packrelay/v1`) |
-| `EXPO_PUBLIC_PACKRELAY_FORM_ID` | WPForms form ID for the contact form |
+| `EXPO_PUBLIC_MRDW_API_URL` | TailSignal push notification REST API base URL (`/wp-json/mrdw/v1`) |
+| `EXPO_PUBLIC_MRDW_API_URL` | PackRelay/WPForms contact form REST API base URL (`/wp-json/mrdw/v1`) |
+| `EXPO_PUBLIC_MRDW_FORM_ID` | WPForms form ID for the contact form |
 | `APPLE_TEAM_ID` | Apple Developer Team ID (required by `@bacons/apple-targets` for iOS extension code signing) |
 
 Copy `.env.example` to `.env` and fill in the values for local development.

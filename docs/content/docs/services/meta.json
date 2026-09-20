@@ -2,8 +2,7 @@
   "title": "Services",
   "pages": [
     "wordpress",
-    "packrelay",
-    "tailsignal",
+    "mrdemonwolf-plugin",
     "firebase-app-check"
   ]
 }
